@@ -26,6 +26,9 @@ Correct answer: Глухота<br>
 Generated answer: I don't know.<br>
 Correct: False<br>
 
+a["generated_answer"].str.contains("I don't know").sum()
+Out[7]: np.int64(26)
+
 ***
 
 Loading and sampling 100000 examples from datasets/v1.0-simplified_nq-dev-all.jsonl/v1.0-simplified_nq-dev-all.jsonl...<br>
@@ -37,3 +40,14 @@ Evaluating NQ: 100%|██████████| 1311/1311 [33:43<00:00,  1.5
 
 Evaluation complete. Accuracy: 33.01%<br>
 Results saved to evaluation_results_simplified.csv
+
+a["generated_answer"].str.contains("I don't know").sum()
+Out[9]: np.int64(44)
+
+***
+
+Saved results to codeqa_evaluation_code_results.csv and codeqa_evaluation_code_results_simplified.csv
+Total evaluated: 1001 | Accuracy: 0.12
+
+a["generated_answer"].str.contains("I don't know").sum()<br>
+Out[4]: np.int64(274)

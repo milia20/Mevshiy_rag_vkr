@@ -1,0 +1,1002 @@
+dataset,question,correct_answers,generated_answer,is_correct,context_used
+codeqa_python_sample,How do all tags in an html tree convert to xhtml ?,['by moving them to the xhtml namespace'],"The code iterates through each element (`el`) in the `html` tree, prepending the XHTML namespace prefix to its tag name.",False,True
+codeqa_python_test,What helps to make assertions about called hooks ?,['a hookrecorder instance'],`pytest.Arg`,False,True
+codeqa_python_test,"What does each contact in "" contact_dicts "" have ?",['an identity attribute'],An 'identity' key.,False,True
+codeqa_python_test,What does the code get ?,['the maximum size of the data layer that can influence a unit on layer'],The maximum data extent.,True,True
+codeqa_python_test,Does the code terminate the instance described by instance_id or name ?,['Yes'],It terminates only one instance based on either `instance_id` or `name`.,False,True
+codeqa_python_test,Till when does the code try each of the rules ?,['until one works'],Until a rule returns True.,False,True
+codeqa_python_test,What do lines from input stream copy in reverse order ?,['to output stream'],"Lines from the input stream are copied in reverse order, with potential spillover handling to ensure complete line reconstruction.",False,True
+codeqa_python_test,What does the code extract ?,['the indices of slices in a b - values file with a low b value'],Indices of elements less than a maximum value.,False,True
+codeqa_python_test,What does the code do ?,['a diff on the tokens'],The code calculates the diff between two HTML structures represented as token sequences.,False,True
+codeqa_python_test,What are for which ?,['no translations'],I don't know.,False,True
+codeqa_python_test,What do actions span ?,['more than one entity'],I don't know.,False,True
+codeqa_python_test,What does the code get ?,['jupyter info dict'],The version of `nbconvert`.,False,True
+codeqa_python_test,When did returns use luns ?,['when provided with mappings'],At the end of the function.,False,True
+codeqa_python_test,For what purpose does the code add a new binding_index ?,['to ensure that no over - creation of the bindings is possible'],I don't know.,False,True
+codeqa_python_test,How do test start ?,['with given text'],"The tests start with the word ""assert"".",False,True
+codeqa_python_test,What does this convert to a register dump list ?,['a pickled datastore'],I don't know.,False,True
+codeqa_python_test,What does the code request ?,['a csv showing students grades for all problems in the course'],POST.,False,True
+codeqa_python_test,What does pylint fail ?,"['to "" inherit "" the attributes from the ordereddict class when using multiple inheritance']","The code snippet is incomplete and contains syntax errors. It appears to be attempting some kind of class transformation or analysis, but the `transform` function definition is malformed. Specifically, it has issues with how it's referencing `cls`, `NEED FIX`, `FIX MEMBERS`, `locals`, and `scoped nodes`. Pylint would likely fail due to syntax errors and undefined names.",False,True
+codeqa_python_test,What do benchmarks not change ?,['the xml tree'],I don't know.,False,True
+codeqa_python_test,How do rational expressions combine ?,['using symbolic methods'],I don't know.,False,True
+codeqa_python_test,When do validation errors happen ?,['during the migration'],"When the object is a Node and its title is an empty string, or when an Embargo/Retraction object has specific state transitions.",False,True
+codeqa_python_test,What does all the loggers re ?,['log file handles'],I don't know.,False,True
+codeqa_python_test,What does the code validate ?,['a property value'],"It validates a block of tokens, checking if each token is either a '{', '}', or a 'propertyvalue'.",False,True
+codeqa_python_test,What does the code update to a specific version ?,['a powershell module'],It updates a module.,False,True
+codeqa_python_test,How do mimedata return ?,['with a list of absolute path urls'],It returns the `mimedata` object.,False,True
+codeqa_python_test,What do calling func trigger ?,['a deprecationwarning or pendingdeprecationwarning'],A DeprecationWarning.,True,True
+codeqa_python_test,What exists in a project ?,['a group name'],A security group.,False,True
+codeqa_python_test,Did any attribute list in goodattributes ?,['No'],I don't know.,True,True
+codeqa_python_test,What do context manager change on an object temporarily ?,['a field value'],"It changes the value of a specified field within an object to a new value, and then restores it to its original value when exiting the context.",True,True
+codeqa_python_test,What does the code create ?,['a compositelayer wrapping two softmax layers'],A machine learning model (specifically an MLP) and training data.,False,True
+codeqa_python_test,For what purpose do chkconfig --add run ?,['for a service whose script is installed in /etc / init'],To add an init script to the chkconfig system.,False,True
+codeqa_python_test,What do functions nt return only ?,['an error code that needs to be examined'],I don't know.,False,True
+codeqa_python_test,What does the code send to the given request ?,['the contents of this l{file }'],"It sends the content of a file or an error response (Forbidden Resource, Not Found).",False,True
+codeqa_python_test,What specified in the configuration file ?,['the journals'],The journals.,True,True
+codeqa_python_test,Where do incremental mean and variance along an axix compute ?,['on a csr or csc matrix'],"In the `if` and `elif` blocks, specifically when `X` is a sparse matrix (either CSR or CSC).",True,True
+codeqa_python_test,What calculates in a set of meg coils ?,['primary currents'],"The code calculates the sum of 'w' multiplied by 'bem', 'inf', 'fields', 'rr', 'c['rmag']', and 'c['cosmag']' for each coil.",False,True
+codeqa_python_test,What do all classes use pdf ?,['to set the appropriate fonts'],I don't know.,False,True
+codeqa_python_test,Where do files in the zip file update matching the given patterns ?,['at pathtozip'],The files are updated within the `pathtozip` directory.,False,True
+codeqa_python_test,What does a filter function filter on % alignment min_percent -- minimum percent match ?,['blast results'],"It checks if the '%IDENTITY' value in a 'blast result' dictionary is less than `min_percent`. If it is, it returns `False`; otherwise, it returns `True`.",False,True
+codeqa_python_test,What does the code get ?,['a friendly string for the given version object'],It concatenates two strings `version` and `package version short`.,False,True
+codeqa_python_test,What does the code get ?,['craft preferences value'],It gets the value of a preference whose name starts with a given `preferenceName`.,False,True
+codeqa_python_test,What does the code support ?,['our syntax for emphasizing certain lines of code'],It parses lines containing numbers separated by spaces and converts them to a list of integers.,False,True
+codeqa_python_test,What does the code restore ?,['a previous backup into the cassandra directory structure'],It restores files from a backup file.,False,True
+codeqa_python_test,How do return normalize ?,['as float'],"It returns a tuple of two floats (x, y).",False,True
+codeqa_python_test,What does the code get ?,['hosts for the specified aggregate'],It gets all context aggregate id.,False,True
+codeqa_python_test,What does the code create ?,['a formatted message from a service health report'],A formatted health report message.,True,True
+codeqa_python_test,What does the code remove ?,['all actions from the task'],It removes actions.,False,True
+codeqa_python_test,In which direction do an object copy to another ?,['from one s3 location'],From a source bucket to a destination bucket.,False,True
+codeqa_python_test,How do datetime object retrieve for current time ?,['with included utc timezone info'],`datetime.utcnow()`,False,True
+codeqa_python_test,What does the code normalize ?,['all coefficients in k'],I don't know.,False,True
+codeqa_python_test,What described in - maja popovic ?,['the sentence level'],I don't know.,False,True
+codeqa_python_test,What has the code give if the user has all rights ?,"['a list of page where the user has delete rights or the string "" all ""']",page ids,False,True
+codeqa_python_test,What should this be called correctly ?,['select largest disjoint sets'],I don't know.,False,True
+codeqa_python_test,Where does the given image array splash ?,['on the given pygame screen'],The top-left corner of the screen.,False,True
+codeqa_python_test,What did directory return ?,['a list of all available python modules in the package and its subpackages : type package : str'],A list of strings.,True,True
+codeqa_python_test,What d the code get from the database via i d ?,['a repository on the tool shed side'],I don't know.,False,True
+codeqa_python_test,What does the code write ?,['a colon - separated list of names'],I don't know.,False,True
+codeqa_python_test,Where do users get points for improving the builds ?,['a game'],I don't know.,False,True
+codeqa_python_test,How does the code remove an user from an object ?,['like'],"The code filters `Like` objects based on the object's content type and ID, then deletes them. This effectively removes a user's ""like"" association with that object.",True,True
+codeqa_python_test,How does the hash digest return ?,['in hex form'],It returns a hexadecimal representation of the digest.,False,True
+codeqa_python_test,What did the code give ?,['the path ( to a conda installed file )'],I don't know.,False,True
+codeqa_python_test,How do test average ?,['with acqparserfif vs'],"The code snippet uses `average` to calculate the average of epochs. Specifically, it's used as `Epochs(raw, baseline=-0.05, condition=cat['comment'], preload=True)`.",False,True
+codeqa_python_test,What does the code remove from the console output ?,['the linux console escape and control sequences'],It removes ANSI escape codes (also known as VT100 control codes).,False,True
+codeqa_python_test,How do an idl row lookup in a table ?,['by column / value'],"The code snippet performs an IDL row lookup in a table by matching a value against a specified column. If no match is found, it returns a default value (or raises an error if the default is NO DEFAULT).",True,True
+codeqa_python_test,What does the code create ?,['the corresponding table and columns'],A synchronized table.,False,True
+codeqa_python_test,What does the code extended glob function support ?,['the all the wildcards supported by the python standard glob routine'],Extended glob patterns.,False,True
+codeqa_python_test,What does the code do ?,['an ascii normalization of unicode strings reference : URL'],"It attempts to convert a Unicode string to ASCII by removing diacritics and ignoring characters that cannot be represented in ASCII. If the input is not a Unicode string, it returns the input unchanged.",False,True
+codeqa_python_test,What do operationalerror contain ?,['a deadlock condition'],The `operational_error` contains the matched operational error message.,False,True
+codeqa_python_test,For what purpose does given project save ?,['as a json file keyword arguments'],I don't know.,False,True
+codeqa_python_test,What does the code add to beginning of sequence seq ?,['el'],Nothing. It iterates through the sequence `seq` and yields each element.,True,True
+codeqa_python_test,What returns in the given document ?,['all h2 and h3 nodes'],"It returns elements with tag names starting with ""h2"" or ""h3"".",True,True
+codeqa_python_test,What does the code get ?,['an iterator of names and bound methods'],It tries to find assert methods within a unittest TestCase class.,False,True
+codeqa_python_test,What will this step allow ?,['you to perform the equivalent of a oc deploy --cancel for the provided deployment config'],I don't know.,False,True
+codeqa_python_test,Where is the process name running ?,['on node'],I don't know.,False,True
+codeqa_python_test,What do long parameter names shorten ?,['to short names'],They shorten the long parameter names to shorter ones.,False,True
+codeqa_python_test,What does the code get ?,['the amount of free memory for cuda operations'],"It attempts to get CUDA memory information. If CUDA is not available, it returns 0; otherwise, it retrieves the size of global memory from PyCUDA.",False,True
+codeqa_python_test,What did we want ?,['to compute kernel of l'],To calculate the determinant of a matrix.,False,True
+codeqa_python_test,What does the code remove ?,['special characters and collapse spaces'],It removes separators and word separators from a string.,False,True
+codeqa_python_test,What do api return information format ?,['into a more manageable and useful dictionary for issue information'],"A dictionary containing keys like 'id', 'issue number', 'state', 'title', 'user', 'html url', 'assignee', 'labels', and 'milestone'.",False,True
+codeqa_python_test,For what purpose has a blockmatrix reblock ?,['so that it has 2x2 blocks of block matrices'],To split a matrix into smaller blocks.,False,True
+codeqa_python_test,For what purpose does information track ?,['for events occuring within celery tasks'],To track request information.,False,True
+codeqa_python_test,What do a list contain ?,['the first num values in iter'],"Numbers that are one less than the elements of the input iterable, up to a maximum value. The iteration stops when a number becomes negative.",False,True
+codeqa_python_test,What set the default timeout in floating seconds for new socket objects ?,['setdefaulttimeout'],`GLOBAL_TIMEOUT_VALUE`,False,True
+codeqa_python_test,How do image adjustments apply ?,['one by one'],"They are applied sequentially based on the adjustment name (e.g., 'threshold', 'curves', 'curves 2').",False,True
+codeqa_python_test,What did that have ?,['negative numeric values'],I don't know.,False,True
+codeqa_python_test,What d the code takes ?,['an object or an i d'],A value (val).,False,True
+codeqa_python_test,What require a reboot ?,['pending server manager tasks'],"The code checks if the value associated with the key 'Current Reboot Attempts' in the registry path 'SOFTWARE\\ Microsoft\\ Server Manager' is greater than 0. If it is, it returns True, indicating that a reboot is required.",False,True
+codeqa_python_test,Where does the code make shellcode ?,['in dictionaries bytes'],I don't know.,False,True
+codeqa_python_test,What do normalization arguments normalize ?,['declaration arguments'],"The code snippet normalizes a sequence of objects, checking if they are subclasses of `Interface` or implement it.",False,True
+codeqa_python_test,What does the code convert as returned from self ?,['a twisted address'],"It converts an address object to a string representation based on its type (IPv4, IPv6, Unix domain socket, pipe, or unknown).",False,True
+codeqa_python_test,How did them lock ?,['based on the model and the i d of the selected object'],"With an advisory lock using a key formatted as ""{typename} {pk}"".",False,True
+codeqa_python_test,How do a function retry in case of messagingexception ?,['using rpc call'],"The `wrapper` function retries the decorated function up to `max_attempts` times, catching `oslo.messaging.MessagingException` and re-raising it if all attempts fail.",False,True
+codeqa_python_test,What does this require since proxmox works based op ids rather than names as identifiers to retrieve the required information ?,['some filtering'],I don't know.,False,True
+codeqa_python_test,How do them truncate ?,['at given length'],The code truncates words by slicing them from the beginning up to `cutlength`.,False,True
+codeqa_python_test,What stored in ovsdb other_config metadata ?,['return tag'],The code attempts to retrieve the value associated with the key 'tag' from a dictionary named `other_config`. It also tries to convert this value to an integer.,False,True
+codeqa_python_test,What should the chosen theme use ?,['a special home indicator display'],I don't know.,False,True
+codeqa_python_test,How do you specify arguments in constructor ?,['without having to manipulate the err tuple directly'],I don't know.,False,True
+codeqa_python_test,What does the code write ?,['a msg to stderr'],It writes each argument passed to the function on a new line to standard error.,False,True
+codeqa_python_test,What do an undirected graph use ?,['the duplication - divergence model'],The code creates an undirected graph.,False,True
+codeqa_python_test,What does the code select ?,['the pyzmq backend'],It selects a backend name.,False,True
+codeqa_python_test,How does a dictionary of colours return ?,['using the provided values as keys'],As a dictionary where keys are items from the input list `l` and values are the next colour from the `colors` iterable.,False,True
+codeqa_python_test,What does the code get ?,['whether a user wants to receive emails'],profile,False,True
+codeqa_python_test,Do the python sandbox test on a production server ?,['Yes'],No.,False,True
+codeqa_python_test,What has user write ?,['permission or wiki'],The function `must have write` checks for write permissions.,False,True
+codeqa_python_test,Where did the code set the named curve flag ?,['on the ec_key'],In the `EC KEY` setting.,False,True
+codeqa_python_test,What does the code setup ?,['the mqtt lock'],It sets up MQTT lock devices.,False,True
+codeqa_python_test,What have distribution instance needs ?,['to have rvs defined as a method for drawing random numbers func : callable function for which expectation is calculated'],A size.,False,True
+codeqa_python_test,What does the code get ?,['current system keyboard setting cli example'],The keymap setting.,False,True
+codeqa_python_test,How does the code determine the server type ?,['from an ismaster response'],It checks for specific keys and values in a dictionary named `doc` to categorize the server type.,False,True
+codeqa_python_test,How does the code clean the temporary directory ?,['by removing all files in it called _ cffi _ *'],"It removes files and directories starting with ""cffi"" or ending with a specified suffix, and also cleans build directories by removing their contents.",False,True
+codeqa_python_test,What does the code initialize ?,['a new ansible inventory group'],An Ansible inventory group.,True,True
+codeqa_python_test,Does the code render a formset * * tag name * * : : bootstrap_formset * * parameters * * : formset the formset that is being rendered see bootstrap_field _ for other arguments * * usage * * : : { % bootstrap_formset formset % } * * example * * : : { % bootstrap_formset formset layout = horizontal % } ?,['Yes'],Yes.,True,True
+codeqa_python_test,What displays on the led matrix ?,['a 8 x 8 image'],The image specified by the variable `image`.,False,True
+codeqa_python_test,What does the code add dynamically ?,['a querymanager for each'],A 'status' attribute to a class.,False,True
+codeqa_python_test,What does the code write ?,['a list of all hosts and their given ip addresses note'],"It writes a JSON file containing hostnames and IPs, sorted by key.",False,True
+codeqa_python_test,What does a phone number have ?,['a geographical association'],A fixed line or mobile type.,False,True
+codeqa_python_test,What does the code compute ?,['the order of a / d at oo'],It computes `d` minus `a`.,False,True
+codeqa_python_test,What do tuples contain ?,['weights and cost functions'],I don't know.,False,True
+codeqa_python_test,How does the code launch a stash dialog ?,['using the provided model + view'],I don't know.,False,True
+codeqa_python_test,For what purpose do fs resize ?,['to match the size specified by instance_types'],To resize the filesystem.,False,True
+codeqa_python_test,What does this function count ?,['all parameters of all layers below one or more given : class : layer instances'],The total number of elements in the parameters of a layer.,False,True
+codeqa_python_test,What does the code display ?,['the splodge dialog'],I don't know.,False,True
+codeqa_python_test,For what purpose do the various configuration check ?,['to verify that all of the settings have been enabled'],To determine if paid course registration and a shopping cart are enabled.,False,True
+codeqa_python_test,What is containing all six mnist images ?,['a single image'],images,False,True
+codeqa_python_test,What do all share ?,['the same keys'],I don't know.,False,True
+codeqa_python_test,What does product dummy variables create ?,['from 2 columns of 2d array drops last dummy variable'],I don't know.,False,True
+codeqa_python_test,What iterates in a package ?,['over all modules'],The code iterates through files within specified paths to find modules.,False,True
+codeqa_python_test,What unions on the block structure ?,['a set field'],The `result set` is unioned with sets derived from transformers and parent transformers.,False,True
+codeqa_python_test,What does the code remove ?,['roidb entries that have no usable rois'],It removes entries from `roidb` based on overlap thresholds for foreground and background regions.,False,True
+codeqa_python_test,What does the code get ?,['a list of configured order source modifier module instances'],It gets module instances.,False,True
+codeqa_python_test,What does the code update ?,['the simple jndi binding in the running jboss instance jboss_config configuration dictionary with properties specified above'],It updates a simple binding in JBoss.,False,True
+codeqa_python_test,What does the code create ?,['a record constant'],An array of bytes.,False,True
+codeqa_python_test,How does the code make relative path out of absolute ?,['by stripping prefixes used on linux'],I don't know.,False,True
+codeqa_python_test,How do message colorize ?,['by wrapping it with ansi escape codes : type msg : str or unicode'],"The function `colorize` applies ANSI escape codes to the input message based on the provided color and style. If no color or style is given, it returns the original message.",False,True
+codeqa_python_test,What do whose keys satisfy ?,['the given condition'],I don't know.,False,True
+codeqa_python_test,What does solutions returned by diophantine satisfy ?,['the original equation'],I don't know.,False,True
+codeqa_python_test,What does the code traverse ?,['the alignment cost from the tracebacks'],The code traverses backlinks.,False,True
+codeqa_python_test,What does the code make ?,['a trivial single - dispatch generic function'],It's a decorator registration system.,False,True
+codeqa_python_test,What does the code retrieve ?,['all the roles assigned to the provided user'],The code retrieves a list of role names associated with a given user.,False,True
+codeqa_python_test,What does the code rotate the old log files ?,['to < filename >'],I don't know.,False,True
+codeqa_python_test,What does this function tell how it should extract the tlvs from the payload ?,['the packetlistfield'],I don't know.,False,True
+codeqa_python_test,How do api commands respond ?,['with err and mountpoint fields'],I don't know.,False,True
+codeqa_python_test,What do we add to the end of that here ?,['< ins > ins_chunks</ins'],An empty string.,False,True
+codeqa_python_test,How does the code provide a legend for line charts ?,['by attaching labels to the right end of each line'],The code appends either an empty string or the series label to a list called `labels`. This list is then used as the legend. It also calculates and stores corresponding label positions.,False,True
+codeqa_python_test,What do models attach ?,['to database collections on worker initialization'],"The code snippet doesn't specify what `models` is attached to. It appears to be part of a signal connection or setup process, but the target of the attachment isn't clear from this fragment.",False,True
+codeqa_python_test,What does the code generate ?,['an obfuscated version of pwnstallers utils'],It generates C/C++ code.,False,True
+codeqa_python_test,What does crlf and cr newlines normalize ?,['to just lf'],I don't know.,False,True
+codeqa_python_test,What do a and b have in them ?,['the same sorts of symbols'],A trigonometric function or a hyperbolic function.,False,True
+codeqa_python_test,How does the code read the config file ?,['using configparser'],It uses `configparser.ConfigParser().read()` to read the configuration file.,False,True
+codeqa_python_test,What did the code set ?,['an explicit indentation level for a block scalar'],It sets `current indent`.,False,True
+codeqa_python_test,What does the code update ?,['the attributes of a group'],The code updates an Instance Group.,False,True
+codeqa_python_test,What does the code find ?,['all ancestor entities of a person entity in the ou hierarchy'],Ancestors of roles.,False,True
+codeqa_python_test,Does pylint inherit the attributes from the ordereddict class when using multiple inheritance ?,['No'],I don't know.,True,True
+codeqa_python_test,What does the code establish ?,['connection to ec2 client'],An EC2 connection.,True,True
+codeqa_python_test,When did any quota adjustment require ?,['at a particular point in the resize cycle'],I don't know.,False,True
+codeqa_python_test,Where be the element be visible ?,['in the dom'],The code snippet indicates that the element is expected to be visible based on a CSS selector.,False,True
+codeqa_python_test,What have the code make ?,['sure slave handle and normal handle have the same driver'],It creates SQLAlchemy engines for a database slave connection.,False,True
+codeqa_python_test,What does the code show ?,['the log for a given event'],"The code shows a function that retrieves and displays event log information, likely within a web application.",False,True
+codeqa_python_test,What did the code set with the pyzmq ioloop ?,['the tornado ioloop instance'],I don't know.,False,True
+codeqa_python_test,For what purpose does the code send a request to the tool shed ?,['to retrieve the ctx_rev for a repository defined by the combination of a name'],To retrieve a URL from the tool shed registry.,False,True
+codeqa_python_test,For what purpose does an external url return ?,['for the given url'],To determine whether a URL is an external link.,False,True
+codeqa_python_test,What does the code get ?,['current device associated with the current thread'],I don't know.,False,True
+codeqa_python_test,What do systemd target convert ?,['to runlevel'],Systemd targets are converted to runlevels.,True,True
+codeqa_python_test,What does the code ensure ?,['that the provided text value is represented as unicode'],It ensures that the input `value` is a string or Unicode string.,False,True
+codeqa_python_test,What completes the first tab where ?,['the common suffix'],True,False,True
+codeqa_python_test,What does the validation not contain ?,['a traceback'],The validation does not contain 'task error'.,False,True
+codeqa_python_test,What does the code convert to an integer ?,"['the "" offset or limit "" clause of a select construct']",The `value` of the `clause`.,True,True
+codeqa_python_test,Where does a gcsfilestat iterator return ?,['over a bucket'],It returns a Bucket object.,False,True
+codeqa_python_test,What does the code create ?,['a gemset'],A Ruby gemset.,True,True
+codeqa_python_test,What do a box confirm ?,['the installation of https'],I don't know.,False,True
+codeqa_python_test,What does the neutron api define as a list of iprange objects for defining the pool range ?,['a subnets allocation pools'],I don't know.,False,True
+codeqa_python_test,What is region - oblivious a case ?,['connecting'],I don't know.,False,True
+codeqa_python_test,What does the code let ?,['the user choose one'],The code lets you explore folders and their flags.,False,True
+codeqa_python_test,What does the code remove from history ?,['all completed jobs'],Completed jobs.,True,True
+codeqa_python_test,What is containing one compass record ?,['a compass file'],"names, lengths, profilewidth, scores.",False,True
+codeqa_python_test,What does the code get ?,['either read or write engine'],A SQLAlchemy engine.,False,True
+codeqa_python_test,For what purpose do preprintprovider populate ?,['to test database for testing'],To populate a set of preprint providers with their IDs and names.,False,True
+codeqa_python_test,What does the code get ?,['install server profiles'],It gets the profile name from a Cobbler installation server.,False,True
+codeqa_python_test,What do unsafe strings write ?,['their own terminal manipulation commands'],I don't know.,False,True
+codeqa_python_test,What does the code generate ?,['the rest long_description'],A string containing a combined README and license document in reStructuredText format.,False,True
+codeqa_python_test,When do spacing adjust ?,['after abbreviations'],I don't know.,False,True
+codeqa_python_test,What does helper function render ?,['the purchase form'],I don't know.,False,True
+codeqa_python_test,What does the code compute ?,['the decov loss of h args : h : variable holding a matrix where the first dimension corresponds to the batches'],I don't know.,False,True
+codeqa_python_test,How d client i d and client secret initializes ?,['based on the settings'],"They are initialized from either the `GOOGLE_OAUTH_2_CLIENT_SECRETS_JSON` setting or, if that is not provided, from the `GOOGLE_OAUTH_2_CLIENT_ID` and `GOOGLE_OAUTH_2_CLIENT_SECRET` settings.",False,True
+codeqa_python_test,When do darklang enable by default ?,['when it is installed'],If `objects` doesn't exist.,False,True
+codeqa_python_test,In which direction do tars dir ?,['into file'],I don't know.,False,True
+codeqa_python_test,What is throttling us ?,['datapipeline api'],I don't know.,False,True
+codeqa_python_test,What does the code generate ?,['a path to store a file attachment'],A file path string.,True,True
+codeqa_python_test,What does the code give them ?,['to the print_results method to present to the user'],It returns either the `retval` or a boolean indicating whether there are any results after filtering.,False,True
+codeqa_python_test,Where do patch_file update ?,['in patch log'],I don't know.,False,True
+codeqa_python_test,What does the code concatenate alongside the specified axis ?,['a list of tensors'],Tensors.,True,True
+codeqa_python_test,What does the code retrieve from the catalog service ?,['all program types'],Program types.,True,True
+codeqa_python_test,What does the code get from its name ?,['python method object'],It gets the value of an attribute named `methodname` from a module named `modulename`.,False,True
+codeqa_python_test,What does the code return in o time ?,['the count and the sorted array'],I don't know.,False,True
+codeqa_python_test,What does a microsite have ?,['a definition for the specified named value'],I don't know.,False,True
+codeqa_python_test,What does the code create from an object ?,['a thumbnailer'],A thumbnail.,True,True
+codeqa_python_test,What does the code identify ?,['all listening processes within the given namespace'],Processes to kill.,False,True
+codeqa_python_test,What do handlers have ?,['all properties of more general ones'],Properties.,True,True
+codeqa_python_test,What do you specify without having to manipulate the err tuple directly ?,['arguments in constructor'],The `error` class.,False,True
+codeqa_python_test,What does the code get since last ?,['the current uptime of the server'],I don't know.,False,True
+codeqa_python_test,What does the code destroy if it does not exist ?,['the consistencygroup'],I don't know.,False,True
+codeqa_python_test,What does the code perform ?,['an inverse iteration'],It performs tridiagonal eigenvalue computation using inverse iteration.,False,True
+codeqa_python_test,How does the code perform logical volume merge ?,['with snapshot'],I don't know.,False,True
+codeqa_python_test,For what purpose does the main help menu modify ?,['to handle all registered help files'],To populate it with help descriptions and filenames based on a mapping.,False,True
+codeqa_python_test,What does the code get ?,['user info'],I don't know.,False,True
+codeqa_python_test,What does function handle ?,['a email confirmation request'],Email confirmation and login.,False,True
+codeqa_python_test,What does the code ensure ?,['a registry value is removed'],The code ensures that a registry entry is removed.,True,True
+codeqa_python_test,What do this function use ?,['to get the users original filename'],Regular expression matching.,False,True
+codeqa_python_test,What does the code generate ?,['an icinga2 client certificate and key'],A certificate.,False,True
+codeqa_python_test,What does the code check ?,['whether just some words in the input are all caps'],It checks if there's a difference between uppercase and lowercase words in a list.,False,True
+codeqa_python_test,What took ownership of the lock specified by lock_uri successfully ?,['this session'],"The code snippet doesn't specify who acquired the lock, only that it attempts to. It returns `True` if successful and `False` otherwise.",False,True
+codeqa_python_test,What does the code get from cmd ?,['method object'],The value of a method named `cmd` using either `frappe.get_attr` or `globals[cmd]` depending on whether `u' '` is in `cmd`.,False,True
+codeqa_python_test,What does the code shutdown ?,['the connection to the proxied device'],fx 2 proxyshutdown,False,True
+codeqa_python_test,What does the code get ?,['pil to generate and apply an optimum 256 color palette to the given image and return it'],An image converted to a paletted format using a given palette.,False,True
+codeqa_python_test,What is written the language ?,['a body of text'],Python.,False,True
+codeqa_python_test,What does the code ensure ?,['that the named cluster admin or database user is absent'],The code attempts to remove a user from an InfluxDB database.,False,True
+codeqa_python_test,What does the code create on the specified cluster ?,['a nvp logical router'],A logical router object.,True,True
+codeqa_python_test,Does the code apply the operators ?,['Yes'],I don't know.,False,True
+codeqa_python_test,What does the code delete ?,['a dataset relationship'],A package relationship.,False,True
+codeqa_python_test,Does the original clip be of the given color where ?,['Yes'],I don't know.,False,True
+codeqa_python_test,What nt compiles invalid lambda ?,['ast'],The string literal `u' lambda '` prevents the compilation of the lambda expression because it is not valid syntax within a function definition.,False,True
+codeqa_python_test,What does the code run ?,['the watcher'],I don't know.,False,True
+codeqa_python_test,What does the code remove ?,['svg file'],It removes SVG files whose names end with a list of suffixes.,True,True
+codeqa_python_test,How do this action merge ?,['github -'],I don't know.,False,True
+codeqa_python_test,What do chisquare test of proportions for all pairs of k samples perform ?,['a chisquare test for proportions for all pairwise comparisons'],I don't know.,False,True
+codeqa_python_test,Where does helper method convert --instance - groups option value to amazon elastic mapreduce instancegroupconfig data type ?,['in create - cluster and add - instance - groups'],I don't know.,False,True
+codeqa_python_test,What does the code dump into a yaml representation ?,['the given aff4object'],"A dictionary containing attribute-value pairs, specifically 'age' and 'policy'.",False,True
+codeqa_python_test,What does the code get from different sources ?,['a valid template'],"It attempts to retrieve a template name from request POST, request GET, an object's `get_template` method, CMS settings, and finally defaults to a hardcoded value.",False,True
+codeqa_python_test,Where does a module return ?,['in the local dist / checkout'],From the `imp.load_module` function.,False,True
+codeqa_python_test,How did a list give ?,['with possible repetitions of elements in it'],I don't know.,False,True
+codeqa_python_test,What does the code add to an lvm volume group cli examples ?,['physical volumes'],It extends a specified LVM volume group with additional devices.,False,True
+codeqa_python_test,What is this view used ?,['to display an occurrence'],It renders an HTML template for an event occurrence.,False,True
+codeqa_python_test,What does the code make ?,['messages type report'],I don't know.,False,True
+codeqa_python_test,Where does the code remove a cluster ?,['on a postgres server'],The code removes a PostgreSQL cluster using the `pg dropcluster` command.,False,True
+codeqa_python_test,How do them return ?,['in dict form'],They return `links` and `headers`.,False,True
+codeqa_python_test,What did the code set ?,['the utime of a file'],It attempted to set the utime (access and modification times) of a file.,True,True
+codeqa_python_test,What does the code compute ?,['a series of _ idiffchange s to turn set_a into set_b assuming that these sets are at current_path inside a nested pyrsistent object'],"The code computes the differences between two sets, indicating which elements are unique to each set.",False,True
+codeqa_python_test,What would have permission_name blacked out ?,['a user in course with the given roles'],"edit, update, or create.",False,True
+codeqa_python_test,What does the code delete ?,['the given tab number'],"The code deletes an element from a list called `tabs` at index `num`. Specifically, it retrieves the value associated with the key `'type'` from the element at that index and then removes the element itself.",False,True
+codeqa_python_test,How did the code string = int2ap return convert to a string ?,['using characters from the set a'],The `join` method converts the list of characters in `val` into a single string.,False,True
+codeqa_python_test,Ca we find the cmd ?,['No'],Yes.,False,True
+codeqa_python_test,What does a helper function take ?,['a sort string eg name asc'],"allowed fields, total, sorts.",False,True
+codeqa_python_test,What does the code create ?,['an empty cell'],A closure.,False,True
+codeqa_python_test,What awards for all the theme reviewers done since the great theme migration to amo up to when we started recording points retroactively ?,['theme reviewer points'],I don't know.,False,True
+codeqa_python_test,What does this function not calculate ?,['the estimate of the combined error between the underlying multivariate normal probability calculations and the integration'],I don't know.,False,True
+codeqa_python_test,What does the code return ?,['the region code that matches a specific country calling code'],"The first element of the `regions` list, or `UNKNOWN_REGION` if `regions` is `None`.",False,True
+codeqa_python_test,What does the code convert ?,['a gnu readline style textual description of a key to keycode with modifiers'],It converts a keytext to a key name or key sequence.,False,True
+codeqa_python_test,What did the code set ?,['the named ports on a managed instance group'],`changed` to `True`.,False,True
+codeqa_python_test,For what purpose does general parms parse ?,['for rate limits looking for things that start with the provided name_prefix within the provided conf and returns lists'],I don't know.,False,True
+codeqa_python_test,Where did the ip addresses specify ?,['in my_ips and my_port respectively'],The IP addresses are specified as 'dev ip' throughout the code.,False,True
+codeqa_python_test,What does the code dump ?,['an objects attributes and methods kind of like dir ( )'],It attempts to dump (print) the values of a dictionary.,False,True
+codeqa_python_test,What do expressions have in them ?,['no hyperbolics'],Trigonometric Functions or Hyperbolic Functions.,False,True
+codeqa_python_test,What is matching the given moderator action intent ?,['the email type'],I don't know.,False,True
+codeqa_python_test,What can we support actually from provided whitelist ?,['which uris'],I don't know.,False,True
+codeqa_python_test,What does the code compute ?,['the hmac hash of the user secret'],"It computes a truncated and modified hash value, likely related to an OTP secret verification.",False,True
+codeqa_python_test,In which direction do html pass to clean it up ?,['through lxml'],From string to XML.,False,True
+codeqa_python_test,What is testing data that simulates the notice / expiration date behavior of physical commodities like oil ?,['futures'],`pd.Timedelta(days=19)` and `pd.Timedelta(days=365)`,False,True
+codeqa_python_test,How do multiple schemas filter ?,['wrapper method'],The code iterates through a list of schemas (`schemas`) and applies the `filter` function to each one.,False,True
+codeqa_python_test,What does auxiliary function convert into a series of human readable flags ?,['an hexadecimal mask'],I don't know.,False,True
+codeqa_python_test,How do a new dict return ?,['with new key value pair'],The function returns a merged dictionary `d`.,False,True
+codeqa_python_test,What did the currency have ?,['no symbol'],A symbol.,False,True
+codeqa_python_test,What is preserved in the patched attribute ?,['an attribute a backup of the original attribute'],The original value of the attribute.,True,True
+codeqa_python_test,What does the code update ?,['the root_service'],The `root` variable.,False,True
+codeqa_python_test,What does the code create ?,['a dictionnary = > struct format used by str2long ( ) to convert raw data to positive integer'],It attempts to create format strings for packing and unpacking data structures using different endianness (big-endian and little-endian) based on a set of structure formats ('BHILQ').,False,True
+codeqa_python_test,When do weak web application firewalls bypass ?,['when the back - end database management system is microsoft access'],I don't know.,False,True
+codeqa_python_test,What does the code restore at the location given its argument with the contents of the database ?,['the running osf database'],It restores a MongoDB database from a backup file.,False,True
+codeqa_python_test,What does the code destroy if it does not exist ?,['the volume'],I don't know.,False,True
+codeqa_python_test,What does the code merge ?,['those which have the same properties'],It merges guesses that contain a specific property.,False,True
+codeqa_python_test,What should upsert_data raise if given invalid data ?,['invaliddataerror'],`db.InvalidDataError`,True,True
+codeqa_python_test,For what purpose does the code form the internal cxvpy constraints ?,['to form the weighted geometric mean t < = x^p'],I don't know.,False,True
+codeqa_python_test,What does the code make ?,['a lowercase string with capitals'],The code converts a string to title case.,False,True
+codeqa_python_test,What appears before item2 in lst ?,['that item1'],item1,True,True
+codeqa_python_test,What did the code set to null and return the previous one ?,['pyos_inputhook'],`value`,False,True
+codeqa_python_test,What does the code infer ?,['an import node'],I don't know.,False,True
+codeqa_python_test,When does the reader ignore whitespace ?,['at the beginning of fields'],The reader ignores whitespace when performing a `read` operation with the `basic text` option.,False,True
+codeqa_python_test,How does the code reset all pools ?,['by closing open resources'],"It attempts to forcefully close each pool in a list of pools using `pool.force_close()`, ignoring any exceptions that might occur during the process.",False,True
+codeqa_python_test,What does the code convert into a tuple of boundaries ?,['a range string'],I don't know.,False,True
+codeqa_python_test,Do the rpm file at rpm_path contain all the expected_headers ?,['No'],I don't know.,True,True
+codeqa_python_test,For what purpose do an interactive shell return if running under python / ipython interactive shell ?,['were running'],To determine if the code is being executed in an interactive Python or IPython session.,False,True
+codeqa_python_test,What does the code create ?,['a processnode that can ssh into the local machine'],An SSH server.,False,True
+codeqa_python_test,When do the meta data update ?,['when cache is not activated'],After the URL is set.,False,True
+codeqa_python_test,Does the test harness use lmsfieldstorage apparently ?,['No'],I don't know.,True,True
+codeqa_python_test,What does the code write ?,['a netpbm pnm / pam file'],A PNM image.,False,True
+codeqa_python_test,Where should the given resource view be displayed ?,['in an iframe'],Iframed.,False,True
+codeqa_python_test,For what purpose does the code change the local state ?,['to match the given desired state'],To update the cluster state based on changes.,False,True
+codeqa_python_test,What does the code ravel after the first ?,['the dimensions'],I don't know.,False,True
+codeqa_python_test,What does the code configure ?,['the logging of utilities in the user - agent'],It configures a user agent string to include utilities and enable a utility lock.,False,True
+codeqa_python_test,When does the code convert a time into microseconds ?,['since midnight'],The code converts the `seconds` variable into microseconds by multiplying it by 1000000.,False,True
+codeqa_python_test,What do a page allow ?,['testing the python sandbox on a production server'],The page allows users to execute Python code.,False,True
+codeqa_python_test,For what purpose do the input data scale ?,['so that the range old_min - old_max maps to new_min - new_max'],To scale the data from one range to another.,False,True
+codeqa_python_test,What do the user select ?,['some predefined course of action'],I don't know.,False,True
+codeqa_python_test,Do a factory produce throttledhttprpcserver ?,['Yes'],Yes.,True,True
+codeqa_python_test,What does the code compute ?,['the orbits of g'],It computes orbits of numbers based on a given degree.,False,True
+codeqa_python_test,Where do cmd run ?,['in the shell'],In a subprocess.,False,True
+codeqa_python_test,What does the code apply to the given data in reverse ?,['the filter'],An inverse filter.,False,True
+codeqa_python_test,What does the code find ?,['the inputs and outputs generated by a rule'],Inputs and outputs.,True,True
+codeqa_python_test,Where are players represented properly prior to any matches being reported ?,['in standings'],In the `standings` variable.,True,True
+codeqa_python_test,How do the members of the list sort ?,['by their filepath'],They are appended to the list in the order they appear in the input `chunks`. No explicit sorting is performed.,False,True
+codeqa_python_test,What does the code add ?,['an inline definition to statement'],A child to the current statement.,False,True
+codeqa_python_test,For what purpose do a named update download ?,['so that it can be installed later with the update or update_all functions'],To check if the update has already been downloaded.,False,True
+codeqa_python_test,What does the code find ?,['the missing number in shuffled list'],The missing number in an arithmetic sequence.,False,True
+codeqa_python_test,What must the code reset clear ?,['most namespaces'],nt,False,True
+codeqa_python_test,What does the code move into position ?,['the ssl_options'],It moves a file from `src` to `dest`.,False,True
+codeqa_python_test,What does the code create ?,['a django user on the cabot server'],A Django User object.,True,True
+codeqa_python_test,What does it create ?,['a surface for an inline editor'],An editable text box.,False,True
+codeqa_python_test,How can those settings be edited ?,['through the web interface'],I don't know.,False,True
+codeqa_python_test,What does the code initialize according to the configuration in django settings ?,['the event tracking backends'],It initializes tracking backends.,False,True
+codeqa_python_test,How does a decorator facilitate authentication ?,['per method'],I don't know.,False,True
+codeqa_python_test,Where do new ebs block device manifest ?,['in the os'],`/sys/block`,False,True
+codeqa_python_test,Does ipvsadm command exist on the system ?,['Yes'],I don't know.,False,True
+codeqa_python_test,What do the element with css_selector contain ?,['partial_text'],partial text in actual text,False,True
+codeqa_python_test,What does the code return ?,['a netgear scanner'],"It returns a `scanner` object if initialization is successful, otherwise `None`.",False,True
+codeqa_python_test,What did a dummy associate ?,['to name and token'],I don't know.,False,True
+codeqa_python_test,What does generator generate ?,['all possible tuples combining elements from sequence iter_a and iter_b'],The product of two iterables.,False,True
+codeqa_python_test,"For what purpose must config key "" sample bridges be defined ?",['for the bridge to initialise example format in config'],I don't know.,False,True
+codeqa_python_test,What does phrase extraction algorithm extract from a word - aligned sentence pair ?,['all consistent phrase pairs'],It extracts phrases based on the provided alignment and maximum phrase length.,False,True
+codeqa_python_test,What is having the specified property value ?,['the first managed object reference'],The object.,True,True
+codeqa_python_test,What does ast use ?,['to find globals in an ast tree'],I don't know.,False,True
+codeqa_python_test,What does the code get ?,['the default keychain user the user to check the default keychain of domain the domain to use valid values are user|system|common|dynamic'],It gets the default keychain.,False,True
+codeqa_python_test,Does the code return the number of attracting components in g ?,['Yes'],No. The code has a placeholder `@not implemented` indicating that the functionality is not yet defined.,False,True
+codeqa_python_test,For what purpose do at least two string columns need ?,['to test str_cat'],I don't know.,False,True
+codeqa_python_test,For what purpose does mako filter escape text ?,['for use in a javascript string'],I don't know.,False,True
+codeqa_python_test,What use to convert text from rest to markdown ?,['pandoc'],pandoc,True,True
+codeqa_python_test,Does the code make the container root directory ?,['Yes'],Yes.,True,True
+codeqa_python_test,What does the code write to the output stream ?,['aggregated records'],I don't know.,False,True
+codeqa_python_test,What should support the with statement automatically ?,['classes implementing idisposable'],Objects that implement the context manager protocol.,False,True
+codeqa_python_test,What does the code get ?,['the file notification service'],It gets a filename and timestamp.,False,True
+codeqa_python_test,What does the code create ?,['a continuous random variable with a f distribution'],A random variable of type F distribution.,True,True
+codeqa_python_test,Where does the code play a movie ?,['in a window'],I don't know.,False,True
+codeqa_python_test,Do we set the src / dst ?,['No'],Yes.,False,True
+codeqa_python_test,What do a file object contain ?,['a list of tweet ids'],"The file object contains the string ""588665495492124672 \n 588665495487909888 \n 588665495508766721 \n 588665495513006080 \n 588665495517200384 \n 588665495487811584 \n 588665495525588992 \n 588665495487844352 \n 588665495492014081 \n 588665495512948737 "".",False,True
+codeqa_python_test,What does the code remove from the start of a header key ?,['the system metadata prefix for a given server type'],"The prefix ""sys meta prefix server type""",False,True
+codeqa_python_test,What does the code require ?,['a ppa _ package source'],"It requires a `name` argument that starts with ""ppa "".",False,True
+codeqa_python_test,What does the code extract from an http response ?,['the user cookie'],"It extracts the value of the ""user"" cookie from the response headers.",True,True
+codeqa_python_test,What needs to be examined ?,['an error code'],The code itself. It's not valid Python and requires examination to understand its intended purpose.,False,True
+codeqa_python_test,What does any fields in a structured array have ?,['unicode dtype'],Unicode fields.,False,True
+codeqa_python_test,What does the code optimize by removing unused put opcodes ?,['a pickle string'],I don't know.,False,True
+codeqa_python_test,What does the code record ?,['rpc traces'],It records HTTP status.,False,True
+codeqa_python_test,What do ndimage use ?,['to get fast mean and variance'],Image processing.,False,True
+codeqa_python_test,What does the code create ?,['a dataframe representing assets that exist for the full duration between start_date and end_date'],A Pandas DataFrame containing equity information.,False,True
+codeqa_python_test,What returns a pointer to an ogr spatial reference system ?,['a ctypes prototype'],I don't know.,False,True
+codeqa_python_test,What does the code update ?,['the remote repos database'],The code updates packages.,False,True
+codeqa_python_test,Did geoserver rest require admin role ?,['No'],I don't know.,True,True
+codeqa_python_test,What can user overwrite ?,['translation on given project'],Translation.,True,True
+codeqa_python_test,What does the code compute ?,['how much data is remaining in the buffer'],The code computes the remaining data size in a buffer after a certain position.,False,True
+codeqa_python_test,What has had a benchmark run on it ?,['every host'],The hostnames that have had benchmarks run on them.,False,True
+codeqa_python_test,What does the code create using progname ?,['the insertion process for the given sensor'],A subprocess.,False,True
+codeqa_python_test,When is the temporal directory created ?,['when executing the tests'],Inside the `bake` function.,False,True
+codeqa_python_test,What did the code read ?,['the header of a pack file'],The code reads a pack header.,False,True
+codeqa_python_test,For what purpose do decorator view ?,['to verify the user is authorized to access this endpoint'],To call a view only if the user is authorized.,False,True
+codeqa_python_test,How does the code retrieve the creditprovider model data ?,['against provided credit provider'],I don't know.,False,True
+codeqa_python_test,What does the unix file implementation use ?,['the magic bytes'],I don't know.,False,True
+codeqa_python_test,What should address most cases ?,['a hybrid request ip resolver'],X-Forwarded-For,False,True
+codeqa_python_test,What does the code create ?,['a copy of _ _ salt _ _ dictionary with module'],A dictionary mapping module names to functions.,False,True
+codeqa_python_test,"What supports default arguments combined with the "" required "" property ?",['custom validate function'],I don't know.,False,True
+codeqa_python_test,How does the code connect the two ?,['with an l{iopump'],The code connects the two using `client Factory build Protocol addr` and `server Factory build Protocol addr`.,False,True
+codeqa_python_test,What is calling code ?,['the specific country'],I don't know.,False,True
+codeqa_python_test,What does the code take if it is coming from public ip space ?,['a /proc / net / tcp encoded src or dest string return true'],It returns `False`.,False,True
+codeqa_python_test,What does the code fetch from either a django or flask request ?,['a request and user i d'],The user ID.,False,True
+codeqa_python_test,What does the code get ?,['the text feedback displayed after the feedback form is filled out'],It gets the value of the first element with the class 'TEXT INPUT CLASS'.,False,True
+codeqa_python_test,What renders in desk ?,['module view'],Data module.,False,True
+codeqa_python_test,What does the sopform function use to convert the list of all input combos that generate 1 into the smallest sum of products form ?,['simplified_pairs and a redundant group- eliminating algorithm'],It uses `convert to vars SOP` to convert the list of essential terms (minterms + dontcares) into a Sum of Products expression.,False,True
+codeqa_python_test,How do the given arguments print ?,['with printf'],I don't know.,False,True
+codeqa_python_test,What does the code generate ?,"['a "" persistentjobguid "" value']",A string that looks like a job identifier (GUID).,False,True
+codeqa_python_test,What does the code get ?,['information about the defined api deployments'],It gets API deployments.,False,True
+codeqa_python_test,Do ast compile invalid lambda ?,['No'],I don't know.,True,True
+codeqa_python_test,What does the code verify to ?,['a message or file text the text'],It verifies a text or file against a GPG signature.,False,True
+codeqa_python_test,Where are headers are compatible ?,['in casava 1'],The first element of each header.,False,True
+codeqa_python_test,When do our appropriate resampler return ?,['when grouping as well'],I don't know.,False,True
+codeqa_python_test,Where did the code split it ?,['on 0-bytes'],"The code split at ""read"".",False,True
+codeqa_python_test,How does function implement the u function ?,['from bookstein paper'],"It calculates a distance-based value, returning 0 if points are identical and otherwise calculating a logarithmic transformation of the squared difference in coordinates.",False,True
+codeqa_python_test,How does an mlp discard one input ?,['with a compositelayer'],I don't know.,False,True
+codeqa_python_test,What does the code take ?,['an exception name'],A name.,False,True
+codeqa_python_test,What does jclouds provide on most of the currently usable cloud infrastructures ?,['slave launching'],I don't know.,False,True
+codeqa_python_test,For what purpose does this require some filtering since proxmox works based op ids rather than names as identifiers ?,['to retrieve the required information'],I don't know.,False,True
+codeqa_python_test,What exists on the system ?,['apf'],I don't know.,False,True
+codeqa_python_test,What does the code redirect to the runners step - context object by using fake modules during step imports ?,['any step / type registration'],I don't know.,False,True
+codeqa_python_test,What do you start ?,['a new monitor'],def push,False,True
+codeqa_python_test,What do partial functions generate ?,['commands for the current init command'],I don't know.,False,True
+codeqa_python_test,What does the code parse ?,['the value of extra_model_fields'],It parses extra model fields.,False,True
+codeqa_python_test,What does a function return ?,['a default value for a field'],I don't know.,False,True
+codeqa_python_test,What does the code remove ?,['the lexer / parser modules that are dynamically created'],Files listed in the `TABLES` variable.,False,True
+codeqa_python_test,What does the code prepare ?,['a 2-tuple of compiled regex and callable'],A regular expression object.,False,True
+codeqa_python_test,What does the code create ?,['a temporary directory cli example'],A temporary directory.,True,True
+codeqa_python_test,What is the user trying ?,['to access'],Checking if a user has access to a course.,True,True
+codeqa_python_test,What does the code attach to each object of the queryset ?,['a json points representation'],It attaches a 'points attr' field containing JSON aggregated data from the `projects points` table.,True,True
+codeqa_python_test,What does not specify the format of tokens except that they should be strings of random characters ?,['oauth'],The `generate` function.,False,True
+codeqa_python_test,What does the code setup ?,['the binary sensor platform fo enocean'],"It sets up a device, likely an ocean binary sensor.",False,True
+codeqa_python_test,What does test that activates setting of echo to off not disrupt ?,['later echo calls'],The `echo` setting of the shell.,False,True
+codeqa_python_test,What contain the key word ?,['trie'],The Trie data structure.,True,True
+codeqa_python_test,What have no usable rois ?,['roidb entries'],The entries that do not satisfy the validity conditions.,False,True
+codeqa_python_test,For what purpose did the ctx_rev retrieve ?,['for a repository defined by the combination of a name'],To get a tool shed URL.,False,True
+codeqa_python_test,What does the code get ?,['definition location of a pattern or a match'],The code gets the filename from a frame's code object.,False,True
+codeqa_python_test,How do real - time updates publish ?,['via redis'],Via Redis events.,True,True
+codeqa_python_test,What groups the items of each task into albums using their metadata ?,['a pipeline stage'],`itertools.groupby` with a key function that calls `group`.,False,True
+codeqa_python_test,What does the code get ?,['the abridged settings from the gcode text'],It gets abridged settings from gcode text.,True,True
+codeqa_python_test,What does repeatedly defining a random sampling operation yield if no random seed is specified upon computation ?,['different results'],Non-deterministic results.,False,True
+codeqa_python_test,What do fs path convert ?,['into web path'],I don't know.,False,True
+codeqa_python_test,What does the code get ?,['the list of cover art associated with a release'],An image list.,False,True
+codeqa_python_test,How does all user preferences return ?,['as a json response'],"The `UserSerializer` serializes the user's data, including their preferences.",False,True
+codeqa_python_test,What does the code get ?,['the correct compensator for ctf coils'],The code gets `current` from `comp info`.,False,True
+codeqa_python_test,What does the code get ?,['links that are rising right now'],Rising items.,False,True
+codeqa_python_test,What entail an expr ?,['the given expr_set'],It checks if the negation of the expression is unsatisfiable.,False,True
+codeqa_python_test,What does the code return ?,['the name of the model'],The model's meta name.,False,True
+codeqa_python_test,What is binding in the running jboss instance jboss_config configuration dictionary with properties specified above ?,['jndi'],I don't know.,False,True
+codeqa_python_test,What did the code read ?,['this file'],It reads a file.,False,True
+codeqa_python_test,What counts in two block count dicts ?,['the number of common bytes'],The minimum of the two counts for each block.,False,True
+codeqa_python_test,What do a string represent ?,['a time span'],The string `timestr` represents the formatted time string using placeholders for padding and the point.,False,True
+codeqa_python_test,What does the code convert to its logical complement ?,['a predicate function'],I don't know.,False,True
+codeqa_python_test,What does the code add ?,['an instance of the html component with the specified name'],An HTML component.,True,True
+codeqa_python_test,What does the get_image for gce allow ?,['partial name matching'],It retrieves an image from Google Compute Engine (GCE).,False,True
+codeqa_python_test,When be your build name updated ?,['during the build process'],I don't know.,False,True
+codeqa_python_test,What does the code add ?,['metadata about the depenencies which need to be met for doctesting the docstrings of the decorated objects'],I don't know.,False,True
+codeqa_python_test,What does the code unmount ?,['a volume that s on the desktop'],I don't know.,False,True
+codeqa_python_test,What does this function provide ?,['the backward compatibility for imp'],It loads a Python source file.,False,True
+codeqa_python_test,What used to interact with the solc compiler ?,['the singleton'],solc wrapper,False,True
+codeqa_python_test,What does attachments force ?,['to be sequenceable type'],It forces attachments to be a list of strings or an empty list.,False,True
+codeqa_python_test,When was the exponential linear unit introduced ?,['in [ 1 ]'],I don't know.,False,True
+codeqa_python_test,Where do virtual interfaces list ?,['on a server cli example'],I don't know.,False,True
+codeqa_python_test,Where did invalid metadata store ?,['in the top - level metadata'],meta['blah'],False,True
+codeqa_python_test,What do the user have ?,['an existing primary allauth'],The user has a username and an email.,False,True
+codeqa_python_test,What did the code read ?,['the element data of type : data : unicode'],I don't know.,False,True
+codeqa_python_test,What does the code compute ?,['the pearson median skewness'],It computes Pearson's median skewness.,True,True
+codeqa_python_test,What does the code get from config using its name ?,['a color scheme'],"It attempts to retrieve a color scheme value associated with a specific key from the configuration, constructing the path as 'color schemes/<name>/<key>'.",True,True
+codeqa_python_test,What do an array contain ?,['mcmc samples qlist : tuple or list a list of desired quantiles ( defaults to ) transform : callable function to transform data'],The code snippet calculates quantiles of a NumPy array.,False,True
+codeqa_python_test,What does the code run ?,['the varnish test suite'],It runs a test module named 'api/caching/tests/test caching py'.,False,True
+codeqa_python_test,When do an e nt include we ?,['after a number'],I don't know.,False,True
+codeqa_python_test,What does the code call ?,['each rl _ * method with a none focuswidget'],`inspect.getmembers`,False,True
+codeqa_python_test,What does the code create ?,['some urls'],A list of URLs.,False,True
+codeqa_python_test,What does the code return ?,['the domain part'],The lowercase version of the URL's domain name.,False,True
+codeqa_python_test,What does the code compute ?,['the differences between the actual config and the expected config'],The code computes a dictionary representing the differences between two sets of user configurations.,False,True
+codeqa_python_test,What does the code delete if not found ?,['a resource type association'],I don't know.,False,True
+codeqa_python_test,What did periods of size freq use ?,['to shift the divisions for the shift method'],The code uses `freq` to determine the amount by which to shift divisions.,False,True
+codeqa_python_test,For what purpose do the nearest neighbour sentences return ?,['to query text'],To display the top k most similar sentences to the query.,False,True
+codeqa_python_test,What does the code get ?,['all transformed vertexes'],It gets transformed vertexes.,False,True
+codeqa_python_test,What do a csv contain ?,['detailed enrollment info'],Detailed enrollment features.,False,True
+codeqa_python_test,What wraps an arbitrary asynchronous function in order to add retry functionality ?,['a higher - order function'],Call With Retry Async.,False,True
+codeqa_python_test,What have no parameters when ?,['one or more submodels'],p2 Polynomial.,False,True
+codeqa_python_test,What does the code get by name ?,['a document class'],The code gets a document by its name from the `document registry`.,False,True
+codeqa_python_test,Can we make transformations that map_url_in can reverse only ?,['Yes'],I don't know.,False,True
+codeqa_python_test,When do a modeljob return ?,['when requested'],When the job is an instance of `model.images.Image Classification Model Job` or `model.images.Generic Image Model Job`.,False,True
+codeqa_python_test,Where do context manager change a field value temporarily ?,['on an object'],Within the `with` block.,False,True
+codeqa_python_test,What does resource object correspond ?,['to resource i d'],I don't know.,False,True
+codeqa_python_test,What does the code add ?,['a retry entry for the selected compute node'],It adds a host and node to the hosts list.,False,True
+codeqa_python_test,Does the code decode a bson double to python float ?,['Yes'],I don't know.,False,True
+codeqa_python_test,What does the code get ?,['info about all available lamps'],I don't know.,False,True
+codeqa_python_test,How does the code remove chimeras from seqs_fp ?,['using chimeraslayer'],"The code uses an external application called ""Chimera Slayer"" (`app Chimera Slayer`) to process sequences and identify/remove chimeras. It passes parameters to this application, including file paths and other settings.",False,True
+codeqa_python_test,What modifys the yaml dumper ?,['special dumper wrapper'],The `add_representer` method modifies the YAML dumper.,False,True
+codeqa_python_test,Does fast_parser parse everything again ?,['No'],I don't know.,True,True
+codeqa_python_test,How do you store its old monitor ?,['under a different name'],It stores the old monitor using `old monitor = model.monitor`.,False,True
+codeqa_python_test,What does the code add ?,['a linker which can be referred to by name in mode'],It adds a new linker to the `predefined_linkers` dictionary.,False,True
+codeqa_python_test,What does a class provide ?,['standard = = and ! = behavior'],A blueprint for creating objects.,False,True
+codeqa_python_test,What do a file or block device use ?,['a user provided command'],I don't know.,False,True
+codeqa_python_test,Are the crypto maps using aes ?,['No'],No.,True,True
+codeqa_python_test,What concatenates on axis=0 ?,['partitions'],`concat`,False,True
+codeqa_python_test,What do from a comma - return ?,['a sorted headerelement list'],I don't know.,False,True
+codeqa_python_test,For what purpose does the amoutn of swap space return ?,['to be used in mb'],To configure the amount of swap space for a virtual machine.,False,True
+codeqa_python_test,What does the code separate into two pieces ?,['a complex summary'],The code separates `exprs` into two dictionaries named `two` and `d`.,False,True
+codeqa_python_test,What do a string identify ?,['the python implementation revision'],I don't know.,False,True
+codeqa_python_test,What set to end of technical read for all sff files in directory ?,['trimpoints'],clip qual left,False,True
+codeqa_python_test,What does the code extract ?,['a given format field from the given event'],It extracts a value from a nested dictionary using a provided key.,False,True
+codeqa_python_test,What does the code expand into proper html usable in either templates or the rich text editor ?,['database - representation html'],I don't know.,False,True
+codeqa_python_test,What does the code generate ?,['the binary partition of n'],Binary partitions of a given integer n.,False,True
+codeqa_python_test,How is this called ?,['by branding'],I don't know.,False,True
+codeqa_python_test,What does the code rescind ?,['a due date extension for a student on a particular unit'],It rescinds a due date extension for a student on a course unit.,True,True
+codeqa_python_test,What does the code generate ?,['ls - files pathspecs matches'],It adds '*' to the beginning and/or end of a given string argument.,False,True
+codeqa_python_test,What does the code require ?,['several opkg packages to be uninstalled'],"It requires a function called `is installed` and lists named `pkg`, `uninstall`.",False,True
+codeqa_python_test,What does the code add to an existing deferred ?,['a timeout'],An errback or both.,False,True
+codeqa_python_test,What does a context manager set for a test ?,['the correct keyczar environment'],"It sets `settings.ENCRYPTED_FIELD_MODE` or deletes it, depending on the conditions.",False,True
+codeqa_python_test,What does the code create ?,['a symbolic link to a file'],A symbolic link.,True,True
+codeqa_python_test,What do url convert ?,['to mirror url'],"The code converts URLs, potentially modifying them based on various conditions like escaping, scheme, external domains, and allowed domains.",False,True
+codeqa_python_test,When do badges create ?,['when a user has completed a prespecified set of courses'],When a certificate is awarded.,False,True
+codeqa_python_test,What does the code revoke from a user ?,['a privilege on a database'],A database privilege.,True,True
+codeqa_python_test,What did the code set ?,['the video mode of the bits++ bits8bitpalettemode = 0x00000001 # normal vsg mode nogammacorrect = 0x00004000 # no gamma correction mode gammacorrect = 0x00008000 # gamma correction mode videoencodedcomms = 0x00080000'],Video Mode,True,True
+codeqa_python_test,How should the fastcommentedheader reader mimic the behavior of the commentedheader ?,['by overriding the default header behavior of fastbasic'],I don't know.,False,True
+codeqa_python_test,What does the code get ?,['vlc object information about a log message : the type name of the vlc object emitting the message'],I don't know.,False,True
+codeqa_python_test,How does the code calculate the travel cost of given tour ?,['through a given graph'],"It sums up the costs between consecutive steps in the tour, using the graph as a lookup table.",False,True
+codeqa_python_test,For what purpose be which met ?,['for doctesting the docstrings of the decorated objects'],I don't know.,False,True
+codeqa_python_test,What do libguestfs use ?,['kvm acceleration'],I don't know.,False,True
+codeqa_python_test,What does it serialize ?,['discussion entity'],Discussion entities (threads and comments).,False,True
+codeqa_python_test,What use to get fast mean and variance ?,['ndimage'],ndimage,True,True
+codeqa_python_test,What does the code retrieve ?,['a list of mapbox vector tile responses'],Feature layer names and features.,False,True
+codeqa_python_test,What did json schema filename contain ?,['the json schema object'],I don't know.,False,True
+codeqa_python_test,What does the code make ?,['arrays indexable for cross - validation'],It creates a list of indexable objects.,False,True
+codeqa_python_test,What contains only nzb files ?,['this job'],`nzbname`,False,True
+codeqa_python_test,What does the code decorate ?,['a constraint checker'],The function `constrains`.,False,True
+codeqa_python_test,What does the code render ?,['a formset * * tag name * * : : bootstrap_formset * * parameters * * : formset the formset that is being rendered see bootstrap_field _ for other arguments * * usage * * : : { % bootstrap_formset formset % } * * example * * : : { % bootstrap_formset formset layout = horizontal % }'],A formset.,True,True
+codeqa_python_test,What does the code destroy ?,['the named vm(s )'],Instances.,False,True
+codeqa_python_test,What does the code make ?,['a secret key suitable for use in totp'],It generates a random 20-byte string and encodes it in Base32.,False,True
+codeqa_python_test,Where does the code do some i18n stuff ?,['on the error_dict keys'],"The code replaces ""url"" with ""URL"" and converts keys to title case, which can be considered a form of localization or internationalization.",False,True
+codeqa_python_test,For what purpose do read preference mode validate ?,['for a mongoreplicasetclient'],To validate a read preference mode.,False,True
+codeqa_python_test,What is representing 3 connected points ?,['3 vectors'],"v1, v2, and v3.",False,True
+codeqa_python_test,How do all members list ?,['without mfa turned on'],I don't know.,False,True
+codeqa_python_test,What does the code get ?,['the info structure for an object'],It gets object information.,False,True
+codeqa_python_test,What do cache commit ?,['to database file'],I don't know.,False,True
+codeqa_python_test,What does the code decorate ?,['a traditional - style method that takes cr as a parameter'],I don't know.,False,True
+codeqa_python_test,For what purpose does the foreground and background color return ?,['to use for the given name'],To define colors for displaying names or paths.,False,True
+codeqa_python_test,What does the code mutate according to its : attr : strategy attribute as described in [ beyer2002 ] ?,['an evolution strategy'],I don't know.,False,True
+codeqa_python_test,What does items have ?,['a left column of th'],A list of elements found by XPath.,False,True
+codeqa_python_test,How do environment variables expand ?,['using os_gstrans'],I don't know.,False,True
+codeqa_python_test,What toggles in the test ?,['the pause state of the dags'],`dm is paused` toggles.,False,True
+codeqa_python_test,What is running on android ?,['tribler'],Linux.,False,True
+codeqa_python_test,What do the win32 api extracticon use ?,['to load the icon'],module index.,False,True
+codeqa_python_test,What does the code get ?,['the first word of a split line'],The first word of a line.,True,True
+codeqa_python_test,What copys between files ?,['a pair of little - endian doubles'],I don't know.,False,True
+codeqa_python_test,How do rules discard ?,['with low accuracy'],I don't know.,False,True
+codeqa_python_test,How do a list of strings sort ?,['by alphabetical order'],I don't know.,False,True
+codeqa_python_test,What does this mean ?,['that httpresponse objects returned from applicationcontent are returned directly'],It defines a decorator `standalone` that marks a view function as capable of handling requests without needing other middleware or context.,False,True
+codeqa_python_test,What gets from a frequency array parameters frequency : array_like or quantity input frequency grid assume_regular_frequency : bool if true ?,['grid parameters'],It returns the spacing between frequencies in a regular frequency grid.,False,True
+codeqa_python_test,What is matching the specified request ?,['the cornice service'],A route pattern.,False,True
+codeqa_python_test,What does the code find ?,['the path to the folder associated with a given profile'],It finds a profile directory by name.,False,True
+codeqa_python_test,What does the code get ?,['the nth opened window object'],I don't know.,False,True
+codeqa_python_test,What does that decref ?,['py_name'],It decreferences a Python object named `name`.,False,True
+codeqa_python_test,What does the code get ?,['the canvas portion of the scrollbar'],The visible portion of a canvas based on a scrollbar.,True,True
+codeqa_python_test,For what purpose do the collections list ?,['for the currently : func : authenticated < auth > user as a dict with a collection - list key'],I don't know.,False,True
+codeqa_python_test,What does this add to the installed_apps cache so that operations like syncdb and evolve will take extensions into consideration ?,['enabled extensions'],It adds `extension.info['app_name']` to the `installed_apps` cache.,False,True
+codeqa_python_test,What do distribute want when ?,['to override a setuptools dependency'],I don't know.,False,True
+codeqa_python_test,What does the code create ?,['a group snapshot from the values dictionary'],A group snapshot.,True,True
+codeqa_python_test,What does the code generate ?,['a json file with autotest job summary on a given results directory'],"A JSON file containing parsed results, with a relative link to it.",False,True
+codeqa_python_test,What do dict of hosts monitor at a time ?,['to popen objects a line'],The code monitors multiple processes (hosts) concurrently.,False,True
+codeqa_python_test,What does the code destroy ?,['a vm instance'],A virtual machine (VM).,False,True
+codeqa_python_test,What does the code transform back to the legacy data format ?,['a list of block devices of an instance'],Block Device Mapping.,False,True
+codeqa_python_test,How does the code write the message to the log file ?,['using the info level'],It writes the message to the console.,False,True
+codeqa_python_test,What do it call always ?,['@after'],I don't know.,False,True
+codeqa_python_test,What does the code build ?,['a link tag'],A link element.,False,True
+codeqa_python_test,When does openshift - build - verify perform the equivalent of an oc get builds command invocation for the provided buildconfig key provided ?,['once the list of builds are obtained'],I don't know.,False,True
+codeqa_python_test,What does the code make ?,['a file descriptor blocking'],It sets a file descriptor to non-blocking mode.,True,True
+codeqa_python_test,What does the code add ?,['to result'],It adds a try-except block to handle potential `IOError` and `ValueError` exceptions when parsing user data.,False,True
+codeqa_python_test,What constructs an rsa object ?,['rsaobj'],A tuple.,False,True
+codeqa_python_test,What did a list of issues give ?,['relevant closed issues'],Relevant issues.,True,True
+codeqa_python_test,What does the code perform ?,['a null record lookup'],It attempts to look up a name using a resolver with a specified timeout.,False,True
+codeqa_python_test,What does returns class path for a class return ?,['the class path which is composed of the module plus the class name'],"A string containing the fully qualified name of the class (e.g., ""module.class_name"").",False,True
+codeqa_python_test,What does this function compute ?,['the principial cube root of arg'],It computes the cube root of its argument.,False,True
+codeqa_python_test,What does the code query to query query query to be executed ?,['data database the database'],I don't know.,False,True
+codeqa_python_test,What does the code convert as order_book_id to instrument object(s ) ?,['a string or a list of strings'],I don't know.,False,True
+codeqa_python_test,What does the code find ?,['all globally visible functions where the first argument name starts with argument_name'],It finds names of functions that have an argument with a specific name.,False,True
+codeqa_python_test,How do expected value of function calculate ?,['by monte carlo integration parameters'],"The expected value is calculated by applying the function `func` to random samples (`rvs`) drawn from a distribution (`dist`), and then calculating the mean of these results.",False,True
+codeqa_python_test,What does the code collect from bear directories given in the sections ?,['all kinds of bears'],"It collects bears, differentiating between local and global types.",False,True
+codeqa_python_test,When do datetime object retrieve with included utc timezone info ?,['for current time'],"The code snippet doesn't directly show how a `datetime` object retrieves UTC timezone information. It appears to be attempting to create a `datetime` object, add a UTC timezone (`tz`), and then return it, but the logic is incomplete and likely incorrect due to syntax errors.",False,True
+codeqa_python_test,What does the code add to the named generator ?,['an extension pattern'],It appends `ext` to the list of names.,False,True
+codeqa_python_test,Where does each item occur only once ?,['a list copy'],I don't know.,False,True
+codeqa_python_test,What does the code show ?,['the details of an existing static address'],The code shows an address.,False,True
+codeqa_python_test,How does a view function modify ?,['by setting a response variable that instructs xframeoptionsmiddleware to not set the x - frame - options http header'],I don't know.,False,True
+codeqa_python_test,What does we fix if needed ?,['the gl library'],The `osmesa` GL library.,True,True
+codeqa_python_test,What does the code update ?,['the global connection pool manager parameters'],The maximum size of the connection pool.,False,True
+codeqa_python_test,What did the code chain ?,['a decorator chaining the results of func'],It chains a function with an iterable.,False,True
+codeqa_python_test,What does the code solve ?,['a differential equation with linear coefficients'],I don't know.,False,True
+codeqa_python_test,What do the json type handle correctly ?,['url encoded json'],I don't know.,False,True
+codeqa_python_test,How is this provided ?,['via a call to geoip'],I don't know.,False,True
+codeqa_python_test,What does the code update to point to the correct write db for the model ?,['the db field in all version models'],"The `db` variable is updated to point to the correct write database (`db router db`) within a try-except block. If the model isn't found, it defaults to 'default'.",False,True
+codeqa_python_test,When is the code testing passed as pathlib ?,['when votable'],I don't know.,False,True
+codeqa_python_test,What should the sanitizer fix ?,['missing css values'],"The code snippet describes a test case for sanitizing CSS styles. It seems to be testing how the sanitizer handles different combinations of CSS properties and their order within a style attribute, aiming to ensure that only valid styles are retained and potentially reordered or cleaned up. Specifically, it highlights issues with invalid style attributes like those containing multiple space-separated properties without quotes around each property value.",False,True
+codeqa_python_test,Does the code get the key for a location in a policy file ?,['Yes'],I don't know.,False,True
+codeqa_python_test,How did an anomaly model create ?,['via opfs modelfactory'],"The code loads JSON files containing anomaly parameters, potentially fixes up random encoder parameters, and sets minimum/maximum values and resolution based on provided or calculated values.",False,True
+codeqa_python_test,What does the code create ?,['the standard binary representation of a thrift object'],I don't know.,False,True
+codeqa_python_test,What does the code remove to partition_id / group_id link ?,['any existing cohort'],It removes objects linked by a partition or group ID.,False,True
+codeqa_python_test,What does a helper function compare ?,['key given parameters received from the fileformat class'],It compares the relative path.,False,True
+codeqa_python_test,How does the code classify temporal sequences of float numbers of length 3 into 2 classes ?,['using single layer of gru units and softmax applied to the last activations of the units'],"It uses a GRU network with softmax activation, trained using categorical crossentropy loss and adagrad optimizer. The input shape is (3,5) and it classifies based on the last epoch's validation accuracy being greater than 0.8.",False,True
+codeqa_python_test,What did dates use ?,['to compute the is_new flag and the sorting_score'],dateutil parser.,False,True
+codeqa_python_test,What does the code receive ?,['the input given by the user from gen_payload'],The code receives a list of exploits.,False,True
+codeqa_python_test,What has problems ?,['each section'],b section has problem,False,True
+codeqa_python_test,What sets the attributes of the test object from file system ?,['first pass'],I don't know.,False,True
+codeqa_python_test,What do empty string mean ?,['that corresponding key should be removed from the dictionary'],They are removed.,False,True
+codeqa_python_test,What do a function return ?,['an iterable such that the resulting iterable only ever yields unique items'],The result of the wrapped function after removing duplicate values.,False,True
+codeqa_python_test,For what purpose does all series_fields populate based on parser ?,['for given entry'],To copy data from the `parser` object into various fields of the `entry` dictionary.,False,True
+codeqa_python_test,What do options specify ?,['short and longopt alternatives'],Short and long command-line options.,False,True
+codeqa_python_test,What does the code perform ?,['an ns record lookup'],It looks up DNS records for a given name using specified nameservers and a timeout.,False,True
+codeqa_python_test,What does the code compute ?,['the average hamming loss'],Hamming loss.,True,True
+codeqa_python_test,What does the code create ?,['a continuous random variable with a laplace distribution'],A Laplace distribution.,True,True
+codeqa_python_test,What does the code use ?,['the provided coefficients'],Theano.,False,True
+codeqa_python_test,What does the code evaluate ?,['non - linear equation system representing the pressures and flows in a system of n parallel pipes'],"It calculates a value 'F' based on flow rates, pressures, and other parameters.",False,True
+codeqa_python_test,What do to_device transfer to the device ?,['a numpy ndarray or structured scalar'],I don't know.,False,True
+codeqa_python_test,Where does the mod_aggregate function merge them into a single pkgs ref ?,['in the present low data'],The `low['pkgs']` list is extended with the `pkgs` list if `pkgs` exists.,False,True
+codeqa_python_test,What do all of the stochastic nodes in use ?,['the rng uniform - > uniform'],rng,True,True
+codeqa_python_test,What does the code get ?,['a style setting'],I don't know.,False,True
+codeqa_python_test,What does the code refine to the given precision ?,['an isolating interval of a root'],It refines a root.,False,True
+codeqa_python_test,Where did speeds give ?,['in kbps'],The code snippet uses the `speed` parameter as input.,False,True
+codeqa_python_test,What does the code remove ?,['the users requirement status'],It removes a credit requirement.,False,True
+codeqa_python_test,What does the code compute for an array of circular data ?,['the p - th trigonometric circular moment'],The circular mean.,False,True
+codeqa_python_test,What does the code update ?,['the quotas for a quota class'],It updates quotas for a specified class.,False,True
+codeqa_python_test,What does a with - context return ?,['its path'],A file descriptor.,False,True
+codeqa_python_test,What do not change the xml tree ?,['benchmarks'],I don't know.,False,True
+codeqa_python_test,When did the code call ?,['when prefs dialog is running in standalone mode'],I don't know.,False,True
+codeqa_python_test,What does the code generate ?,['a sequence of all'],A list of Java JAR file paths.,False,True
+codeqa_python_test,What does the code compute ?,['the triangle activation function used in adam coates aistats 2011 paper'],It computes a triangle code.,False,True
+codeqa_python_test,What do we take then ?,['the second piece'],I don't know.,False,True
+codeqa_python_test,What represents an int ?,['return s'],The variable `s`.,False,True
+codeqa_python_test,Where did the experiments describe ?,['in the book'],"The experiments were described with different configurations of networks (shallow, basic conv, double fc) and datasets (n=100, n=300, n=1000).",False,True
+codeqa_python_test,What does the code create ?,['a default responder for the options method args : allowed_methods : a list of http methods that should be returned in the allow header'],An OPTIONS endpoint.,False,True
+codeqa_python_test,What does the code generate ?,['a course structure dictionary for the specified course'],"A list of dictionaries, each representing a credit requirement.",False,True
+codeqa_python_test,What does the code flip to another ?,['the codon characters'],It flips codons.,False,True
+codeqa_python_test,What is kept in a separate module ?,['this'],`os.path`,False,True
+codeqa_python_test,What contains blanks in double quotes ?,['every argument'],args[i],False,True
+codeqa_python_test,What does the code convert to an mne struct ?,['a set of coils'],Coil locations.,False,True
+codeqa_python_test,What do the object have ?,['a permission args'],file,False,True
+codeqa_python_test,For what purpose do the executable of python return ?,['for the given version'],To retrieve a supported Python executable based on the version provided.,False,True
+codeqa_python_test,What does the code get for example ?,['the name of the node'],I don't know.,False,True
+codeqa_python_test,Where do the leading coefficient of a multivariate polynomial f compute ?,['in k[x_0'],The leading coefficient is computed within the `lcf` function.,False,True
+codeqa_python_test,What does the code create ?,['a client for working with cloud dns'],A DNS client.,True,True
+codeqa_python_test,What does the code get ?,['error statistics'],I don't know.,False,True
+codeqa_python_test,What does the code join into a single input ?,['their non shared inputs'],It joins nonshared inputs.,False,True
+codeqa_python_test,What cli example ?,['software'],I don't know.,False,True
+codeqa_python_test,What does the code enable ?,['the given apikey'],An API key.,False,True
+codeqa_python_test,What do bear directories have ?,['a matching kind'],glob.,False,True
+codeqa_python_test,What do central convert ?,['to non - central moments'],I don't know.,False,True
+codeqa_python_test,What does the code check ?,['the status of random'],It checks if the HTTP request to 'https//api.random.org/' returns a status code of 200.,True,True
+codeqa_python_test,What does the code get ?,['princial details'],The principal name.,False,True
+codeqa_python_test,What do we have ?,['support for opening file dialog windows'],A function definition.,False,True
+codeqa_python_test,What specified in profile_image_names ?,['the sizes and filenames'],A list of names.,False,True
+codeqa_python_test,How does the code obtain a cert ?,['using a user - supplied csr'],It obtains a certificate from a CSR (Certificate Signing Request) configuration.,False,True
+codeqa_python_test,What will a callback function return ?,['a comment containing the given data plus necessary dummy data'],200 and the JSON representation of the `response_data` dictionary.,False,True
+codeqa_python_test,What does the code add ?,['documentation annotations to the decorated function'],It adds metadata to an API function's documentation.,False,True
+codeqa_python_test,What does the code run ?,['the api server'],It runs a Django development server.,False,True
+codeqa_python_test,What does the code get from rc ?,['latex preamble'],It gets a value associated with the key 'pgf preamble'.,False,True
+codeqa_python_test,What is the buffer displayed in the current window where ?,['|current_buffer|'],"1, 1.",False,True
+codeqa_python_test,Where do assets exist for the full duration ?,['between start_date and end_date'],I don't know.,False,True
+codeqa_python_test,What does the code process using pygments ?,['the contained block'],The code processes `value` (likely a string of code) to highlight syntax.,False,True
+codeqa_python_test,What does the code return ?,['the number of attracting components in g'],n,True,True
+codeqa_python_test,What does the code build ?,['a list of human - readable labels'],A list of human-readable labels for synsets.,True,True
+codeqa_python_test,What does the code generate ?,['a data - structure that represents the current configuration model'],A dictionary containing records for root and other classes.,False,True
+codeqa_python_test,What do an rrset contain ?,['the txt_records'],A collection of DNS resource records.,False,True
+codeqa_python_test,What does the code get ?,['the current alternate setting of the interface'],I don't know.,False,True
+codeqa_python_test,Where does a main function return if it exists and is valid or none ?,['in module'],It returns the `main` module or `None`.,True,True
+codeqa_python_test,"For what purpose does the code provide a session - like object called "" channel_session "" to consumers ?","['as a message attribute that will auto - persist across consumers with the same incoming "" reply_channel "" value']",To manage state and potentially save/load data associated with individual messages or interactions.,False,True
+codeqa_python_test,How does decorator check the fixture ?,['with a product set of dtypes'],I don't know.,False,True
+codeqa_python_test,How does a style object return ?,['with the color scheme'],"It returns the `style` object, which is either the processed style or `no_style`.",False,True
+codeqa_python_test,What does the code find ?,['all steps in data from a stim channel'],It finds stimulation steps.,False,True
+codeqa_python_test,When did tags use ?,['most frequently'],I don't know.,False,True
+codeqa_python_test,What does the code add ?,['extra places to print output to'],It adds a new destination to a list of printing destinations.,False,True
+codeqa_python_test,Does the system have the isoinfo executable ?,['No'],Yes.,False,True
+codeqa_python_test,How is cache deactivated ?,['in private - browsing mode'],private browsing is set to True.,False,True
+codeqa_python_test,How does white space pass ?,['from start'],I don't know.,False,True
+codeqa_python_test,What does the code compute ?,['the alpha confidence interval for the selected quantiles of the data'],It computes a confidence interval for quantiles.,False,True
+codeqa_python_test,What did the code use ?,['to decode the json encoded response'],json.loads,False,True
+codeqa_python_test,Why be oozie be available ?,['as it is the backend'],I don't know.,False,True
+codeqa_python_test,What do objects not have ?,['any referents'],A type.,False,True
+codeqa_python_test,What does the code determine ?,['nonstandard properties of an input image'],"The code determines image properties, specifically checking for valid data ranges and supported data types.",False,True
+codeqa_python_test,Where does wards perform linkage ?,['on a condensed distance matrix'],Euclidean space.,False,True
+codeqa_python_test,What provides all the interfaces ?,['the assigned value'],The `interfaces` argument.,False,True
+codeqa_python_test,What transforms to matrices with singular values less than one ?,['arbitrary matrices'],The `linalg.constrained` function transforms the input matrices into matrices with singular values less than one.,False,True
+codeqa_python_test,What does the code get ?,['a string representation of the difference between two : class :~ datetime'],It formats a duration of time into a human-readable string.,False,True
+codeqa_python_test,What does it not catch ?,['systemexit'],It doesn't catch exceptions that don't have a 'filename' or 'strerror' attribute.,False,True
+codeqa_python_test,How does the html writer write multidimensional columns ?,['with correctly replaced fill_values'],I don't know.,False,True
+codeqa_python_test,What does the code create to find timestamps within that range ?,['the query document'],A `ts range` dictionary.,False,True
+codeqa_python_test,What does the code prepare ?,['the acl returned from the aws api for comparison with a given one'],It prepares an ACL (Access Control List) for comparison by normalizing user names within its owner and grantee entries.,False,True
+codeqa_python_test,For what purpose did restful crud controller need ?,['for map popups'],I don't know.,False,True
+codeqa_python_test,How does bridges interfaces return ?,['along with enslaved physical interfaces'],I don't know.,False,True
+codeqa_python_test,What does the code run ?,['a named function specified by a filesystem path'],I don't know.,False,True
+codeqa_python_test,Where should printing work ?,['in the given qt version'],On non-Windows systems with Python versions older than 5.3.0.,False,True
+codeqa_python_test,In which direction do all the loops go ?,['through the circle intersections'],I don't know.,False,True
+codeqa_python_test,What does the code remove from site ?,['app and linked modules'],The code removes an application (`app`) from a `site`.,False,True
+codeqa_python_test,What do it have before it ?,['no content'],def adjust,False,True
+codeqa_python_test,How do they be multi - package ?,['xpis'],"The code checks if an addon file has the key 'is multi package'. If it does, `is_multi_package` is set to `True`.",False,True
+codeqa_python_test,What does the code open ?,['an existing shortcut for reading'],I don't know.,False,True
+codeqa_python_test,Where does the code remove multiple whitespaces and whitespaces ?,['at the beginning and end of the given string'],"The `re.sub('\\s\\s+', '', str)` part removes multiple whitespaces. The `str.strip()` part removes leading/trailing whitespace.",False,True
+codeqa_python_test,Where do deviance scores compute ?,['on x_test'],I don't know.,False,True
+codeqa_python_test,What does the code use ?,['intrinsic_key_maps'],Memoization.,False,True
+codeqa_python_test,What should raise invaliddataerror if given invalid data ?,['upsert_data'],The `db.upsert` method.,False,True
+codeqa_python_test,What does the code remove from sys ?,['submodules of directories'],Modules whose filenames start with any of the specified directories.,False,True
+codeqa_python_test,What does the code extract ?,['all rx excludes'],It extracts regular expression patterns to exclude.,False,True
+codeqa_python_test,What has the highest information content value ?,['the least common subsumer'],"The maximum of `information content` of `synset 1`, `synset 2`, and `subsumers`.",False,True
+codeqa_python_test,What empties the files in those directories in parallel when ?,['postgresql'],I don't know.,False,True
+codeqa_python_test,What does the code evaluate ?,['a pep 508 environment marker'],It evaluates `marker` text.,False,True
+codeqa_python_test,What does the code relabel ?,['the nodes of the graph g'],It relabels nodes in a graph.,False,True
+codeqa_python_test,What does the code convert into a header list and datarows list ?,['a list of instances'],It converts instances of objects into lists based on specified features.,False,True
+codeqa_python_test,By how much does bitssharp nt need it ?,['at all'],I don't know.,False,True
+codeqa_python_test,What does original nt store already ?,['matchee'],I don't know.,False,True
+codeqa_python_test,What does a second axes share ?,['the * x*-axis'],The same x-axis limits.,True,True
+codeqa_python_test,Where does each line contain a word ?,['a multiline string'],I don't know.,False,True
+codeqa_python_test,What do the encoded value return ?,['the decoded result'],A dictionary.,False,True
+codeqa_python_test,What does the code get ?,['the current log entry for this asset'],I don't know.,False,True
+codeqa_python_test,What does the code create if it already exists ?,['a metadata - schema object'],I don't know.,False,True
+codeqa_python_test,For what purpose did by the servicetester call the code ?,['in order to test build_archive service api call'],To build an archive.,False,True
+codeqa_python_test,For what purpose do a uuid return ?,['for use in the payment flow'],To generate a unique identifier.,False,True
+codeqa_python_test,What is mofn multi - sig ?,['wallet_type'],I don't know.,False,True
+codeqa_python_test,What does the code create ?,['a series of random distribution information'],A list of 50 random numbers between -5 and 5.,False,True
+codeqa_python_test,What do generator return hexdump - > str ?,['a hexdump - dump of a string'],A string.,True,True
+codeqa_python_test,What do libvirterror exceptions allow ?,['you to specify arguments in constructor without having to manipulate the err tuple directly'],They allow for handling errors related to libvirt.,False,True
+codeqa_python_test,What did the code give ?,['a l{kleinroute'],"A dictionary containing 'description', 'header', 'section', 'input', 'input schema', 'output', and 'output schema' keys.",False,True
+codeqa_python_test,What would the user like ?,['to select from a list'],To activate some names.,False,True
+codeqa_python_test,Does the validation contain a traceback ?,['No'],I don't know.,True,True
+codeqa_python_test,What does the code join into a string ?,['each list of installed versions'],The values associated with keys in the `pkgs` dictionary.,False,True
+codeqa_python_test,What does the code do to see if any articles are present for this file ?,['a quick check'],I don't know.,False,True
+codeqa_python_test,What does the code expand ?,['a special name or a partial tag'],I don't know.,False,True
+codeqa_python_test,When did by pyyaml use callback ?,"['when a "" ! pkl : "" tag is encountered']",I don't know.,False,True
+codeqa_python_test,How is a test executed ?,['under travis testing environment'],I don't know.,False,True
+codeqa_python_test,For what purpose do template_html html template send ?,['to send as new message part context a dictionary to pass into the template calls'],To render an HTML email template with the provided context.,False,True
+codeqa_python_test,What represent in a heatmap chart ?,['3 dimensions'],Values.,False,True
+codeqa_python_test,What does the code get to the esxi host currently running an instance ?,['a moref'],The runtime host.,False,True
+codeqa_python_test,Where did the sentence level describe ?,['in - maja popovic'],I don't know.,False,True
+codeqa_python_test,What does not raise * exc * ?,['func'],It raises an AssertionError if the expected exception `exc` is not raised by the function call.,True,True
+codeqa_python_test,What did the code cut into blocks ?,['a matrix expression'],A matrix.,True,True
+codeqa_python_test,What corresponds to resource i d ?,['resource object'],resource id,False,True
+codeqa_python_test,What does the code find ?,['the highest numbered file in a given directory that matches a given pattern'],The code attempts to find the highest versioned file among a list of files.,False,True
+codeqa_python_test,What does a generator yield ?,['-tuples of visited pages'],The `crawler` object after it has been crawled.,False,True
+codeqa_python_test,What does this function return if this function fails to retrieve the rights object for a given activity based on its type ?,['none'],It raises an exception.,False,True
+codeqa_python_test,What does the code setup ?,['the roku platform'],It sets up Roku devices.,False,True
+codeqa_python_test,What does the code retrieve ?,['the number of projects currently indexed'],The number of distinct projects with bugs.,False,True
+codeqa_python_test,What does the code fix ?,['the makefile'],It fixes an issue related to Apple-installed Python 2.3.,False,True
+codeqa_python_test,What does the code get ?,['the paths by list'],I don't know.,False,True
+codeqa_python_test,What does the code get ?,['a namespace resource_type association'],It retrieves a resource type association.,False,True
+codeqa_python_test,What does the code convert to a custom url - safe format ?,['a cms - signed token in pem format'],The CMS text.,False,True
+codeqa_python_test,What does the code ensure ?,['doing nothing does nothing'],The code ensures that XML filters are applied and a round trip is performed on plots 'A' and 'B'.,False,True
+codeqa_python_test,What does openshift - img - tagger require ?,['the jenkins : jenkins - wiki : openshift pipeline plugin < openshift+pipeline+plugin >'],True,False,True
+codeqa_python_test,How do a dict of available roles return ?,['with their translations'],I don't know.,False,True
+codeqa_python_test,What does the code add to the model likelihood parameters name ?,['an arbitrary factor potential'],I don't know.,False,True
+codeqa_python_test,What does the code inspect to see if it includes tools that are either missing functional tests or functional test data ?,['the latest downloadable changeset revision for the received repository'],It checks for `missing tool test components` in the repository metadata.,False,True
+codeqa_python_test,What does a code string convert ?,['to colorized css / html'],CSS.,True,True
+codeqa_python_test,What does the code return ?,['the formatting and value_type values to use with gmond'],I don't know.,False,True
+codeqa_python_test,What does the code check ?,['the contents of file2 for substrings found in file1'],It checks if a file contains specific lines that are present in a historical dataset.,False,True
+codeqa_python_test,What does the code get ?,['the path for the avatar image of a user'],An avatar image or a file icon.,False,True
+codeqa_python_test,What does the code find ?,['a suitable hardlink target'],It attempts to create a hardlink.,False,True
+codeqa_python_test,What do the user have ?,['the permissions to modify a dataset'],I don't know.,False,True
+codeqa_python_test,What does the code generate ?,['an sha256 hash of a given string'],A SHA-256 hash.,True,True
+codeqa_python_test,What does the code append to the enrollments array ?,['an enrollment'],A dictionary containing enrollment details.,False,True
+codeqa_python_test,Where did sections declare ?,['in separate apps'],"At the beginning of the function, `sections = {}`.",False,True
+codeqa_python_test,How do line number retrieve from file src ?,['with caching'],`FILE CACHE[src][number - 1]`,False,True
+codeqa_python_test,Where do of strings turn into list of tuples ?,['in format where stat is a value from statistic_types and resource'],I don't know.,False,True
+codeqa_python_test,What does the code generate ?,['an rfc-6238 time - based one time password'],A TOTP (Time-based One-Time Password) secret.,False,True
+codeqa_python_test,Where ca get_init nt find ?,['in empty testdir'],I don't know.,False,True
+codeqa_python_test,How do queries execute ?,['against postgres'],I don't know.,False,True
+codeqa_python_test,What do the find and find_all methods of beautifulsoup nt handle ?,['the text parameter combined with other parameters'],"The code snippet shows a simplified implementation, but BeautifulSoup's `find` and `find_all` handle searching for elements based on name, attributes, text content (using regular expressions), and recursion depth.",False,True
+codeqa_python_test,What does the code create ?,['a window that displays the window too small text'],"A list containing a single string ""Windowtoosmall"".",False,True
+codeqa_python_test,What does factory function return ?,['a new condition variable object'],Condition *args **kwargs,False,True
+codeqa_python_test,What does the code get ?,['all available regions for the amazon cloudsearch domain service'],It gets the regions of a CloudSearch domain.,False,True
+codeqa_python_test,What does the code use to extract the settings for use in kodi ?,['the protocols in the master_settings'],`MASTER SETTINGS`,False,True
+codeqa_python_test,What does the code generate ?,['a custom action to validate an arbitrary range of arguments'],"An `ArgumentError` if the length of `values` is outside the range [nmin, nmax].",False,True
+codeqa_python_test,What do other greenthreads get ?,['a chance to be executed'],I don't know.,False,True
+codeqa_python_test,What do a lambda function represent ?,['a predicate on a tree node from a parenthetical notation'],I don't know.,False,True
+codeqa_python_test,What does the code tell ?,['whether an argument is numeric'],The code checks if an input `n` is a number (integer or float).,False,True
+codeqa_python_test,What do factory make ?,['an abstract dist object'],I don't know.,False,True
+codeqa_python_test,What will attempt to look up adapters in the given registry ?,['an adapter hook'],`lookup`,False,True
+codeqa_python_test,For what purpose do purge set purge remove ?,['to true to delete all of the users files as well as the user'],I don't know.,False,True
+codeqa_python_test,How do clicks handle on vertical scrollbar ?,['using selections'],I don't know.,False,True
+codeqa_python_test,What does the code do on the error_dict keys ?,['some i18n stuff'],"The code processes each key-value pair in the `error_dict` to create a summarized dictionary of errors, formatting and categorizing them based on specific keywords like 'resources', 'extras', or other keys.",False,True
+codeqa_python_test,Where does string return for the given integer ?,['in words'],"The string return depends on whether `in million` is True or False. If True, it returns a localized string based on `lang` and `locale`. Otherwise, it defaults to English (`u'en'`).",False,True
+codeqa_python_test,For what purpose do 1 return ?,['for leap years'],To indicate a boolean value (True or False).,False,True
+codeqa_python_test,What does generator return ?,['the next date'],Dates incremented by a week (7 days) starting from the `start_date`.,False,True
+codeqa_python_test,What does the code get ?,['path to local copy of eegmmi dataset url'],It gets data from a URL to a local path.,False,True
+codeqa_python_test,In which direction do all objects start with gl ?,['from the source'],From source to destination.,False,True
+codeqa_python_test,Where do all tokens appear in order ?,['in code'],I don't know.,False,True
+codeqa_python_test,What has decorator ensuring ?,['that the user has access to dataset'],It ensures that the `view` function only proceeds if a valid 'dataset' object is provided in the keyword arguments.,False,True
+codeqa_python_test,Where is x different when ?,['at fitting and sampling without ratio'],The variable name 'X' is misspelled as 'sample wrong X'.,False,True
+codeqa_python_test,How will a message attribute auto across consumers ?,"['with the same incoming "" reply_channel "" value']",I don't know.,False,True
+codeqa_python_test,For what purpose do esc replace the code ?,['to prevent unsafe strings from writing their own terminal manipulation commands'],To handle escape sequences in strings.,False,True
+codeqa_python_test,What does key function cause ?,['shorter refs to sort first'],I don't know.,False,True
+codeqa_python_test,In which direction do changes push to a remote location at source ?,['from the branch'],From the local repository to the remote repository at source.,False,True
+codeqa_python_test,What does johnsons algorithm use ?,['to compute shortest paths'],Bellman-Ford and Dijkstra's algorithm.,False,True
+codeqa_python_test,What chunks very large index lists into 3 kb chunks ?,['this utility'],I don't know.,False,True
+codeqa_python_test,When are snapshots userdata created ?,['when snapper'],I don't know.,False,True
+codeqa_python_test,For what purpose does registration logs migrate ?,['to set params[node ] to registered_from and params[registration ] to the registration'],I don't know.,False,True
+codeqa_python_test,What does the code get from distutils ?,['the compiler type'],A distribution object.,False,True
+codeqa_python_test,What will raise an error ?,['a new apply node'],The `assert 'insert bigger b add' in exc message e` line will raise an error if the exception (`exc`) does not have a `message` attribute or if the string `'insert bigger b add'` is not found within that message.,False,True
+codeqa_python_test,What does a test method test ?,['the given extension function'],It tests a function.,False,True
+codeqa_python_test,What do two given collections have ?,['matching schemas in keen'],Schemas.,True,True
+codeqa_python_test,What does the address from the given addressfamilies provide ?,['the given package'],The code snippet returns the first address found within the provided address families.,False,True
+codeqa_python_test,What are nodes have known ?,['to have negative numeric values'],Nodes have known to be a list of elements.,False,True
+codeqa_python_test,Where do the feature flag check ?,['all over the place'],From the `settings` object using `FEATURES`.,False,True
+codeqa_python_test,What extracts all consistent phrase pairs from a word - aligned sentence pair ?,['phrase extraction algorithm'],The `phrase extraction` function.,False,True
+codeqa_python_test,What does a servicepair use for testing remotevolumemanager ?,['zfs'],It uses a mutating process node.,False,True
+codeqa_python_test,What does the code take ?,['a list of stylesheet names'],A variable number of arguments.,False,True
+codeqa_python_test,Does a name exist in a queryset ?,['No'],"Yes, the code checks if a slug (derived from a value) already exists within a Django queryset.",False,True
+codeqa_python_test,What does the original image contain ?,['exif data'],The original image contains EXIF data.,True,True
+codeqa_python_test,Where do k counts distribute evenly ?,['across n buckets'],I don't know.,False,True
+codeqa_python_test,"How does the code make a "" deep copy "" of an object ?",['by serializing it and then deserializing it'],It uses `pickle` to serialize and deserialize the object.,False,True
+codeqa_python_test,What does the code update ?,['the modified timestamp of a file or directory'],The last access and modification times of a file or directory.,True,True
+codeqa_python_test,What does the code get ?,['encoding that should be used for printing strings'],The preferred output encoding.,False,True
+codeqa_python_test,What does src_file have ?,['the same md5 hash as the one on disk'],I don't know.,False,True
+codeqa_python_test,How is the path intersecting ?,['by checking line intersection'],It's checked by comparing the x-coordinate of a rotated segment with points on the path.,False,True
+codeqa_python_test,What has decorator ensuring ?,['that the user has the permissions to modify a workflow action'],Ensuring that only jobs with the correct permissions can access a view function.,False,True
+codeqa_python_test,What has a specific method ?,['the provided connection object'],The code snippet checks if an object named `conn` has a specific method.,False,True
+codeqa_python_test,What does the code create ?,['a sparse indicator from a group array with integer labels parameters groups : ndarray'],A sparse CSR matrix.,False,True
+codeqa_python_test,What do decorator give another decorator ?,['the @no_type_check effect'],`functools.wraps`,False,True
+codeqa_python_test,When do hdparm execute hard ?,['when required return output when possible'],"The `hdparm` command executes ""hard"" when the `failhard` variable is True.",False,True
+codeqa_python_test,How do edx content embed ?,['via the lti protocol'],I don't know.,False,True
+codeqa_python_test,What does the code get ?,['a featurestate object for this feature'],It gets a feature state from a cache.,False,True
+codeqa_python_test,Do primary key values confuse the admin urls by escaping any / ?,['No'],I don't know.,True,True
+codeqa_python_test,What does text1 and text2 have ?,['the same lines'],They are strings.,False,True
+codeqa_python_test,How does the code create a github release ?,['using the github - release command - line tool'],"It uses the `github-release` command-line tool to create and upload a release, including setting the tag, name, description (from changelog.md), and uploading a tarball.",True,True
+codeqa_python_test,What does the code ensure ?,['event source mapping with passed properties is absent'],The code ensures that an event source mapping is deleted.,False,True
+codeqa_python_test,For what purpose do a string escape ?,['for inclusion in a document'],To represent characters that have special meaning in a markup language (like HTML) as literal characters.,False,True
+codeqa_python_test,Where does the code call a function ?,['in a simple thread'],The code calls the `start` function.,False,True
+codeqa_python_test,What does the code take ?,['pear remote - info output'],A string.,False,True
+codeqa_python_test,What require matching at a specific column in the input text ?,['parse actions'],The `verify Col` function requires matching tokens at a specific column.,False,True
+codeqa_python_test,What does the code get ?,['the default domain object to use when creating identity object'],The code attempts to retrieve a domain ID and domain name.,False,True
+codeqa_python_test,What sends to unfollow ?,['http request'],user id,False,True
+codeqa_python_test,What does the code convert into a der - encoded byte string ?,['a pem - encoded byte string'],PEM-encoded data.,False,True
+codeqa_python_test,How does the code create a new model in a given api ?,['with a given schema'],"The code uses `conn.create_model` to create a new model, passing parameters like API ID, name, description, and schema.",False,True
+codeqa_python_test,How does the code initialize ?,['with name+data'],I don't know.,False,True
+codeqa_python_test,For what purpose does the code build a dictionary ?,['to swap randomsymbols based on their underlying symbol'],I don't know.,False,True
+codeqa_python_test,What are available in the configuration file ?,['all the types'],xBlock names.,False,True
+codeqa_python_test,What need to be met for doctesting the docstrings of the decorated objects ?,['the depenencies'],The `fn` needs to have attributes related to `deco`.,False,True
+codeqa_python_test,What do thrift source files need ?,['to be compiled'],They need a target.,False,True
+codeqa_python_test,What contains the unit clause l ?,['a set of clauses'],c,True,True
+codeqa_python_test,What does the first skin contain ?,['the file directories'],'skins',False,True
+codeqa_python_test,What does the code tell ?,['a module can be imported'],The code attempts to import a module and caches the result.,False,True
+codeqa_python_test,Do which look adapters in the given registry ?,['No'],I don't know.,True,True
+codeqa_python_test,What does the code add ?,['the given number of days on to the current date'],It adds a time delta.,False,True
+codeqa_python_test,What computes on shortest paths ?,['shortest path lengths and predecessors'],Bellman-Ford algorithm.,False,True
+codeqa_python_test,What does the code create ?,['an array with a translation matrix'],A 4x4 transformation matrix for translation in 3D space.,False,True
+codeqa_python_test,What did the code read ?,['the path from a'],It reads the path to the `.git` directory.,False,True
+codeqa_python_test,What created this variable ?,['the application call'],I don't know.,False,True
+codeqa_python_test,How does all tests return ?,['based on its job idx'],It returns Test objects filtered by job and job index.,False,True
+codeqa_python_test,What does the code create ?,['a topicsread object for the user and a topic'],A pytest fixture named 'topicsread'.,False,True
+codeqa_python_test,What did the code read ?,['a 32-bit float'],A single-precision floating-point number.,False,True
+codeqa_python_test,How does the code reformat it ?,['as help'],"It removes leading/trailing whitespace, replaces multiple spaces with single spaces, and removes lines starting with ""D"", ""C"", ""T"", or ""B"".",False,True
+codeqa_python_test,When do func call ?,['with a timeout of second seconds'],The function `func` is called when the code is executed.,False,True
+codeqa_python_test,Where has the procedure been done ?,['on the gcode text'],I don't know.,False,True
+codeqa_python_test,What will the code inserting again not cause ?,['any errors'],I don't know.,False,True
+codeqa_python_test,How were that running ?,['on a supported system'],I don't know.,False,True
+codeqa_python_test,How does the code interpolate a curve at new points ?,['using a spline fit parameters'],It uses `splev` to evaluate a spline given existing data points and new values.,False,True
+codeqa_python_test,What does the code parse ?,['the metadata from the provided url'],Recipes.,False,True
+codeqa_python_test,What does the code compute ?,['the quadratic sum'],I don't know.,False,True
+codeqa_python_test,What does the code get for this module ?,['unittest suite'],I don't know.,False,True
+codeqa_python_test,What do ast nt compile ?,['invalid lambda'],"The code attempts to create an AST (Abstract Syntax Tree) from the string ""lambda"". This will fail because ""lambda"" is not a valid Python expression.",False,True
+codeqa_python_test,What does the code convert to its keys as string ?,['a qt qflags value'],"It converts enum members to strings based on a given key, base, and class.",False,True
+codeqa_python_test,How did view name ?,['reversible'],I don't know.,False,True
+codeqa_python_test,Do we have a panel of time series with consecutive ?,['Yes'],I don't know.,False,True
+codeqa_python_test,In which direction do close event handle ?,['from settings dialog'],I don't know.,False,True
+codeqa_python_test,What does this function compute ?,['the lfsr autocorrelation function'],I don't know.,False,True
+codeqa_python_test,What does the code get ?,['current config of l2 switchport args'],It retrieves switchport configuration details for an interface.,False,True
+codeqa_python_test,What does the code make ?,['a new extension'],It makes a list of directories containing extension files.,False,True
+codeqa_python_test,Where does a helper fetch the configuration value ?,['in the [ hdfs ] section'],"From `conf` if `custom` is present, otherwise from `['snakebite with hadoopcli fallback', 'snakebite']`.",False,True
+codeqa_python_test,What does not exist on the filesystem ?,['a version of path'],The variable `syspath`.,False,True
+codeqa_python_test,What does the code apply ?,['python string formatting on an object'],"It attempts to format a Unicode string using either positional arguments (`args`) or keyword arguments (`kwargs`), raising an error if both are provided.",False,True
+codeqa_python_test,What does the code classify into 2 classes using single layer of gru units and softmax applied to the last activations of the units ?,['temporal sequences of float numbers of length 3'],Temporal classification.,False,True
+codeqa_python_test,What does the code get in radians ?,['the interior overhang support angle'],The interior overhang angle.,True,True
+codeqa_python_test,What does no_translation provide ?,['a context where only the default language is active'],It suppresses translations during assertions.,False,True
+codeqa_python_test,Where did child components lie out ?,['in a single horizontal row'],I don't know.,False,True
+codeqa_python_test,What does an object trust ?,['multiple root l{certificate}s'],A certificate.,False,True
+codeqa_python_test,What creates in table_name ?,['an index on specified columns'],"An index named ""ix_table_name"" is created on the specified columns of table_name.",True,True
+codeqa_python_test,What does the code pick ?,['the right stream type based on env and args'],Raw Stream CHUNK SIZE BY LINE,False,True
+codeqa_python_test,What does the code remove for testing ?,['original unmodified values'],"Values of configuration variables that start with ""INITPRE"".",False,True
+codeqa_python_test,For what purpose do shapes generate ?,['to test casting'],I don't know.,False,True
+codeqa_python_test,Does blame - upstream require the jenkins : jenkins - wiki ?,['No'],I don't know.,True,True
+codeqa_python_test,How have you accessed a message previously ?,['via starring'],`try message Message objects select related get id message id`,False,True
+codeqa_python_test,When do circular references between an event on an instance and the handling delegate nt release ?,['too soon'],I don't know.,False,True
+codeqa_python_test,What do an object from one s3 location copy ?,['to an object in this bucket'],I don't know.,False,True
+codeqa_python_test,What does the auth api trigger ?,['the email of a viewfinder access token'],I don't know.,False,True
+codeqa_python_test,What does helper method instantiate ?,['the stimclient'],Stim Client.,False,True
+codeqa_python_test,What do you nt add ?,['a duplicate file extension'],I don't know.,False,True
+codeqa_python_test,What does a list describe ?,['the files that find_module ( ) looks for'],Suffixes of a file name.,False,True
+codeqa_python_test,How does the code create a stonith resource ?,['via pcs command stonith_id name for the stonith resource stonith_device_type name of the stonith agent fence_eps'],"It uses an `create` function to instantiate a stonith resource with specified ID, device type, options and cibfile.",False,True
+codeqa_python_test,How does the code get tab title ?,['without ambiguation'],"The code doesn't get a tab title. It generates a modified filename based on file paths and names, potentially adding a differentiator if the path is too long.",False,True
+codeqa_python_test,What does the specified output have ?,['at least one xml element with a path matching the specified path argument'],I don't know.,False,True
+codeqa_python_test,Do the bytes represent jfif or exif at a fixed position ?,['Yes'],I don't know.,False,True
+codeqa_python_test,How does the code initialize the event tracking backends ?,['according to the configuration in django settings'],"It iterates through configuration items, instantiates backend classes based on their ENGINE setting and OPTIONS.",False,True
+codeqa_python_test,Where does the code run the validator ?,['on the given file or fileupload object'],I don't know.,False,True
+codeqa_python_test,What does a function call fnclex ?,['to workround URL'],"It calls an intrinsic function named ""fnclex"" as a side effect.",False,True
+codeqa_python_test,For what purpose do all associated youtube_ids return ?,['for downloads'],To create a dictionary of YouTube IDs.,False,True
+codeqa_python_test,What does the code provide by attaching labels to the right end of each line ?,['a legend for line charts'],It provides labels for each series in the chart.,False,True
+codeqa_python_test,What does the code create ?,['a manhole server service'],A Telnet and SSH service.,False,True
+codeqa_python_test,What does the code get ?,['precision based on docfield options'],The code gets the field precision.,False,True
+codeqa_python_test,How do the packages provide the given command ?,['using pkgfile'],The `pkgfile` command is used to determine the packages that provide a given command. It checks the output of `pkgfile -b -v <command>` and parses it to extract the package names.,False,True
+codeqa_python_test,How do an episode mark ?,['as failed'],"The code attempts to mark an episode as ""FAILED"" and saves it to a database. If the episode is not found, it logs a warning message.",True,True
+codeqa_python_test,What can you pass ?,['a reason'],'expiry',False,True
+codeqa_python_test,What does the code return ?,['an iterator that iterates over it the other way round'],I don't know.,False,True
+codeqa_python_test,What does the code get ?,['unique vertexes'],Unique vertexes from a list of loops.,True,True
+codeqa_python_test,What does the code remove at the beginning and end of the given string ?,['multiple whitespaces and whitespaces'],Whitespace.,True,True
+codeqa_python_test,What are painted an rgb image ?,['color - coded labels'],0 0 0,False,True
+codeqa_python_test,For what purpose does the code introspect a rebulk instance ?,['to grab defined objects and properties that can be generated'],I don't know.,False,True
+codeqa_python_test,What do fixture provide ?,['a history filled with example data'],"It provides `Objects`, `history`, `empty_history`, `user_data`.",False,True
+codeqa_python_test,What does binary search use ?,['to find what module a given address resides in'],`bisect.right`,False,True
+codeqa_python_test,What does the code write ?,['optional metadata tag to stream'],It writes a script tag with metadata to a stream.,True,True
+codeqa_python_test,What used in computation ?,['the singular values'],NumPy.,False,True
+codeqa_python_test,When do the verifier use ?,['when the key type is rsa - pss'],The verifier is used to verify a PSS signature.,False,True
+codeqa_python_test,What does the code add to a parser object ?,['compression arguments'],It adds arguments for gzip and bzip compression options.,True,True
+codeqa_python_test,For what purpose does the github api hit ?,['for repository tags'],To retrieve tags from a URL.,False,True
+codeqa_python_test,For what purpose does the code escape a windows command - line argument ?,['for use by msbuild'],I don't know.,False,True
+codeqa_python_test,What does a post_save signal handler send ?,['a signal for each filefield that was committed this save'],A saved file.,False,True
+codeqa_python_test,When do we shutdown our threads correctly ?,['when being interrupted'],When a `KeyboardInterrupt` is raised.,False,True
+codeqa_python_test,What does the code convert into a edns flags value ?,['a space - separated list of edns flag text values'],It converts the input text into an edns flags value.,False,True
+codeqa_python_test,What does the code convert into some human - readable text ?,['some idna - encoded octets'],It converts Unicode strings to ASCII-compatible encoded strings.,False,True
+codeqa_python_test,What does the code remove ?,['the folder that is created by the test'],The directory named 'test copy without render'.,False,True
+codeqa_python_test,What does the code flip together ?,['the axises of multiple images'],The code flips along an unspecified 'axis'.,False,True
+codeqa_python_test,What is writing to the underlying logging system ?,['the job log'],I don't know.,False,True
+codeqa_python_test,What do a coverage file load ?,['from an open file object'],A coverage file containing floating-point numbers.,False,True
+codeqa_python_test,What do it return ?,['fires'],I don't know.,False,True
+codeqa_python_test,Where did object ids see ?,['in a structure'],"The variable `object_ids` is not seen in the code. It's a parameter passed to the function, and its value is used within the function body.",False,True
+codeqa_python_test,What list in a directory ?,['all subdirectories and files'],I don't know.,False,True
+codeqa_python_test,What does the code select ?,['the best match in a list or dictionary of choices'],The top 'limit' elements based on the second element of each item in the input list.,False,True
+codeqa_python_test,What ca oauthresponse class nt parse with content - type - text / html and because of a rubbish api ?,['the json data'],I don't know.,False,True
+codeqa_python_test,What did the code set ?,['the xbox platform'],It sets up Xbox sensor devices.,False,True
+codeqa_python_test,What could the given block impact ?,['grading'],I don't know.,False,True
+codeqa_python_test,What does the code create in an organisation ?,['a new datasource'],A Grafana datasource.,False,True
+codeqa_python_test,What does the code get ?,['a list of the parameters in the operator'],I don't know.,False,True
+codeqa_python_test,What do dates convert ?,['to javascript timestamps'],ISO timestamps to JavaScript timestamps.,True,True
+codeqa_python_test,What did the code deprecate ?,['print list of available baremetal nodes'],baremetal-node-list,False,True
+codeqa_python_test,When do the len - d-1 b - splines return with knots code ?,['at x of degree d'],I don't know.,False,True
+codeqa_python_test,What does the code generate ?,['a ros - legal anonymous name'],A modified version of a hostname string.,False,True
+codeqa_python_test,What does a gethookrecorder method return ?,['a hookrecorder instance which helps to make assertions about called hooks'],A hook recorder object.,False,True
+codeqa_python_test,Where should the results of applying all passed in transformers to data pass ?,['in list of transformers [ transformer_1'],The `data` variable after the loop.,False,True
+codeqa_python_test,What does the code stop ?,['a google app engine application process instance on current machine'],It attempts to stop an application server.,False,True
+codeqa_python_test,What does the code extract from a dictionary ?,['all required lti parameters'],The code extracts values associated with keys present in `REQUIRED_PARAMETERS` and `additional_params`.,False,True
+codeqa_python_test,Where do the loops sort according isdescending ?,['in the order of area'],The loops sort according to `isDescending`.,False,True
+codeqa_python_test,What does the code take ?,['the results produced by each bear'],A list of results.,False,True
+codeqa_python_test,How can to be referred ?,['by name in mode'],`predefined_linkers[name]`,False,True
+codeqa_python_test,What can we get ?,['a percent change'],"A dictionary containing document IDs, their total helpful votes, and the percentage of yes votes.",False,True
+codeqa_python_test,When does application pause cooperatively ?,['10 seconds'],After receiving the request and before sending the response.,False,True
+codeqa_python_test,What does the code send ?,['a delete request for the specified object'],A DELETE request.,True,True
+codeqa_python_test,What does the code get ?,['the amount of cpu used so far by api calls during the current request'],CPU usage.,False,True
+codeqa_python_test,What did the code set ?,['a version for the namespace to be loaded'],I don't know.,False,True
+codeqa_python_test,What does the code evaluate ?,['the hyperbolic cos of an interval'],"The code calculates the hyperbolic cosine (cosh) of a given input 'x', which can be an integer, float, or an interval. If it's an interval spanning both positive and negative values, it adjusts the end point to ensure validity. Otherwise, it returns an interval with the same start and end points as the input if valid, otherwise raises an error.",True,True
+codeqa_python_test,What do a new dict contain ?,['only a subset of the items of an existing dict'],A new dictionary containing only the key-value pairs from `d` where the keys are present in the `keys` list.,False,True
+codeqa_python_test,What does the code ensure ?,['reader macros are handles properly'],It ensures that a tokenized entry starts with a dispatch symbol and a string.,False,True
+codeqa_python_test,What compute the expected probability density function of the periodogram for the null hypothesis - i ?,['lomb - scargle periodogram'],The code computes the expected probability density function (PDF) of the periodogram under different normalization schemes.,False,True
+codeqa_python_test,What does py2 handle the way ?,['date format strings'],I don't know.,False,True
+codeqa_python_test,For what purpose does the code add extra xml properties to the tag ?,['for the calling test'],I don't know.,False,True
+codeqa_python_test,What does the code get ?,['vlm_media instance chapter number by name or instance i d'],I don't know.,False,True
+codeqa_python_test,What has access to the given course arguments ?,['the user with this ip_address'],"Users with author access, or if no restrictions are in place.",False,True
+codeqa_python_test,What do which run more than once ?,['systemctl status'],`context [contextkey]` runs more than once.,False,True
+codeqa_python_test,What does the code expand ?,['the authorizedkeysfile expression'],It expands an authorized keys filepath.,False,True
+codeqa_python_test,What does the code generate ?,['a set of simple sequences'],A list of sequences.,True,True
+codeqa_python_test,What does the code add to the given namespace ?,['a new mako template lookup directory'],It adds the directory to the lookup namespace.,False,True
+codeqa_python_test,What subclasses menu_class ?,['a new menu class'],I don't know.,False,True
+codeqa_python_test,How can ratings be created ?,['via iarc pinging our api'],I don't know.,False,True
+codeqa_python_test,What does the code ensure ?,['that the certificate path'],It ensures that a specified path is valid.,False,True
+codeqa_python_test,When do a long integer represent the number of microseconds ?,['since datetime'],I don't know.,False,True
+codeqa_python_test,What does function handle ?,['a forgotten password request'],"It handles the ""Forgot Password"" functionality.",False,True
+codeqa_python_test,What do it have ?,['2x2 blocks of block matrices'],I don't know.,False,True
+codeqa_python_test,What does the current user have ?,['permission to browse any component reviews'],The ability to browse repository reviews.,False,True
+codeqa_python_test,When does the code estimate the graph size ?,['during a rechunk computation'],It estimates the graph size when iterating through pairs of old and new chunks.,False,True
+codeqa_python_test,What do a list / tuple contain potentially ?,['nested lists / tuples of arbitrary nesting'],"Other lists/tuples or primitive data types like integers, strings, booleans.",False,True
+codeqa_python_test,What do tests not use ?,['an iblockdeviceapi'],Unicode.,False,True
+codeqa_python_test,What does the code return ?,['a binary sha'],The hexadecimal representation of the SHA hash.,False,True
+codeqa_python_test,For what purpose does the code analyze the request ?,['to find what language the user wants the system to show'],To determine the user's preferred language.,False,True
+codeqa_python_test,What is using $ ?,['its own variable expansion syntax'],To represent a literal dollar sign.,False,True
+codeqa_python_test,How do a connection to a host initiate ?,['using an ip address and a port'],"The code attempts to connect to the specified `host` and `port` using `connect`. If this fails with a ""Connection Refused"" error, it raises a `ConnectionTimeoutException`.",False,True
+codeqa_python_test,What does factory return depending on the browser filter type and hotswap target ?,['an appropriate browser model'],"It returns a function that creates an instrument, drum pad, audio effect, or MIDI effect based on the `filter_type` and `hotswap` target.",False,True
+codeqa_python_test,How does the code run a web server ?,['in a child process'],I don't know.,False,True
+codeqa_python_test,What does the code compute ?,['the entropy corresponding to the given partition'],I don't know.,False,True
+codeqa_python_test,For what purpose does the code query data database the database ?,['to query query query to be executed'],I don't know.,False,True
+codeqa_python_test,What does the code grab from wordnik ?,['a random word'],A random word.,True,True
+codeqa_python_test,What does the code get by name ?,['logger for task module'],It gets a logger.,False,True
+codeqa_python_test,What do node_id rename in graph ?,['to copy_id'],The code renames a node with 'node id' to 'copy id' within the graph.,False,True
+codeqa_python_test,What did a url use ?,['to unflag an object'],reverse.,False,True
+codeqa_python_test,What does the code create ?,['a policy decision point descriptor'],A PDP Descriptor.,False,True
+codeqa_python_test,In which direction do a portion of a stream copy to another ?,['from one file - like object'],From the `source` to the `destination`.,False,True
+codeqa_python_test,What does the code make ?,['the container root directory'],It makes a container root directory.,True,True
+codeqa_python_test,How do an interpreted text role register ?,['by its local or language - dependent name'],I don't know.,False,True
+codeqa_python_test,What can an api client be used ?,['to make catalog api requests'],To access the EdX REST API.,False,True
+codeqa_python_test,What do we start the date ?,['querying monthly data'],One year ago.,False,True
+codeqa_python_test,For what purpose does the code get a reference to a vmware datastore ?,['for the purposes of adding / removing disks si serviceinstance for the vsphere or esxi server datastore_name name of the datastore'],To retrieve an inventory view of containers within that datastore.,False,True
+codeqa_python_test,What does this test ?,['what happens when you parse a date with no timezone'],It tests the parsing of a date string in ISO 8601 format without timezone information.,False,True
+codeqa_python_test,What does the code get ?,['number of jobs for the computation'],I don't know.,False,True
+codeqa_python_test,What does the code convert to an entity type based on the feature ?,['a json result'],"FACE, IMAGE PROPERTIES, or SAFE SEARCH.",False,True
+codeqa_python_test,For what purpose do a few additional entries insert into the dict ?,['for diversity'],I don't know.,False,True
+codeqa_python_test,What installs in the jinja2 ?,['gettext translations'],`gettext` translations.,True,True
+codeqa_python_test,What does return true be ?,['file is writable'],I don't know.,False,True
+codeqa_python_test,What do we have ?,['negative indicies'],A function definition.,False,True
+codeqa_python_test,What is used to define how often a < span > is inserted ?,['break_after'],`break after`,True,True
+codeqa_python_test,What does the code get ?,['the fully qualified hostname'],The fully qualified domain name (FQDN) of the host.,True,True
+codeqa_python_test,What does the code ensure ?,['that the named schema is present in the database'],The code ensures that a schema is either created or confirmed to already exist in a database.,True,True
+codeqa_python_test,Where does static files discover ?,['in given paths'],base path sub path sub path.,False,True
+codeqa_python_test,What does the code get ?,['the chance level'],"It attempts to calculate a ""chance level"" score.",False,True
+codeqa_python_test,What does the code compute ?,['the match strength for the individual * x * on the string * y * excluding noise * n *'],"It computes a sum of products (xi * yi) where xi and yi are elements from lists x and y respectively, but only includes pairs where the corresponding element in list n is equal to '#'.",False,True
+codeqa_python_test,What is regarding the bgp sessions configured on the network device ?,['details'],I don't know.,False,True
+codeqa_python_test,What will they have ?,['the permissions to see it in studio'],Access to the course.,False,True
+codeqa_python_test,What did the code read ?,['a single byte'],A single unsigned 8-bit integer from a file.,False,True
+codeqa_python_test,What does the code expand into a list of strings ?,['an ip address pattern'],It expands an IP address pattern into a list of strings.,True,True
+codeqa_python_test,What does the code compute ?,['a transversal for the orbit of alpha as a set'],I don't know.,False,True
+codeqa_python_test,How does the precedence of a given object return ?,['according to the traditional rules of mathematics'],"It returns the precedence of 'Mul' if the object is an instance of Integral, Sum, Product, Limit, or Derivative; otherwise, it recursively calls `precedence` on the first argument of the object if it's an Unevaluated Expr; otherwise, it returns the original item's precedence.",False,True
+codeqa_python_test,Where will specialized copy function work only with no other member than a fitness ?,['on a list of tuples'],I don't know.,False,True
+codeqa_python_test,For what purpose do the arn return ?,['for a scaling policy in a specific autoscale group or none'],To return the ARN of a specific scaling policy.,False,True
+codeqa_python_test,What does the code return between them ?,['the average'],"A list of three numbers, each representing a calculated value based on the corresponding components of the input colors.",False,True
+codeqa_python_test,What obtains same results as the matlab implementation by pham dinh - tuan ?,['approximate joint diagonalization implementation'],I don't know.,False,True
+codeqa_python_test,What did the code delete ?,['col of volume_type_projects converted'],A column named `deleted` from a table named `volume type projects`.,False,True
+codeqa_python_test,What does the code provide ?,['the unix time when the system started'],It attempts to retrieve the system boot time from /proc/stat.,False,True
+codeqa_python_test,Does the code use this method ?,['No'],I don't know.,True,True
+codeqa_python_test,How do data integrity verify ?,['by ensuring mac is valid'],The code verifies data integrity by computing a MAC (Message Authentication Code) from the data and comparing it to the MAC provided in the token.,False,True
+codeqa_python_test,What allow filters and ascending - orders on _ _ key _ _ only ?,['queries'],key prop.,False,True
+codeqa_python_test,What does the code make ?,['dask'],I don't know.,False,True
+codeqa_python_test,What does the code convert posix time ?,['to html header time format'],It converts POSIX time to HTTP POSIX time in email utilities format.,False,True
+codeqa_python_test,What does the code create ?,['a new wsgi server listening on host and port for app'],A WSGI server.,True,True
+codeqa_python_test,What does the code get ?,['the most recent entry for a list of github statuses'],The last updated status.,False,True
+codeqa_python_test,How are the axes rotated ?,['with zdir along the original z axis'],"The function rotates the axes based on the `zdir` parameter. It swaps the x, y, and z coordinates depending on the value of `zdir`.",False,True
+codeqa_python_test,What does the code have ?,['any steps in the pending state'],A function definition.,False,True
+codeqa_python_test,What should it extract ?,['the name of the scenario'],The name of the scenario.,True,True
+codeqa_python_test,What does the code delete ?,['a quote from a nick'],Messages with a specific nickname.,False,True
+codeqa_python_test,What does the code generate ?,['a one - time verification key with an optional expiration time'],A token and its expiration time.,False,True
+codeqa_python_test,Do user provide an initial weights matrix when ?,['Yes'],Yes.,True,True
+codeqa_python_test,What does the code convert to millisecond time ?,['an internal gstreamer time'],It converts a time value to its millisecond representation.,False,True
+codeqa_python_test,For what purpose is that arabic text rewritten ?,['to use the joined format'],To handle bidirectional (bidi) text.,False,True
+codeqa_python_test,What enable to set the label you ?,['a simple identification field factory'],The `label` parameter.,False,True
+codeqa_python_test,Where does the code run a list of functions ?,['in the same thread'],In a thread.,False,True
+codeqa_python_test,What does the code initialize ?,['the comparison feature'],A comparison feature.,False,True
+codeqa_python_test,What does the code remove ?,['followers of an existing viewpoint'],Followers.,True,True
+codeqa_python_test,What does the code calculate ?,['the score at a given percentile of the input sequence'],The code calculates the score at a given percentile of an array.,True,True
+codeqa_python_test,What do the jenkins stash notifier plugin notify after job completes ?,['atlassian stash'],The Jenkins Stash Notifier plugin notifies about job completion to a stash repository.,False,True
+codeqa_python_test,What do helper send ?,['an ec2_compatible error'],I don't know.,False,True
+codeqa_python_test,What is containing list of files ?,['notification email'],I don't know.,False,True
+codeqa_python_test,What do host queue entries match ?,['the given filter data'],I don't know.,False,True
+codeqa_python_test,What does the code compute ?,['the total energy for the hamiltonian at a given position / momentum'],"It computes a quantity related to potential energy based on variables H, q, and p.",False,True
+codeqa_python_test,What does the code resize ?,['partition and fileystem'],A filesystem.,False,True
+codeqa_python_test,What found inside ?,['the first nja file'],I don't know.,False,True
+codeqa_python_test,What does the code create from a native sets items ?,['a python list'],A Python list.,True,True
+codeqa_python_test,What does the code extend ?,['the current api'],The code extends an API route.,False,True
+codeqa_python_test,What do the depenencies need ?,['to be met for doctesting the docstrings of the decorated objects'],The dependencies need `pyglet`.,False,True
+codeqa_python_test,What does the code get ?,['precision for a given field'],The precision of a field in a Frappe document.,False,True
+codeqa_python_test,When does a worker process run ?,['every so often'],I don't know.,False,True
+codeqa_python_test,What does the code get ?,['the preferred channels safe for work status'],It gets the safe for work (SFW) status of a channel.,True,True
