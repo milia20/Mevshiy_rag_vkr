@@ -5,7 +5,7 @@ This module provides QdrantIndexer - a small wrapper around qdrant_client
 to create collections (different HNSW configurations), upload points in batches,
 and create payload indexes for filter experiments.
 
-Usage :
+Usage:
     from src.indexing.qdrant_indexer import QdrantIndexer
     indexer = QdrantIndexer(in_memory=True)
     indexer.create_collections_for_experiments(vector_size=384)
@@ -92,12 +92,38 @@ class QdrantIndexer:
         """Return namespaced collection name."""
         return f"{self.collection_prefix}_{name}"
 
+    @staticmethod
+    def _normalize_hnsw_config(
+        hnsw_config: Optional[Union[models.HnswConfig, models.HnswConfigDiff, dict]]
+    ) -> Optional[dict]:
+        """
+        Convert HnswConfig/HnswConfigDiff to dict for VectorParams compatibility.
+
+        VectorParams expects HnswConfigDiff (or dict), not HnswConfig.
+        This helper ensures compatibility regardless of input type.
+        """
+        if hnsw_config is None:
+            return None
+        if isinstance(hnsw_config, dict):
+            return hnsw_config
+        # Extract fields common to HnswConfigDiff
+        return {
+            k: v for k, v in {
+                "m": getattr(hnsw_config, "m", None),
+                "ef_construct": getattr(hnsw_config, "ef_construct", None),
+                "full_scan_threshold": getattr(hnsw_config, "full_scan_threshold", None),
+                "max_indexing_threads": getattr(hnsw_config, "max_indexing_threads", None),
+                "on_disk": getattr(hnsw_config, "on_disk", None),
+                "payload_m": getattr(hnsw_config, "payload_m", None),
+            }.items() if v is not None
+        }
+
     def create_collection(
         self,
         collection_name: str,
         vector_size: int,
         distance: models.Distance = models.Distance.COSINE,
-        hnsw_config: Optional[models.HnswConfig] = None,
+        hnsw_config: Optional[Union[models.HnswConfig, models.HnswConfigDiff, dict]] = None,
         shards: Optional[int] = None,
         wait: bool = True,
     ) -> None:
@@ -113,8 +139,8 @@ class QdrantIndexer:
         distance:
             models.Distance.COSINE / DOT / EUCLID
         hnsw_config:
-            Optional models.HnswConfig instance (m, ef_construct, full_scan_threshold, etc.)
-            If None, Qdrant will use defaults.
+            Optional HNSW config. Accepts HnswConfig, HnswConfigDiff, or dict.
+            Will be normalized to dict for VectorParams compatibility.
         shards:
             Optional shard_number for collection creation.
         wait:
@@ -123,11 +149,14 @@ class QdrantIndexer:
         full_name = self._full_collection_name(collection_name)
         logger.info("Creating collection '%s' (size=%d, distance=%s)", full_name, vector_size, distance)
 
+        # Normalize hnsw_config to dict for VectorParams (expects HnswConfigDiff or dict)
+        hnsw_config_dict = self._normalize_hnsw_config(hnsw_config)
+
         # Build VectorParams using HTTP models when available
         vector_params = models.VectorParams(
             size=vector_size,
             distance=distance,
-            hnsw_config=hnsw_config
+            hnsw_config=hnsw_config_dict
         )
 
         try:
@@ -160,20 +189,19 @@ class QdrantIndexer:
           - <prefix>_hnsw_optimized (m=32, ef_construct=256)
           - <prefix>_payloads (default HNSW + payload indexes support)
         """
-        # Import HnswConfig model factory
-        # Note: models.HnswConfig accepts m, ef_construct, full_scan_threshold, etc.
         logger.info("Creating experimental collections (vector_size=%d)", vector_size)
 
         # Collection 1: Default HNSW (m=16, ef_construct=100)
-        hnsw1 = models.HnswConfig(m=16, ef_construct=100)
+        # Use dict format for HnswConfigDiff compatibility with VectorParams
+        hnsw1 = {"m": 16, "ef_construct": 100}
         self.create_collection("hnsw_default", vector_size=vector_size, hnsw_config=hnsw1)
 
         # Collection 2: Optimized HNSW (m=32, ef_construct=256)
-        hnsw2 = models.HnswConfig(m=32, ef_construct=256)
+        hnsw2 = {"m": 32, "ef_construct": 256}
         self.create_collection("hnsw_optimized", vector_size=vector_size, hnsw_config=hnsw2)
 
         # Collection 3: With payload indexes for filtering
-        hnsw3 = models.HnswConfig(m=16, ef_construct=100)
+        hnsw3 = {"m": 16, "ef_construct": 100}
         self.create_collection("payloads", vector_size=vector_size, hnsw_config=hnsw3)
 
         logger.info("All experiment collections created (prefixed by '%s').", self.collection_prefix)
@@ -325,7 +353,7 @@ class QdrantIndexer:
                 schema = models.PayloadSchemaType.FLOAT
             else:
                 # allow passing models.PayloadSchemaType directly
-                schema = getattr(models.PayloadSchemaType, field_type_upper := field_type.upper())
+                schema = getattr(models.PayloadSchemaType, field_type.upper())
         except Exception:
             # fallback: try to treat as keyword
             logger.warning("Unknown field_type '%s' - falling back to KEYWORD", field_type)

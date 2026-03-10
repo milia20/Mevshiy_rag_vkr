@@ -29,8 +29,10 @@ from typing import Any, Dict, Iterable, List, Tuple
 import numpy as np
 from tqdm.auto import tqdm
 
+from src.search_strategies import SparseSearcher, SparseConfig, DenseConfig, HybridSearcher, \
+    DenseSearcher, HybridConfig
+
 # import search classes
-from ..search_strategies import DenseSearcher, SparseSearcher, HybridSearcher, DenseConfig, SparseConfig, HybridConfig
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -363,10 +365,6 @@ def run_hybrid_grid(
     return results
 
 
-# -------------------------
-# Main
-# -------------------------
-
 
 if __name__ == "__main__":
     cfg = BenchConfig()
@@ -390,8 +388,6 @@ if __name__ == "__main__":
         ef_search_values=(50, 100),
     )
 
-    # Example: run BM25 grid (simple)
     _ = run_bm25_grid(chunks=chunks, ground_truth=gt, cfg=cfg, k1_values=(1.2,), b_values=(0.75,))
 
-    # Example: run hybrid grid
     _ = run_hybrid_grid(client=None, chunks=chunks, embeddings=embeddings, ground_truth=gt, cfg=cfg, rrf_constants=(30, 60))
