@@ -1,11 +1,14 @@
 import json
 import os
-import re
+import time
 from pathlib import Path
+from typing import Any
 
-# OpenRouter client for generating Q&A pairs
+import requests
+
+
 class OpenRouterClient:
-    def __init__(self, model_name: str = "anthropic/claude-3-haiku", api_key: str = None):
+    def __init__(self, model_name: str = "google/gemma-3-27b-it:free", api_key: str = None):
         self.model_name = model_name
         self.api_key = api_key or os.getenv("OPENROUTER_API_KEY")
         self.api_url = "https://openrouter.ai/api/v1/chat/completions"
@@ -14,7 +17,6 @@ class OpenRouterClient:
             raise ValueError("OpenRouter API key is required. Set OPENROUTER_API_KEY environment variable or pass api_key parameter.")
 
     def generate_answer(self, prompt: str, max_retries: int = 3) -> str:
-        import requests
         payload = {
             "model": self.model_name,
             "messages": [{"role": "user", "content": prompt}],
@@ -27,84 +29,86 @@ class OpenRouterClient:
         }
         for attempt in range(max_retries):
             try:
-                response = requests.post(self.api_url, json=payload, headers=headers, timeout=60)
+                response = requests.post(self.api_url, json=payload, headers=headers, timeout=320)
                 response.raise_for_status()
                 return response.json().get("choices")[0].get("message", {}).get("content", "").strip()
             except Exception as e:
                 if attempt == max_retries - 1:
                     print(f"Error generating answer after {max_retries} attempts: {e}")
                     return ""
-                import time
                 time.sleep(2 ** attempt)
 
-# Legacy Ollama client for backward compatibility
 class OllamaClient:
-    def __init__(self, model_name: str = "google/gemma-3-12b", api_url: str = "http://127.0.0.1:1234/v1/completions"):
+    def __init__(self, model_name: str = "google/gemma-3-12b", api_url: str = "http://127.0.0.1:1234/v1/chat/completions"):
         self.model_name = model_name
         self.api_url = api_url
 
-    def generate_answer(self, prompt: str, max_retries: int = 3) -> str:
-        import requests
+    def generate_answer(self, prompt: str, max_retries: int = 3) -> str | None | Any:
         payload = {
             "model": self.model_name,
-            "prompt": prompt,
+            "messages": [{"role": "user", "content": prompt}],
             "stream": False
         }
         for attempt in range(max_retries):
             try:
                 response = requests.post(self.api_url, json=payload, timeout=60)
                 response.raise_for_status()
-                return response.json().get("choices")[0].get("text", "").strip()
+                data = response.json()
+
+                # Для /v1/chat/completions ответ в message.content
+                if "choices" in data and len(data["choices"]) > 0:
+                    content = data["choices"][0].get("message", {}).get("content", "")
+                    return content.strip()
+                else:
+                    print("unknown structure:", data)
+                    return ""
             except Exception as e:
                 if attempt == max_retries - 1:
                     print(f"Error generating answer after {max_retries} attempts: {e}")
                     return ""
-                import time
                 time.sleep(2 ** attempt)
 
-# Helper to extract Q&A pairs from model output
 
 def parse_qna(json_text: str):
+    """extract Q&A pairs from model output"""
     try:
-        data = json.loads(json_text)
+        data = json.loads(json_text.strip("`json"))
         if isinstance(data, list):
             return [(item.get("question"), item.get("answer")) for item in data]
-    except Exception:
+    except Exception as e:
+        print(e)
         pass
     return []
 
-# Generate Q&A pairs for a language using OpenRouter
-def generate_qna_for_lang(lang_dir: Path, client, max_pairs: int = 200):
-    """Generate Q&A pairs for the given language directory using OpenRouter."""
+def generate_qna_for_lang(lang_dir: Path, client, max_pairs: int = 200, lang: str=""):
+    """Generate Q&A pairs for the given language directory."""
     pairs = []
-    md_file = next(lang_dir.rglob("*.md"), None)
-    
-    if not md_file:
-        print(f"No markdown files found in {lang_dir}")
-        return pairs
-    
-    # Read the markdown content
-    try:
-        with open(md_file, 'r', encoding='utf-8') as f:
-            content = f.read()
-    except Exception as e:
-        print(f"Error reading {md_file}: {e}")
-        return pairs
-    
-    file_path = str(md_file.relative_to(Path("fastapi_doc")))
-    
-    # Generate Q&A pairs in batches
-    batch_size = 5  # Generate 5 pairs at a time
+    batch_size = 5
+    doc_generator = lang_dir.rglob("*.md")
     for batch_start in range(0, max_pairs, batch_size):
+
+        md_file = next(doc_generator, None)
+
+        if not md_file:
+            print(f"No markdown files found in {lang_dir}")
+            return pairs
+
+        try:
+            with open(md_file, 'r', encoding='utf-8') as f:
+                content = f.read()
+        except Exception as e:
+            print(f"Error reading {md_file}: {e}")
+            return pairs
+
+        file_path = str(md_file.relative_to(Path("../../fastapi_doc")))
         current_batch_size = min(batch_size, max_pairs - batch_start)
-        
-        prompt = f"""
+        prompt = f"""/no_think
 Based on the following documentation content, generate {current_batch_size} question-answer pairs.
 The questions should be practical and relevant to developers using this documentation.
 Return the response as a JSON array of objects, each with "question" and "answer" fields.
 
 Documentation content:
-{content[:3000]}  # Limit content to avoid token limits
+{content[:3500]}
 
 Example format:
 [
@@ -112,7 +116,7 @@ Example format:
     {{"question": "What is dependency injection in FastAPI?", "answer": "Dependency injection is a way to declare dependencies for your path operations..."}}
 ]
 
-Generate {current_batch_size} diverse and useful Q&A pairs:
+Generate the answer in {lang} {current_batch_size} diverse and useful Q&A pairs:
 """
         
         try:
@@ -139,37 +143,35 @@ Generate {current_batch_size} diverse and useful Q&A pairs:
     return pairs[:max_pairs]  # Ensure we don't exceed max_pairs
 
 if __name__ == "__main__":
-    model_name = os.getenv("OPENROUTER_MODEL", "anthropic/c")
+    model_name = os.getenv("OPENROUTER_MODEL", "qwen/qwen3.5-35b-a3b")
     
     try:
-        # Initialize OpenRouter client
-        client = OpenRouterClient(model_name=model_name)
+        # client = OpenRouterClient(model_name=model_name)
+        client = OllamaClient(model_name=model_name)
         print(f"Using OpenRouter model: {model_name}")
         
-        base = Path("fastapi_doc")
+        base = Path("../../fastapi_doc")
         en_dir = base / "en" / "docs"
         ru_dir = base / "ru" / "docs"
         
-        # Generate Q&A pairs for each language
-        print("Generating Q&A pairs for English documentation...")
-        en_pairs = generate_qna_for_lang(en_dir, client, 200)
-        
         print("Generating Q&A pairs for Russian documentation...")
-        ru_pairs = generate_qna_for_lang(ru_dir, client, 200)
-        
-        all_pairs = en_pairs + ru_pairs
-        out_path = Path("qna_pairs.jsonl")
-        
-        with out_path.open("w", encoding="utf-8") as f:
-            for item in all_pairs:
+        ru_pairs = generate_qna_for_lang(ru_dir, client, 200, "Russian")
+
+        print("Generating Q&A pairs for English documentation...")
+        en_pairs = generate_qna_for_lang(en_dir, client, 200, "English")
+
+        with Path("qna_pairs_en.jsonl").open("w", encoding="utf-8") as f:
+            for item in en_pairs:
+                f.write(json.dumps(item, ensure_ascii=False) + "\n")
+
+        with Path("qna_pairs_ru.jsonl").open("w", encoding="utf-8") as f:
+            for item in ru_pairs:
                 f.write(json.dumps(item, ensure_ascii=False) + "\n")
         
-        print(f"Generated {len(all_pairs)}. OutputЖ {out_path}")
         print(f"English: {len(en_pairs)}, Russian: {len(ru_pairs)}")
         
     except ValueError as e:
-        print(f"Configuration error: {e}")
-        print("Please set the OPENROUTER_API_KEY environment variable or pass it to the OpenRouterClient constructor.")
+        print(f"Error: {e}")
     except Exception as e:
         print(f"Error during execution: {e}")
 # set OPENROUTER_API_KEY=

@@ -14,29 +14,22 @@ from __future__ import annotations
 
 import json
 import logging
-import math
-import os
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Iterable, List, Tuple
+from typing import Dict, List, Tuple
 
 import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
 from tqdm.auto import tqdm
 
-# -------------------------
-# Configuration dataclass
-# -------------------------
-
-
 @dataclass
 class GTConfig:
-    chunks_path: str = "data/processed/chunks.jsonl"
-    output_path: str = "data/ground_truth/ground_truth.jsonl"
-    meta_path: str = "data/ground_truth/ground_truth_meta.json"
-    emb_memmap_path: str = "data/ground_truth/embeddings.memmap"
+    chunks_path: str = "../preprocessing/data/processed/chunks_en.jsonl"
+    output_path: str = "../preprocessing/data/ground_truth/ground_truth.jsonl"
+    meta_path: str = "../preprocessing/data/ground_truth/ground_truth_meta.json"
+    emb_memmap_path: str = "../preprocessing/data/ground_truth/embeddings.memmap"
     model_name: str = "sentence-transformers/all-MiniLM-L6-v2"
     batch_size: int = 64
     top_k: int = 10
@@ -86,10 +79,10 @@ def load_chunks(chunks_jsonl_path: str) -> Tuple[List[str], List[Dict]]:
     return texts, metadata_list
 
 
-def count_lines(path: str) -> int:
-    """Count non-empty lines in a file (fast)."""
-    with open(path, "r", encoding="utf-8") as f:
-        return sum(1 for _ in f if _.strip())
+# def count_lines(path: str) -> int:
+#     """Count non-empty lines in a file (fast)."""
+#     with open(path, "r", encoding="utf-8") as f:
+#         return sum(1 for _ in f if _.strip())
 
 
 
@@ -242,12 +235,12 @@ def generate_ground_truth(
                 # filter out the query itself
                 neighbors: List[str] = []
                 for idx in ind_row:
-                    if int(idx) == int(global_query_idx):
+                    if idx == global_query_idx:
                         continue
                     # if idx == -1 (faiss can return -1 when not enough vectors), skip
-                    if int(idx) < 0:
+                    if idx < 0:
                         continue
-                    neighbors.append(chunk_ids[int(idx)])
+                    neighbors.append(chunk_ids[idx])
                     if len(neighbors) >= top_k:
                         break
 
@@ -300,7 +293,6 @@ def build_ground_truth_pipeline(cfg: GTConfig) -> Dict[str, List[str]]:
     # Normalize embeddings to unit length for cosine via inner product
     normalize_inplace_memmap(memmap)
 
-    # Build FAISS index
     index = build_faiss_index(np.asarray(memmap, dtype=np.float32))
 
     # Search and write results
@@ -336,10 +328,20 @@ if __name__ == "__main__":
     setup_logging()
 
     default_cfg = GTConfig(
-        chunks_path="data/processed/chunks.jsonl",
-        output_path="data/ground_truth/ground_truth.jsonl",
-        meta_path="data/ground_truth/ground_truth_meta.json",
-        emb_memmap_path="data/ground_truth/embeddings.memmap",
+        chunks_path="../indexing/processed/chunks_en.jsonl",
+        output_path="../indexing/data/ground_truth_en.jsonl",
+        meta_path="../indexing/data/ground_truth_meta_en.json",
+        emb_memmap_path="../indexing/data/embeddings_en.memmap",
+        model_name="sentence-transformers/all-MiniLM-L6-v2",
+        batch_size=64,
+        top_k=10,
+    )
+
+    default_cfg_ru = GTConfig(
+        chunks_path="../indexing/processed/chunks_ru.jsonl",
+        output_path="../indexing/data/ground_truth_ru.jsonl",
+        meta_path="../indexing/data/ground_truth_meta_ru.json",
+        emb_memmap_path="../indexing/data/embeddings_ru.memmap",
         model_name="sentence-transformers/all-MiniLM-L6-v2",
         batch_size=64,
         top_k=10,
@@ -347,7 +349,8 @@ if __name__ == "__main__":
 
     try:
         results = build_ground_truth_pipeline(default_cfg)
-        logging.info("Generated ground truth for %d queries.", len(results))
+        results_ru = build_ground_truth_pipeline(default_cfg_ru)
+        logging.info(f"Generated ground truth - {len(results)} queries")
+        logging.info(f"Generated ground truth - {len(results_ru)} queries")
     except Exception as exc:
-        logging.exception("Ground-truth generation failed: %s", exc)
-        raise
+        logging.exception(f"Ground-truth generation failed: {exc}")

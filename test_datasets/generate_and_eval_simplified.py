@@ -313,7 +313,7 @@ def main():
     ollama_client = OllamaClient()
     
     # Path to the simplified NQ dataset
-    simplified_nq_file = "datasets/v1.0-simplified_nq-dev-all.jsonl/v1.0-simplified_nq-dev-all.jsonl"
+    simplified_nq_file = "../datasets/v1.0-simplified_nq-dev-all.jsonl/v1.0-simplified_nq-dev-all.jsonl"
     
     if not os.path.exists(simplified_nq_file):
         print(f"Error: {simplified_nq_file} not found. Please ensure the file exists in the current directory.")

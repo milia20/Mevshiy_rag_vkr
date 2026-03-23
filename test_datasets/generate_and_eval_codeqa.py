@@ -195,7 +195,7 @@ def main():
     all_simple: List[Dict[str, Any]] = []
 
     # data_sample/python
-    ds_base = os.path.join("CodeQA-main", "data_sample", "python")
+    ds_base = os.path.join("../datasets/CodeQA-main", "data_sample", "python")
     ds_q = os.path.join(ds_base, "python_sample.question")
     ds_c = os.path.join(ds_base, "python_sample.code")
     ds_a = os.path.join(ds_base, "python_sample.answer")
@@ -212,7 +212,7 @@ def main():
         all_simple.extend(s1)
 
     # codeBERT/data/python/test
-    test_base = os.path.join("CodeQA-main", "codeBERT", "data", "python", "test")
+    test_base = os.path.join("../datasets/CodeQA-main", "codeBERT", "data", "python", "test")
     tq = os.path.join(test_base, "test.question")
     tc = os.path.join(test_base, "test.code")
     ta = os.path.join(test_base, "test.answer")

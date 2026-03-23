@@ -279,7 +279,7 @@ def main():
     all_results = []
 
     # Evaluate Russian RAG dataset if available
-    ru_rag_path = os.path.join("ru_rag_test_dataset-main", "ru_rag_test_dataset.pkl")
+    ru_rag_path = os.path.join("../ru_rag_test_dataset-main", "ru_rag_test_dataset.pkl")
     if os.path.exists(ru_rag_path):
         print("Loading Russian RAG dataset...")
         df_ru_rag = load_ru_rag_dataset(ru_rag_path)
@@ -289,7 +289,7 @@ def main():
         all_results.extend(ru_rag_results)
 
     # Evaluate Natural Questions dataset if available
-    nq_test_path = os.path.join("natural-questions-master",
+    nq_test_path = os.path.join("../datasets/natural-questions-master",
                                 "nq-test-sample.jsonl")  # Update with actual path
     if os.path.exists(nq_test_path):
         print(f"Evaluating on Natural Questions dataset from {nq_test_path}...")
