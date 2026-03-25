@@ -21,10 +21,10 @@ import json
 import logging
 import random
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from itertools import product
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Tuple
+from typing import Any, Dict, List, Tuple
 
 import numpy as np
 from tqdm.auto import tqdm
@@ -36,11 +36,6 @@ from src.search_strategies import SparseSearcher, SparseConfig, DenseConfig, Hyb
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
-
-
-# -------------------------
-# Configs
-# -------------------------
 
 
 @dataclass
