@@ -8,6 +8,7 @@ import argparse
 import hashlib
 import json
 import logging
+import sys
 import uuid
 from dataclasses import dataclass
 from pathlib import Path
@@ -417,6 +418,13 @@ class QdrantIndexer:
 
                 except Exception as e:
                     logger.error(f"Batch upload failed: {e}")
+                    error_text = str(e)
+                    if "Vector dimension error" in error_text or "expected dim" in error_text:
+                        raise RuntimeError(
+                            "Vector dimension mismatch. "
+                            "Recreate the collection with the same dimension as your embedding model. "
+                            f"Underlying error: {error_text}"
+                        ) from e
                     failed += len(points)
 
         self._indexed_count = uploaded
@@ -767,12 +775,20 @@ Examples:
     )
 
     # Embedding arguments
-    parser.add_argument(
+    embedding_group = parser.add_mutually_exclusive_group()
+    embedding_group.add_argument(
         "--add-embeddings",
+        dest="add_embeddings",
         action="store_true",
-        default=True,
-        help="Generate embeddings using SentenceTransformer",
+        help="Generate embeddings using SentenceTransformer (default)",
     )
+    embedding_group.add_argument(
+        "--no-embeddings",
+        dest="add_embeddings",
+        action="store_false",
+        help="Do not generate embeddings; expects vectors already present in input file",
+    )
+    parser.set_defaults(add_embeddings=True)
     parser.add_argument(
         "--embedding-model",
         type=str,
@@ -890,9 +906,15 @@ def main():
 
         else:
             # Single collection mode
-            if not indexer.client.collection_exists(args.collection):
+            if args.force_recreate or not indexer.client.collection_exists(args.collection):
+                if args.add_embeddings:
+                    model = SentenceTransformer(args.embedding_model)
+                    vector_size = int(model.get_sentence_embedding_dimension())
+                else:
+                    vector_size = args.vector_size
+
                 indexer.create_collection(
-                    vector_size=args.vector_size,
+                    vector_size=vector_size,
                     hnsw_config=hnsw_config,
                     force_recreate=args.force_recreate,
                 )
@@ -965,8 +987,6 @@ def main():
 # Test & Load Script (when run directly)
 
 if __name__ == "__main__":
-    import sys
-
     if len(sys.argv) == 1:
         logging.basicConfig(
             level=logging.INFO,

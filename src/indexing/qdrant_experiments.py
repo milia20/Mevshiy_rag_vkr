@@ -11,6 +11,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List
 
+from sentence_transformers import SentenceTransformer
+
 from qdrant_uploader import QdrantIndexer, HNSWConfig
 
 logger = logging.getLogger(__name__)
@@ -57,8 +59,11 @@ EXPERIMENTS = [
 def run_experiment(
     exp: ExperimentConfig,
     input_file: str,
-    vector_size: int = 768,
+    vector_size: int | None = None,
     batch_size: int = 256,
+    *,
+    add_embeddings: bool = True,
+    embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2",
 ) -> dict:
     """Run a single indexing experiment"""
     print(f"\n{'='*60}")
@@ -66,7 +71,6 @@ def run_experiment(
     print(f"{'='*60}")
     print(f"Collection: {exp.collection_name}")
     print(f"HNSW: m={exp.hnsw_config.m}, ef_construct={exp.hnsw_config.ef_construct}")
-    print(f"Description: {exp.description}")
 
     indexer = None
     try:
@@ -76,17 +80,26 @@ def run_experiment(
             in_memory=False,
         )
 
+        if vector_size is None and add_embeddings:
+            try:
+                model = SentenceTransformer(embedding_model)
+                vector_size = int(model.get_sentence_embedding_dimension())
+            except Exception:
+                vector_size = 384
+
         # Create collection with force_recreate=True
         indexer.create_collection(
-            vector_size=vector_size,
+            vector_size=(vector_size if vector_size is not None else 384),
             hnsw_config=exp.hnsw_config,
             force_recreate=True,  # This parameter is now properly defined
         )
 
         # Index documents
-        stats = indexer.index_documents_from_file(
+        upload_stats, vector_dim = indexer.index_documents_from_file(
             file_path=input_file,
             batch_size=batch_size,
+            add_embeddings=add_embeddings,
+            embedding_model=embedding_model,
         )
 
         # Create payload indexes
@@ -95,17 +108,27 @@ def run_experiment(
         # Verify
         verification = indexer.verify_index()
 
+        uploaded = int(upload_stats.get("uploaded", 0))
+        failed = int(upload_stats.get("failed", 0))
+        points = int(verification.get("points_count") or 0)
+
+        status = "success" if (uploaded > 0 and points > 0 and failed == 0) else "failed"
+
         result = {
             "experiment": exp.name,
             "collection": exp.collection_name,
             "hnsw_config": exp.hnsw_config.to_dict(),
-            "upload_stats": stats,
+            "upload_stats": upload_stats,
+            "vector_dim": vector_dim,
             "verification": verification,
-            "status": "success",
+            "status": status,
         }
 
-        print(f"✓ Experiment {exp.name} completed successfully")
-        print(f"  Points indexed: {verification.get('points_count', 'N/A')}")
+        if status == "success":
+            print(f"✓ Experiment {exp.name} completed successfully")
+        else:
+            print(f"✗ Experiment {exp.name} finished with errors")
+        print(f"  Uploaded: {uploaded} | Failed: {failed} | Points: {points} | Vector dim: {vector_dim}")
 
         return result
 
@@ -124,9 +147,12 @@ def run_experiment(
 
 def run_all_experiments(
     input_file: str,
-    vector_size: int = 768,
+    vector_size: int | None = None,
     batch_size: int = 256,
     output_path: str = "experiments/indexing_results.json",
+    *,
+    add_embeddings: bool = True,
+    embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2",
 ) -> List[dict]:
     """Run all indexing experiments"""
     results = []
@@ -137,6 +163,8 @@ def run_all_experiments(
             input_file=input_file,
             vector_size=vector_size,
             batch_size=batch_size,
+            add_embeddings=add_embeddings,
+            embedding_model=embedding_model,
         )
         results.append(result)
 
@@ -171,9 +199,21 @@ def main():
     parser.add_argument(
         "--vector-size",
         type=int,
-        default=768,
-        help="Vector dimension (default: 768)"
+        default=None,
+        help="Vector dimension (default: derived from embedding model when embeddings are enabled)"
     )
+    parser.add_argument(
+        "--embedding-model",
+        type=str,
+        default="sentence-transformers/all-MiniLM-L6-v2",
+        help="SentenceTransformer model name (used to derive vector size)",
+    )
+    parser.add_argument(
+        "--no-embeddings",
+        action="store_true",
+        help="Do not generate embeddings; expects vectors already present in input file",
+    )
+
     parser.add_argument(
         "--batch-size",
         type=int,
@@ -225,6 +265,8 @@ def main():
             input_file=args.input,
             vector_size=args.vector_size,
             batch_size=args.batch_size,
+            add_embeddings=not args.no_embeddings,
+            embedding_model=args.embedding_model,
         )
         results.append(result)
 

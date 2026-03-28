@@ -20,7 +20,7 @@ from __future__ import annotations
 import logging
 import time
 from dataclasses import dataclass
-from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
 from qdrant_client import QdrantClient
@@ -92,64 +92,41 @@ class DenseSearcher:
         self.cfg = cfg
         logger.info("DenseSearcher initialized (collection=%s, ef_search=%d)", cfg.collection_name, cfg.ef_search)
 
-    def search(self, query_vector: Sequence[float], top_k: Optional[int] = None, filter: Optional[models.Filter] = None) -> Tuple[List[Dict], Dict]:
+    def search(self, query_vector: List[float], top_k: int = None) -> Tuple[List[Dict], Dict]:
         """
-        Perform vector search on Qdrant.
-
-        Parameters
-        ----------
-        query_vector : Sequence[float]
-            A single vector (list/np.ndarray)
-        top_k : Optional[int]
-            override cfg.top_k
-        filter : Optional[models.Filter]
-            Qdrant filter object for payload filtering
-
-        Returns
-        -------
-        results : list of dicts {"id":..., "score":..., "payload":...}
-        meta : dict with timing (time_s, qps)
+        Search using dense vectors.
         """
-        k = top_k or self.cfg.top_k
-        t0 = _now()
+        top_k = top_k or self.cfg.top_k
+        t0 = time.perf_counter()
 
-        params = {"hnsw_ef": self.cfg.ef_search}
-
-        # QdrantClient.search signature: client.search(collection_name, query_vector, limit, filter=..., with_payload=...)
         try:
-            hits = self.client.search(
+            # ✅ Правильный API для query_points (qdrant_client >= 1.7.0)
+            hits = self.client.query_points(
                 collection_name=self.cfg.collection_name,
-                query_vector=list(map(float, query_vector)),
-                limit=k,
-                filter=filter,
-                with_payload=self.cfg.with_payload,
-                params=params,
-            )
-        except Exception as exc:
-            logger.exception("Qdrant dense search failed: %s", exc)
-            raise
-
-        results = []
-        for h in hits:
-            # hit is a ScoredPoint / models.ScoredPoint
-            results.append(
-                {
-                    "id": h.id,
-                    "score": float(h.score) if h.score is not None else None,
-                    "payload": h.payload,
-                }
+                query=query_vector,  # ✅ Не query_vector, а query
+                limit=top_k,
+                with_payload=True,
             )
 
-        duration = _now() - t0
-        meta = {"time_s": duration, "qps": 1.0 / duration if duration > 0 else float("inf"), "k": k}
-        return results, meta
+            # ✅ Правильное извлечение результатов
+            results = []
+            for hit in hits.points:
+                results.append({
+                    "id": str(hit.id),
+                    "score": hit.score,
+                    "text": hit.payload.get("text", "") if hit.payload else ""
+                })
+
+            elapsed = time.perf_counter() - t0
+
+            return results, {"time_s": elapsed, "n_results": len(results)}
+
+        except Exception as e:
+            logger.error("Qdrant dense search failed: %s", e)
+            return [], {"time_s": time.perf_counter() - t0, "n_results": 0, "error": str(e)}
 
 
-# -------------------------
 # Sparse searcher (BM25)
-# -------------------------
-
-
 def _default_tokenizer(text: str) -> List[str]:
     # simple whitespace + lowercase tokenizer; you can replace with spaCy / nltk if needed
     return [t for t in text.lower().split() if t]
