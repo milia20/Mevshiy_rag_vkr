@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Qdrant MVP Search</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 24px; }
+    .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    input[type=text] { width: min(720px, 100%); padding: 10px 12px; font-size: 16px; }
+    input.small { width: 260px; }
+    button { padding: 10px 14px; font-size: 16px; cursor: pointer; }
+    pre { white-space: pre-wrap; word-break: break-word; background: #f6f8fa; padding: 12px; border-radius: 8px; }
+    .muted { color: #555; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <h2>Qdrant MVP Search</h2>
+  <div class="row">
+    <input id="query" type="text" placeholder="Type your query..." />
+    <button id="btn">Search</button>
+  </div>
+  <div class="row" style="margin-top: 12px;">
+    <input id="collection" class="small" type="text" value="mkdocs_docs" />
+    <input id="limit" class="small" type="text" value="10" />
+  </div>
+  <p class="muted">Uses <code>POST /search</code> on this server.</p>
+  <pre id="out">Ready.</pre>
+
+  <script>
+    const q = document.getElementById('query');
+    const out = document.getElementById('out');
+    const btn = document.getElementById('btn');
+
+    async function runSearch() {
+      const query = q.value.trim();
+      if (!query) return;
+      out.textContent = 'Searching...';
+
+      const body = {
+        query,
+        collection_name: document.getElementById('collection').value.trim() || 'mkdocs_docs',
+        limit: parseInt(document.getElementById('limit').value, 10) || 10
+      };
+
+      const r = await fetch('/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      const data = await r.json();
+      out.textContent = JSON.stringify(data, null, 2);
+    }
+
+    btn.addEventListener('click', runSearch);
+    q.addEventListener('keydown', (e) => { if (e.key === 'Enter') runSearch(); });
+  </script>
+</body>
+</html>
