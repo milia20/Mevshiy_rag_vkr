@@ -125,9 +125,9 @@ def transform_dataset(
 
 if __name__ == "__main__":
     DATASET_PATH = r"D:\P_work\Rag-VKR\ru_rag_test_dataset-main\ru_rag_test_dataset.pkl"
-    QA_OUTPUT = r"data/qa_pairs.jsonl"
-    CHUNKS_OUTPUT = r"data/chunks.jsonl"
-    FILES_DIR = r"D:\P_work\Rag-VKR\ru_rag_test_dataset-main\files"  # None для автоопределения
+    QA_OUTPUT = r"ru_rag/qa_pairs.jsonl"
+    CHUNKS_OUTPUT = r"ru_rag/chunks.jsonl"
+    FILES_DIR = r"D:\P_work\Rag-VKR\ru_rag_test_dataset-main\files"
 
     transform_dataset(
         dataset_path=DATASET_PATH,

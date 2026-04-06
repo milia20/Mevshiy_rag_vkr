@@ -44,8 +44,22 @@ class DenseConfig:
 
 @dataclass
 class SparseConfig:
-    tokenizer: Optional[Any] = None  # function(str)->List[str]
+    # Общие параметры
+    tokenizer: Optional[Any] = None
     top_k: int = 10
+
+    # BM25 параметры (для in-memory SparseSearcher)
+    k1: float = 1.5
+    b: float = 0.75
+
+    # Qdrant-specific параметры (для QdrantSparseSearcher)
+    collection_name: Optional[str] = None
+    qdrant_url: str = "http://localhost:6333"
+    sparse_vector_field: str = "sparse_vector"
+    vocabulary: Optional[Dict[str, int]] = None
+    use_idf: bool = True
+    on_disk: bool = False
+    recreate_collection: bool = True
 
 
 @dataclass
@@ -168,54 +182,171 @@ class SparseSearcher:
 
 # Sparse Searcher (Qdrant Native Sparse Vectors)
 class QdrantSparseSearcher:
+    """
+    Qdrant-based sparse search using native sparse vectors.
 
-    def __init__(self, client: QdrantClient, cfg: QdrantSparseConfig):
-        self.client = client
+    Drop-in replacement for SparseSearcher with identical interface:
+        __init__(docs: List[Dict], cfg: SparseConfig)
+        search(query_text: str, top_k: int) -> Tuple[List[Dict], Dict]
+
+    Automatically handles:
+        - Qdrant client initialization
+        - Collection creation with sparse vector config
+        - Vocabulary building and document upsert
+        - Query tokenization and sparse vector conversion
+    """
+
+    def __init__(self, docs: List[Dict[str, Any]], cfg: SparseConfig):
+        """
+        Initialize QdrantSparseSearcher.
+
+        Args:
+            docs: List[{"id": <chunk_id>, "text": "<raw text>"}]
+            cfg: SparseConfig with Qdrant-specific parameters
+        """
         self.cfg = cfg
-        self.tokenizer = _default_tokenizer
+        self.tokenizer = cfg.tokenizer or _default_tokenizer
 
-        # Build vocabulary if not provided (for token->index mapping)
-        if cfg.vocabulary is None:
-            logger.warning("No vocabulary provided.")
-        else:
-            logger.info(f"QdrantSparseSearcher initialized (collection={cfg.collection_name}, vocab_size={len(cfg.vocabulary)})",
-                    )
+        # Store docs metadata for vocabulary building
+        self.docs = docs
+        self.ids = [d["id"] for d in docs]
+
+        # Initialize Qdrant client
+        try:
+            from qdrant_client import QdrantClient
+            self.client = QdrantClient(url=cfg.qdrant_url, prefer_grpc=False)
+        except ImportError:
+            raise ImportError("qdrant_client is required for QdrantSparseSearcher")
+
+        # Validate collection name
+        if not cfg.collection_name:
+            raise ValueError("collection_name must be specified in SparseConfig for QdrantSparseSearcher")
+
+        # Build vocabulary and initialize collection
+        self._initialize(cfg)
+
+        logger.info("QdrantSparseSearcher initialized (collection=%s, vocab_size=%d)",
+                    cfg.collection_name, len(self.vocabulary) if self.vocabulary else 0)
+
+    def _initialize(self, cfg: SparseConfig):
+        """Build vocabulary, create collection, and upsert documents."""
+
+        # Build vocabulary from docs
+        self.vocabulary = cfg.vocabulary or self._build_vocabulary(self.docs, self.tokenizer)
+
+        # Create collection if needed
+        if cfg.recreate_collection or not self.client.collection_exists(cfg.collection_name):
+            self._create_sparse_collection(cfg.collection_name, cfg.sparse_vector_field, cfg.on_disk)
+
+        # Upsert documents as sparse vectors
+        self._upsert_documents(self.docs, batch_size=100)
+
+    def _build_vocabulary(self, docs: List[Dict[str, Any]], tokenizer) -> Dict[str, int]:
+        """Build vocabulary with token->index mapping and optional IDF values."""
+        import math
+        from tqdm.auto import tqdm
+
+        all_tokens = set()
+        doc_token_counts = {}
+
+        for doc in tqdm(docs, desc="Building vocabulary"):
+            text = doc.get("text", "")
+            tokens = tokenizer(text)
+            unique_tokens = set(tokens)
+            all_tokens.update(unique_tokens)
+            for token in unique_tokens:
+                doc_token_counts[token] = doc_token_counts.get(token, 0) + 1
+
+        vocabulary = {token: idx for idx, token in enumerate(sorted(all_tokens))}
+
+        # Compute IDF values (BM25-style)
+        n_docs = len(docs)
+        idf_values = {}
+        for token, doc_count in doc_token_counts.items():
+            # BM25 IDF formula with smoothing
+            idf_values[token] = math.log((n_docs - doc_count + 0.5) / (doc_count + 0.5) + 1.0)
+
+        vocabulary["_idf"] = idf_values
+        logger.info("Vocabulary built: %d tokens", len(vocabulary) - 1)
+        return vocabulary
+
+    def _create_sparse_collection(self, collection_name: str, vector_field: str, on_disk: bool):
+        """Create Qdrant collection with sparse vector support."""
+        from qdrant_client import models
+
+        self.client.recreate_collection(
+            collection_name=collection_name,
+            vectors_config={},  # Empty for sparse-only
+            sparse_vectors_config={
+                vector_field: models.SparseVectorParams(
+                    index=models.SparseIndexParams(on_disk=on_disk)
+                )
+            }
+        )
+        logger.info("Sparse collection created: %s", collection_name)
 
     def _text_to_sparse_vector(self, text: str) -> models.SparseVector:
-        """
-        Convert text to sparse vector using vocabulary mapping.
+        """Convert text to sparse vector using vocabulary and BM25-style weighting."""
+        from qdrant_client import models
 
-        Each token gets an index from vocabulary, value can be TF or TF-IDF weight.
-        """
         tokens = self.tokenizer(text)
 
-        # Count term frequencies
+        # Calculate TF
         tf = {}
         for token in tokens:
             tf[token] = tf.get(token, 0) + 1
 
-        # Build sparse vector (indices, values)
-        indices = []
-        values = []
+        indices, values = [], []
+        idf_map = self.vocabulary.get("_idf", {})
 
         for token, freq in tf.items():
-            if token in self.cfg.vocabulary:
-                idx = self.cfg.vocabulary[token]
-                # Apply IDF weighting if enabled
-                if self.cfg.use_idf and "idf" in self.cfg.vocabulary:
-                    idf_val = self.cfg.vocabulary["idf"].get(token, 1.0)
-                    weight = freq * idf_val
-                else:
-                    weight = freq
+            if token in self.vocabulary and token != "_idf":
+                idx = self.vocabulary[token]
+                # Apply BM25-style TF-IDF weighting (k1 and b are noted but Qdrant uses raw scores)
+                idf_val = idf_map.get(token, 1.0)
+                weight = freq * idf_val  # Simplified: Qdrant handles scoring internally
                 indices.append(idx)
                 values.append(weight)
 
         return models.SparseVector(indices=indices, values=values)
 
+    def _upsert_documents(self, docs: List[Dict[str, Any]], batch_size: int = 100):
+        """Index documents into Qdrant as sparse vectors."""
+        from qdrant_client import models
+        from tqdm.auto import tqdm
+
+        points = []
+        for doc in tqdm(docs, desc="Upserting sparse vectors"):
+            sparse_vec = self._text_to_sparse_vector(doc["text"])
+
+            if not sparse_vec.indices:  # Skip empty vectors
+                continue
+
+            points.append(
+                models.PointStruct(
+                    id=doc["id"],
+                    vector={self.cfg.sparse_vector_field: sparse_vec},
+                    payload={"text": doc["text"], "chunk_id": doc["id"]}
+                )
+            )
+
+            if len(points) >= batch_size:
+                self.client.upsert(collection_name=self.cfg.collection_name, points=points)
+                points = []
+
+        if points:
+            self.client.upsert(collection_name=self.cfg.collection_name, points=points)
+
+        logger.info("Upserted %d documents to sparse collection", len(docs))
+
     def search(self, query_text: str, top_k: Optional[int] = None) -> Tuple[List[Dict], Dict]:
         """
         Search using sparse vectors in Qdrant.
+
+        Identical interface to SparseSearcher.search()
         """
+        from qdrant_client import models
+
         k = top_k or self.cfg.top_k
         t0 = _now()
 
@@ -231,14 +362,15 @@ class QdrantSparseSearcher:
                     vector=sparse_query
                 ),
                 limit=k,
-                with_payload=self.cfg.with_payload,
+                with_payload=True,
             )
 
+            # Format results to match SparseSearcher output
             results = []
             for hit in hits.points:
                 results.append({
                     "id": str(hit.id),
-                    "score": hit.score,
+                    "score": float(hit.score),
                     "payload": hit.payload if hit.payload else {}
                 })
 
@@ -262,110 +394,13 @@ class QdrantSparseSearcher:
                 "searcher": "qdrant_sparse"
             }
 
-    @staticmethod
-    def build_vocabulary(docs: List[Dict[str, Any]], tokenizer=None) -> Dict[str, int]:
-        """
-        Build vocabulary from documents for token->index mapping.
-
-        Returns dict: {token: index, ...}
-        Optionally includes IDF values: {"idf": {token: idf_value, ...}}
-        """
-        tokenizer = tokenizer or _default_tokenizer
-
-        # Collect all unique tokens
-        all_tokens = set()
-        doc_token_counts = {}  # token -> number of docs containing it
-
-        for doc in tqdm(docs, desc="Building vocabulary"):
-            text = doc.get("text", "")
-            tokens = tokenizer(text)
-            unique_tokens = set(tokens)
-            all_tokens.update(unique_tokens)
-
-            for token in unique_tokens:
-                doc_token_counts[token] = doc_token_counts.get(token, 0) + 1
-
-        # Create token->index mapping
-        vocabulary = {token: idx for idx, token in enumerate(sorted(all_tokens))}
-
-        # Compute IDF values
-        n_docs = len(docs)
-        idf_values = {}
-        import math
-        for token, doc_count in doc_token_counts.items():
-            idf_values[token] = math.log((n_docs + 1) / (doc_count + 1)) + 1
-
-        vocabulary["idf"] = idf_values
-
-        logger.info("Vocabulary built: %d tokens", len(vocabulary) - 1)  # -1 for "idf" key
-        return vocabulary
-
-    @staticmethod
-    def create_sparse_collection(
-        client: QdrantClient,
-        collection_name: str,
-        sparse_vector_field: str = "sparse_vector",
-        on_disk: bool = False
-    ):
-        """
-        Helper to create a collection with sparse vector support.
-
-        Sparse vectors require sparse_vectors_config (not vectors_config) [[47]].
-        """
-        client.recreate_collection(
-            collection_name=collection_name,
-            vectors_config={},  # empty for sparse-only, or add dense config for hybrid
-            sparse_vectors_config={
-                sparse_vector_field: models.SparseVectorParams(
-                    index=models.SparseIndexParams(
-                        on_disk=on_disk,
-                    )
-                )
-            }
-        )
-        logger.info("Sparse collection created: %s", collection_name)
-
-    def upsert_documents(self, docs: List[Dict[str, Any]], batch_size: int = 100):
-        """
-        Index documents into Qdrant as sparse vectors.
-
-        docs: List[{"id": <chunk_id>, "text": "<raw text>"}]
-        """
-        if self.cfg.vocabulary is None:
-            raise ValueError("Vocabulary must be set before upserting documents.")
-
-        points = []
-        for doc in tqdm(docs, desc="Upserting sparse vectors"):
-            sparse_vec = self._text_to_sparse_vector(doc["text"])
-
-            # Skip empty vectors
-            if len(sparse_vec.indices) == 0:
-                continue
-
-            points.append(
-                models.PointStruct(
-                    id=doc["id"],
-                    vector={self.cfg.sparse_vector_field: sparse_vec},
-                    payload={"text": doc["text"]}
-                )
-            )
-
-            # Batch upsert
-            if len(points) >= batch_size:
-                self.client.upsert(
-                    collection_name=self.cfg.collection_name,
-                    points=points
-                )
-                points = []
-
-        # Upsert remaining
-        if points:
-            self.client.upsert(
-                collection_name=self.cfg.collection_name,
-                points=points
-            )
-
-        logger.info("Upserted %d documents to sparse collection", len(docs))
+    def cleanup(self):
+        """Delete the collection (useful for testing)."""
+        try:
+            self.client.delete_collection(self.cfg.collection_name)
+            logger.info("Deleted collection: %s", self.cfg.collection_name)
+        except Exception as e:
+            logger.warning("Failed to delete collection %s: %s", self.cfg.collection_name, e)
 
 
 # -------------------------

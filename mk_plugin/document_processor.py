@@ -295,17 +295,26 @@ def process_docs(
 
 if __name__ == "__main__":
     # create data for qdrant_indexer_test.py
-    DOCS_DIR = r"../fastapi_doc/en/docs"
-    OUTPUT_FILE = "../src/indexing/processed/chunks_en.jsonl"
-    process_docs(
-        docs_dir=DOCS_DIR,
-        output_path=OUTPUT_FILE,
-        chunk_size=512,
-        chunk_overlap=50,
-    )
-# _____________________________________________________________________________
-    DOCS_DIR = r"../fastapi_doc/ru/docs"
-    OUTPUT_FILE = "../src/indexing/processed/chunks_ru.jsonl"
+    #     DOCS_DIR = r"../fastapi_doc/en/docs"
+    #     OUTPUT_FILE = "../src/indexing/processed/chunks_en.jsonl"
+    #     process_docs(
+    #         docs_dir=DOCS_DIR,
+    #         output_path=OUTPUT_FILE,
+    #         chunk_size=512,
+    #         chunk_overlap=50,
+    #     )
+    # # _____________________________________________________________________________
+    #     DOCS_DIR = r"../fastapi_doc/ru/docs"
+    #     OUTPUT_FILE = "../src/indexing/processed/chunks_ru.jsonl"
+    #     process_docs(
+    #         docs_dir=DOCS_DIR,
+    #         output_path=OUTPUT_FILE,
+    #         chunk_size=512,
+    #         chunk_overlap=50,
+    #     )
+    #
+    DOCS_DIR = r"../docs/agent-framework"
+    OUTPUT_FILE = "../src/indexing/processed/agent-framework.jsonl"
     process_docs(
         docs_dir=DOCS_DIR,
         output_path=OUTPUT_FILE,

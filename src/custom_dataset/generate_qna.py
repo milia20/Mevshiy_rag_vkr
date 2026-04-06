@@ -1,6 +1,7 @@
 import json
 import os
 import time
+from itertools import chain
 from pathlib import Path
 from typing import Any
 
@@ -29,7 +30,7 @@ class OpenRouterClient:
         }
         for attempt in range(max_retries):
             try:
-                response = requests.post(self.api_url, json=payload, headers=headers, timeout=320)
+                response = requests.post(self.api_url, json=payload, headers=headers, timeout=240)
                 response.raise_for_status()
                 return response.json().get("choices")[0].get("message", {}).get("content", "").strip()
             except Exception as e:
@@ -51,7 +52,7 @@ class OllamaClient:
         }
         for attempt in range(max_retries):
             try:
-                response = requests.post(self.api_url, json=payload, timeout=60)
+                response = requests.post(self.api_url, json=payload, timeout=240)
                 response.raise_for_status()
                 data = response.json()
 
@@ -84,13 +85,14 @@ def generate_qna_for_lang(lang_dir: Path, client, max_pairs: int = 200, lang: st
     """Generate Q&A pairs for the given language directory."""
     pairs = []
     batch_size = 5
-    doc_generator = lang_dir.rglob("*.md")
+    extensions = ['*.md', '*.mdx', '*.rst']
+    doc_generator = chain.from_iterable(lang_dir.rglob(ext) for ext in extensions)
     for batch_start in range(0, max_pairs, batch_size):
 
         md_file = next(doc_generator, None)
 
         if not md_file:
-            print(f"No markdown files found in {lang_dir}")
+            print(f"No unused readable file found in {lang_dir}")
             return pairs
 
         try:
@@ -100,7 +102,7 @@ def generate_qna_for_lang(lang_dir: Path, client, max_pairs: int = 200, lang: st
             print(f"Error reading {md_file}: {e}")
             return pairs
 
-        file_path = str(md_file.relative_to(Path("../../fastapi_doc")))
+        file_path = str(md_file.relative_to(lang_dir))
         current_batch_size = min(batch_size, max_pairs - batch_start)
         prompt = f"""/no_think
 Based on the following documentation content, generate {current_batch_size} question-answer pairs.
@@ -108,7 +110,7 @@ The questions should be practical and relevant to developers using this document
 Return the response as a JSON array of objects, each with "question" and "answer" fields.
 
 Documentation content:
-{content[:3500]}
+{content[:4000]}
 
 Example format:
 [
@@ -139,8 +141,8 @@ Generate the answer in {lang} {current_batch_size} diverse and useful Q&A pairs:
                 print(f"No response generated for {file_path}")
         except Exception as e:
             print(f"Error generating Q&A for {file_path}: {e}")
-    
-    return pairs[:max_pairs]  # Ensure we don't exceed max_pairs
+
+    return pairs[:max_pairs]
 
 if __name__ == "__main__":
     model_name = os.getenv("OPENROUTER_MODEL", "qwen/qwen3.5-35b-a3b")
@@ -149,29 +151,26 @@ if __name__ == "__main__":
         # client = OpenRouterClient(model_name=model_name)
         client = OllamaClient(model_name=model_name)
         print(f"Using OpenRouter model: {model_name}")
-        
-        base = Path("../../fastapi_doc")
-        en_dir = base / "en" / "docs"
-        ru_dir = base / "ru" / "docs"
-        
-        print("Generating Q&A pairs for Russian documentation...")
-        ru_pairs = generate_qna_for_lang(ru_dir, client, 200, "Russian")
 
-        print("Generating Q&A pairs for English documentation...")
-        en_pairs = generate_qna_for_lang(en_dir, client, 200, "English")
+        base = Path(r"D:\P_work\Rag-VKR\docs")
 
-        with Path("qna_pairs_en.jsonl").open("w", encoding="utf-8") as f:
-            for item in en_pairs:
-                f.write(json.dumps(item, ensure_ascii=False) + "\n")
+        for directory in list(base.glob("*/")):
+            # print("Generating Q&A pairs for Russian documentation...")
+            # ru_pairs = generate_qna_for_lang(ru_dir, client, 200, "Russian")
 
-        with Path("qna_pairs_ru.jsonl").open("w", encoding="utf-8") as f:
-            for item in ru_pairs:
-                f.write(json.dumps(item, ensure_ascii=False) + "\n")
-        
-        print(f"English: {len(en_pairs)}, Russian: {len(ru_pairs)}")
-        
+            print("Generating Q&A pairs for English documentation...")
+            en_pairs = generate_qna_for_lang(directory, client, 300, "English")
+
+            print(f"Generated questions: {len(en_pairs)}")
+
+            with Path(f"{Path(__file__).parent}/qna_{directory.name}_en.jsonl").open("w", encoding="utf-8") as f:
+                for item in en_pairs:
+                    f.write(json.dumps(item, ensure_ascii=False) + "\n")
+
     except ValueError as e:
         print(f"Error: {e}")
     except Exception as e:
         print(f"Error during execution: {e}")
+    finally:
+        print("finish")
 # set OPENROUTER_API_KEY=

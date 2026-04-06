@@ -27,6 +27,7 @@ from qdrant_client.models import (
 )
 from sentence_transformers import SentenceTransformer
 from tqdm import tqdm
+from transformers import logging as transformers_logging
 
 logger = logging.getLogger(__name__)
 
@@ -238,6 +239,7 @@ class QdrantIndexer:
         Returns chunks with added 'vector' field.
         """
         logger.info(f"Loading embedding model: {model_name}")
+        transformers_logging.set_verbosity_error()
         model = SentenceTransformer(model_name)
 
         texts = [chunk.get("text", "") for chunk in chunks]
@@ -984,8 +986,6 @@ def main():
         raise
 
 
-# Test & Load Script (when run directly)
-
 if __name__ == "__main__":
     if len(sys.argv) == 1:
         logging.basicConfig(
@@ -994,6 +994,7 @@ if __name__ == "__main__":
         )
 
         CHUNKS_FILE = r"D:\P_work\Rag-VKR\src\indexing\processed\chunks_en.jsonl"
+        CHUNKS_FILE = r"D:\P_work\Rag-VKR\src\indexing\processed\agent-framework.jsonl"
         EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
         BATCH_SIZE = 256
 
@@ -1091,10 +1092,6 @@ if __name__ == "__main__":
                 for i, r in enumerate(results, 1):
                     print(f"  {i}. Score: {r['score']:.4f} | {r['payload'].get('text', '')[:100]}...")
 
-            print("\nNext steps:")
-            print("  1. Run: python qdrant_indexer.py --input chunks.jsonl --add-embeddings")
-            print("  2. Run: python qdrant_indexer.py --experiments --input chunks.jsonl")
-            print("  3. Check Qdrant Dashboard: http://localhost:6333/dashboard")
 
         except FileNotFoundError as e:
             logger.error(f"File error: {e}")

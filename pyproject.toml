@@ -19,4 +19,6 @@ dependencies = [
     "tqdm>=4.67.3",
     "tabulate>=0.10.0",
     "uvicorn>=0.27.1",
+    "openai>=2.30.0",
+    "faiss-cpu>=1.13.2",
 ]

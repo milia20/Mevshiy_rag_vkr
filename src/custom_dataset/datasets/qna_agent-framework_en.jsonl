@@ -1,0 +1,800 @@
+{
+  "question": "What specific GitHub Personal Access Token scope is required to access nightly builds?",
+  "answer": "You must create a Personal Access Token with the `read:packages` scope. You can generate this token using the official GitHub instructions linked in the documentation.",
+  "file": "FAQS.md"
+}
+{
+  "question": "How should developers configure NuGet for Microsoft organization accounts that require Single Sign-On (SSO)?",
+  "answer": "If your account is part of the Microsoft organization, you must authorize it as a single sign-on organization. After creating the Personal Access Token, click 'Configure SSO' next to the token and then select 'Microsoft' to complete the authorization.",
+  "file": "FAQS.md"
+}
+{
+  "question": "What command adds the Microsoft GitHub Packages source to NuGet configuration via PowerShell?",
+  "answer": "Run the following command, replacing placeholders with your actual credentials: `dotnet nuget add source --username GITHUBUSERNAME --password GITHUBPERSONALACCESSTOKEN --store-password-in-clear-text --name GitHubMicrosoft \"https://nuget.pkg.github.com/microsoft/index.json\"`.",
+  "file": "FAQS.md"
+}
+{
+  "question": "How can I configure a NuGet.Config file to automatically use nightly builds for specific packages?",
+  "answer": "In the `<packageSourceMapping>` section of your `NuGet.Config`, map the `GitHubMicrosoft` source key with a package pattern of `*nightly`. This ensures that packages matching this pattern are resolved from the nightly feed.",
+  "file": "FAQS.md"
+}
+{
+  "question": "How do I reference the latest available nightly version of a package in my project file?",
+  "answer": "To always use the latest release, add a PackageReference with a wildcard version to your project file: `<PackageReference Include=\"Microsoft.Agents.AI\" Version=\"*-*\" />`.",
+  "file": "FAQS.md"
+}
+{
+  "question": "How does this design distinguish between information meant for the user versus internal operational details?",
+  "answer": "The design categorizes output into 'Primary' (Result) and 'Secondary' (Progress). Primary output includes the final result, structured requests, or reasoning explicitly asked for by the caller. Secondary output covers tool invocations, internal reasoning, handoffs, typing indicators, and streaming updates that are informational only and do not allow the user to modify the agent's behavior mid-run.",
+  "file": "decisions\\0001-agent-run-response.md"
+}
+{
+  "question": "In what scenarios would a developer choose to filter out 'Secondary' output when an agent is running?",
+  "answer": "Developers should filter out Secondary output when the agent is part of a conversation with multiple humans who do not want distracting updates, or when agents are nested and the parent system needs to limit data volume to avoid exceeding context windows. In these cases, only the Primary response is bubbled up.",
+  "file": "decisions\\0001-agent-run-response.md"
+}
+{
+  "question": "What defines 'Long Running' responses in this agent design model?",
+  "answer": "A 'Long Running' response is defined as a response that contains neither a Primary result nor Secondary updates. Instead, it provides a reference to a task that continues executing asynchronously after the initial response is sent.",
+  "file": "decisions\\0001-agent-run-response.md"
+}
+{
+  "question": "How does this design handle LLM reasoning output?",
+  "answer": "Reasoning output is handled based on its context: if the caller's prompt explicitly requested reasoning details, it is treated as Primary output (a specialization of the general response). If the model produces reasoning separately without a specific request, it is classified as Secondary output.",
+  "file": "decisions\\0001-agent-run-response.md"
+}
+{
+  "question": "What are the key differences between 'Result' and 'Progress' categories in this framework?",
+  "answer": "'Result' (Primary) communicates the outcome of the agent's work to the caller in natural language or media formats, including cases where the agent pauses for more input. 'Progress' (Secondary) consists of informational updates about what the agent is currently doing during execution and does not enable user actions that alter the agent's ongoing behavior.",
+  "file": "decisions\\0001-agent-run-response.md"
+}
+{
+  "question": "Why might Option 1 (using ChatOptions.RawRepresentationFactory) be considered disadvantageous despite requiring minimal code changes?",
+  "answer": "Option 1 is disadvantageous because it requires a separate mechanism to register tools, complicates the developer experience by forcing knowledge of specific AI providers via IChatClient, and leads to fragmented tool usage patterns that are inconsistent with the AITool abstraction.",
+  "file": "decisions\\0002-agent-tools.md"
+}
+{
+  "question": "What is the primary benefit of Option 2 regarding tool registration and type safety?",
+  "answer": "The primary benefit of Option 2 is that it eliminates the need for a special registration mechanism like RawRepresentationFactory by having provider-specific tools inherit from AITool, which enhances type safety and discoverability within Microsoft.Extensions.AI.",
+  "file": "decisions\\0002-agent-tools.md"
+}
+{
+  "question": "How does Option 3 aim to solve the problem of fragmentation across different AI providers?",
+  "answer": "Option 3 aims to solve fragmentation by creating generic tool abstractions (e.g., HostedCodeInterpreterTool) in M.E.AI.Abstractions that map to common concepts, allowing provider-specific implementations to be handled internally while maintaining a consistent AITool interface.",
+  "file": "decisions\\0002-agent-tools.md"
+}
+{
+  "question": "What is a significant maintenance concern associated with implementing Option 2?",
+  "answer": "A significant concern with Option 2 is the increased maintenance overhead for each AI provider's package, as they must individually support and update their own set of AITool-derived types, potentially leading to duplication if multiple providers implement similar tools differently.",
+  "file": "decisions\\0002-agent-tools.md"
+}
+{
+  "question": "What key decision drivers guided the evaluation of these options?",
+  "answer": "The key decision drivers were the need for a consistent API to reduce complexity, seamless integration of new tools without major changes, robust mechanisms for managing errors and timeouts, and the ability to fallback to directly using unsupported or custom tools.",
+  "file": "decisions\\0002-agent-tools.md"
+}
+{
+  "question": "Which package contains the extension methods for creating or retrieving an AIAgent using the PersistentAgentsClient?",
+  "answer": "The extension methods are located in the new `Microsoft.Extensions.AI.Azure` package, rather than within `Azure.AI.Agents.Persistent`.",
+  "file": "decisions\\0004-foundry-sdk-extensions.md"
+}
+{
+  "question": "What was the primary reason for choosing to place these extension methods in a separate Azure-specific package instead of modifying the existing `Azure.AI.Agents.Persistent` package?",
+  "answer": "The decision was driven by the goal to avoid introducing additional dependencies into the `Azure.AI.Agents.Persistent` package, ensuring it remains lightweight and decoupled.",
+  "file": "decisions\\0004-foundry-sdk-extensions.md"
+}
+{
+  "question": "What is a potential downside of placing these extension methods in a separate `Microsoft.Extensions.AI.Azure` package?",
+  "answer": "A downside is that developers must explicitly add a dependency on the new package to access Agent Framework functionality, rather than having it available transitively through `Azure.AI.Agents.Persistent`.",
+  "file": "decisions\\0004-foundry-sdk-extensions.md"
+}
+{
+  "question": "Does the decision to move extension methods affect the dependencies of the `Microsoft.Extensions.AI.Abstractions` package?",
+  "answer": "Yes, under the alternative option considered (which was not chosen), those types like `ChatClientAgent` would have needed to move to `Microsoft.Extensions.AI.Abstractions`, potentially adding transitive dependencies; however, the final decision avoids this by keeping them in a dedicated Azure package.",
+  "file": "decisions\\0004-foundry-sdk-extensions.md"
+}
+{
+  "question": "How does the chosen architecture impact the ease of keeping extension methods up-to-date compared to keeping them inside `Azure.AI.Agents.Persistent`?",
+  "answer": "The documentation notes that placing them outside `Azure.AI.Agents.Persistent` means they cannot be as easily kept up-to-date in sync with the core package, which was a trade-off made to satisfy dependency constraints.",
+  "file": "decisions\\0004-foundry-sdk-extensions.md"
+}
+{
+  "question": "How should I name my custom Python classes that correspond to .NET types, according to this ADR?",
+  "answer": "You should use PascalCase for class names in Python. The documentation specifies mapping .NET PascalCase class names directly to PascalCase Python classes when they represent types, while adhering to PEP 8 conventions.",
+  "file": "decisions\\0005-python-naming-conventions.md"
+}
+{
+  "question": "What is the rationale behind renaming 'AIAgent' to 'AgentProtocol' instead of keeping it as 'Agent'?",
+  "answer": "The name 'Agent' was rejected because it is too generic. 'AgentProtocol' was chosen because the 'AI' prefix is considered meaningless in this context, and adding 'protocol' clearly distinguishes it as a protocol definition rather than a concrete agent implementation.",
+  "file": "decisions\\0005-python-naming-conventions.md"
+}
+{
+  "question": "How does this ADR recommend handling acronyms or initialisms like 'HTTP' when naming Python functions versus classes?",
+  "answer": "For class names, acronyms should remain uppercase (e.g., `HTTP`). However, for function names and module-level attributes, acronyms should generally be lowercased in accordance with PEP 8 standards to maintain clarity and avoid ambiguity.",
+  "file": "decisions\\0005-python-naming-conventions.md"
+}
+{
+  "question": "Why was the name 'ChatClient' changed to 'ChatAgent' for the Python surface?",
+  "answer": "The change to 'ChatAgent' makes the type name shorter while remaining clear about its functionality. The context implies that a `ChatClient` is used during initialization (via the first parameter), so explicitly naming it `ChatClientAgent` was deemed unnecessary.",
+  "file": "decisions\\0005-python-naming-conventions.md"
+}
+{
+  "question": "What constraints exist regarding Python names that might conflict with standard libraries or third-party packages?",
+  "answer": "The documentation strictly advises avoiding names that shadow common stdlib modules (such as `logging` or `asyncio`) or widely used third-party modules. The goal is to prevent ambiguity and ensure the public API surface remains clear and discoverable for Python developers.",
+  "file": "decisions\\0005-python-naming-conventions.md"
+}
+{
+  "question": "Why is returning a FunctionCallContent directly to the agent caller considered problematic for this approval model?",
+  "answer": "Returning a FunctionCallContent is problematic because it leaks the agent's internal logic to the caller, violating encapsulation. Additionally, it fails in remote scenarios (e.g., via A2A) where the function does not reside on the caller's machine, and it does not address approval requirements for service-side tools or inference services.",
+  "file": "decisions\\0006-userapproval.md"
+}
+{
+  "question": "What is the recommended approach for handling user approvals when an agent runs locally within a desktop application?",
+  "answer": "For local scenarios where the user and agent share the same application context, the recommended approach is to introduce an ApprovalCallback in AgentRunOptions or ChatOptions. The caller can provide this callback to show approval requests to the user and handle their response directly before continuing the run.",
+  "file": "decisions\\0006-userapproval.md"
+}
+{
+  "question": "How should approval flows be managed when a remote agent requires user input but no local user is available?",
+  "answer": "In cases where an agent is hosted remotely and lacks immediate local access to a user, the agent must be suspended. The service should send a network response to the client app; once the user provides their approval via the client, the client must call back to the service hosting the agent to resume execution.",
+  "file": "decisions\\0006-userapproval.md"
+}
+{
+  "question": "What are the key decision drivers for designing this user approval mechanism?",
+  "answer": "The key design drivers include: ensuring agents encapsulate internal logic without leaking it, supporting approvals for both local and remote actions, accommodating service-side tool use (like remote MCP invocations), and creating a consistent model that aligns with other types of user input requests.",
+  "file": "decisions\\0006-userapproval.md"
+}
+{
+  "question": "How does this design address the needs of inference services supporting built-in tools or server-side MCP invocation?",
+  "answer": "This design addresses those needs by moving away from manual function calling (Option 1) and instead utilizing an ApprovalCallback mechanism. This allows for a structured interaction that can handle approvals required before invoking service-side tools, aligning with how other frameworks like OpenAI handle human-in-the-loop scenarios.",
+  "file": "decisions\\0006-userapproval.md"
+}
+{
+  "question": "What specific execution contexts does the proposed Agent Filtering Middleware design aim to support?",
+  "answer": "The design aims to support multiple execution contexts including invocation, function calls, approval requests, and error handling. This allows developers to intercept and modify agent behavior at various critical stages of the pipeline.",
+  "file": "decisions\\0007-agent-filtering-middleware.md"
+}
+{
+  "question": "Does the proposed middleware architecture support both streaming and non-streaming scenarios?",
+  "answer": "Yes, a key requirement for the design is full support for both streaming and non-streaming execution scenarios. This ensures that custom filters can function correctly regardless of how the agent returns its results.",
+  "file": "decisions\\0007-agent-filtering-middleware.md"
+}
+{
+  "question": "How does this design compare to LangChain's approach to interception?",
+  "answer": "The analysis notes that LangChain uses an observer pattern with callbacks (BaseCallbackHandler) for interception. While LangChain allows handlers to read inputs/outputs and modify metadata or raise exceptions, the proposed Agent Filtering Middleware seeks to provide a similar extensible mechanism but tailored specifically for the Agent Framework's needs regarding function calls and approval workflows.",
+  "file": "decisions\\0007-agent-filtering-middleware.md"
+}
+{
+  "question": "What configuration methods does the design support for registering middleware?",
+  "answer": "The design is built to be flexible, supporting both manual configuration by developers and a dependency injection friendly setup. This allows teams to choose the approach that best fits their existing application architecture.",
+  "file": "decisions\\0007-agent-filtering-middleware.md"
+}
+{
+  "question": "How does the design handle errors and exception management within the middleware pipeline?",
+  "answer": "The design is explicitly 'exception friendly,' providing clear error handling and recovery mechanisms. It ensures that exceptions can be caught, processed, or recovered from by custom filters without breaking the overall execution flow.",
+  "file": "decisions\\0007-agent-filtering-middleware.md"
+}
+{
+  "question": "What are the main trade-offs between choosing 'one subpackage per vendor' versus 'one subpackage per connector'?",
+  "answer": "Choosing one subpackage per vendor (e.g., a single `google` package) results in fewer packages to manage and easier installation for users focused on one platform, but it creates larger packages with more dependencies and complicates versioning due to mixed GA/preview statuses. Conversely, one subpackage per connector (e.g., `google_chat`, `google_bigquery`) yields smaller installation sizes and simpler lifecycle management, but increases the number of packages developers must maintain and makes it harder for users to discover the correct package.",
+  "file": "decisions\\0008-python-subpackages.md"
+}
+{
+  "question": "How does Option 3 propose handling the transition of connectors from preview to General Availability (GA)?",
+  "answer": "Option 3 suggests grouping connectors by vendor and maturity, using separate packages like `google-preview` for non-GA items and `google` for GA items. To mitigate breaking changes when a connector graduates, the import path can remain constant by having the `google-preview` package still import from the main framework (e.g., `agent_framework.google`). Users can install specific subsets via extras (`google`, `google-preview`) or use an aggregate extra like `google-all`.",
+  "file": "decisions\\0008-python-subpackages.md"
+}
+{
+  "question": "Why is adding 'meta-extras' considered a potential risk for production environments?",
+  "answer": "Adding meta-extras that combine different subpackages (e.g., a `google` extra including both GA and preview packages) creates a mismatch between development and production environments. Developers might rely on the meta-extra during dev, but in production, they must manually identify which specific components are needed to avoid non-GA dependencies, leading to potential configuration errors and dependency mismatches.",
+  "file": "decisions\\0008-python-subpackages.md"
+}
+{
+  "question": "What is a key disadvantage of grouping connectors by both vendor and type (Option 4)?",
+  "answer": "While grouping by vendor and type offers smaller package sizes, it significantly complicates lifecycle management. This approach still results in mixed GA and preview statuses within the same logical structure, making versioning difficult. Additionally, it increases the total number of packages to manage and makes it harder for users to find and install the correct combination of extras.",
+  "file": "decisions\\0008-python-subpackages.md"
+}
+{
+  "question": "What are the primary decision drivers influencing the subpackage design?",
+  "answer": "The key decision drivers include ease of use for developers, maintainability of the codebase, user experience regarding installation and usage of integrations, clear lifecycle management for integrations (handling GA vs. preview states), and minimizing non-GA dependencies in the main package to ensure stability.",
+  "file": "decisions\\0008-python-subpackages.md"
+}
+{
+  "question": "Why does the Agent Framework need native support for long-running operations?",
+  "answer": "The current framework only supports synchronous request-response patterns, which are insufficient for complex AI tasks like code generation, complex reasoning, or large document processing that require significant time to complete. Native support is essential to handle these scenarios effectively without blocking the system.",
+  "file": "decisions\\0009-support-long-running-operations.md"
+}
+{
+  "question": "What are the key design drivers guiding the implementation of long-running operations in this architecture?",
+  "answer": "The design prioritizes supporting both quick prompts and long-running execution, ensuring simplicity and intuitiveness for developers. It must be extensible to allow future feature additions and additive rather than disruptive, enabling existing chat clients to adopt these features iteratively without breaking current functionality.",
+  "file": "decisions\\0009-support-long-running-operations.md"
+}
+{
+  "question": "How do OpenAI Responses and Foundry Agents differ in terms of initiating long-running operations?",
+  "answer": "OpenAI Responses initiate background tasks explicitly when the user sets a specific flag (e.g., Background = true), whereas Foundry Agents have long-running execution as an always-on capability. Additionally, while both support getting status and results, OpenAI allows task deletion which Foundry does not.",
+  "file": "decisions\\0009-support-long-running-operations.md"
+}
+{
+  "question": "Which comparison feature distinguishes the A2A approach from other methods regarding real-time updates?",
+  "answer": "The A2A approach is unique among the compared options because it explicitly supports 'Update support', allowing for intermediate status or data updates during operation execution. In contrast, both OpenAI Responses and Foundry Agents do not currently offer this specific update capability according to the documentation table.",
+  "file": "decisions\\0009-support-long-running-operations.md"
+}
+{
+  "question": "How does the proposed design ensure compatibility with existing chat clients while adding long-running capabilities?",
+  "answer": "The design is explicitly additive rather than disruptive. This allows existing chat clients to iteratively add support for long-running operations without breaking their current synchronous functionality, ensuring a unified experience across both agent and chat client scenarios within the Microsoft.Extensions.AI ecosystem.",
+  "file": "decisions\\0009-support-long-running-operations.md"
+}
+{
+  "question": "Why does the .NET Agent Framework use internal event types instead of exposing AG-UI models directly as a public API?",
+  "answer": "The framework keeps AG-UI event types internal to protect consumers from protocol changes and maintain strong abstractions. Instead, it uses existing, familiar types like `AgentResponseUpdate` and `ChatMessage` for the public API, performing conversions at the boundaries where communication with the external world occurs.",
+  "file": "decisions\\0010-ag-ui-support.md"
+}
+{
+  "question": "How can developers enable AG-UI support in an ASP.NET Core application to host agents?",
+  "answer": "Developers should use the `Microsoft.Agents.AI.Hosting.AGUI.AspNetCore` package and call the `MapAGUIAgent` extension method. This allows for Server-Sent Events (SSE) response formatting and supports an agent factory pattern, enabling request-specific configuration and multi-tenancy.",
+  "file": "decisions\\0010-ag-ui-support.md"
+}
+{
+  "question": "What types of events are supported by the AG-UI protocol within this framework?",
+  "answer": "The implementation supports both lifecycle events (`RunStarted`, `RunFinished`, `RunError`) and text message events (`TextMessageStart`, `TextMessageContent`, `TextMessageEnd`). Thread and run identification is managed using existing properties like `ConversationId` and `ResponseId` rather than creating custom types.",
+  "file": "decisions\\0010-ag-ui-support.md"
+}
+{
+  "question": "What is the purpose of the `AGUIAgentThread` class in the client-side implementation?",
+  "answer": "The `AGUIAgentThread` class, found within the `Microsoft.Agents.AI.AGUI` package, is used to manage conversation threads when connecting to remote AG-UI servers. It works alongside the `AGUIAgent` class to handle HTTP/SSE streaming and convert incoming events into framework-native types.",
+  "file": "decisions\\0010-ag-ui-support.md"
+}
+{
+  "question": "How does the framework ensure interoperability with other AI ecosystems like LangGraph or CrewAI?",
+  "answer": "By adopting the AG-UI protocol, which is an open, lightweight, event-based standard designed for streaming and bidirectional communication. This allows .NET agents to interoperate with frontends and frameworks that support AG-UI (such as LangGraph, CrewAI, and Pydantic AI) without requiring custom adapters for every new integration.",
+  "file": "decisions\\0010-ag-ui-support.md"
+}
+{
+  "question": "How does the behavior of `CreateAIAgent` differ between .NET and Python implementations regarding remote agents?",
+  "answer": "In .NET, `CreateAIAgent` can immediately create a remote instance if supported by the backend provider. In contrast, Python's `create_agent` method always creates a local instance first; the actual connection to a remote agent is established only upon the first invocation of `agent.run()`.",
+  "file": "decisions\\0011-create-get-agent-api.md"
+}
+{
+  "question": "Which specific .NET methods for creating or retrieving agents via Azure AI (V2) are currently not supported in Python?",
+  "answer": "Python does not support the `GetAIAgent`/`GetAIAgentAsync` methods that fetch an `AgentRecord` via HTTP, nor does it support the `CreateAIAgent`/`CreateAIAgentAsync` methods for Azure AI (V2) that create a remote agent first and wrap it in a local instance. These features are exclusive to .NET.",
+  "file": "decisions\\0011-create-get-agent-api.md"
+}
+{
+  "question": "What is the scope of the `BuildAIAgent` method mentioned in the documentation, and why?",
+  "answer": "The `BuildAIAgent` method is explicitly out of scope for this implementation because it serves as an extension for the `ChatClientBuilder` class to build pipelines of `IChatClient` instances with an `IServiceProvider`. This functionality does not exist in Python.",
+  "file": "decisions\\0011-create-get-agent-api.md"
+}
+{
+  "question": "How do partial implementations in Python map to specific .NET methods like `GetAIAgent` for Azure AI Persistent (V1) or OpenAI?",
+  "answer": "For .NET methods that fetch an agent via HTTP (like `GetAIAgent` with `AgentId`), Python has no direct equivalent. However, the documentation notes a 'Partial' support status because Python utilizes the `create_agent` method from `BaseChatClient`, which creates a local instance of `ChatClientAgent` similarly to how certain .NET methods initialize agents locally.",
+  "file": "decisions\\0011-create-get-agent-api.md"
+}
+{
+  "question": "Under what conditions is the `GetAIAgent` method unavailable in the .NET implementation?",
+  "answer": "The `GetAIAgent` method is not available if the specific backend provider does not support remote agents. In such cases, `CreateAIAgent` will simply initialize a new local agent instance instead of attempting to retrieve or create a remote one.",
+  "file": "decisions\\0011-create-get-agent-api.md"
+}
+{
+  "question": "How does the new approach using TypedDict improve developer experience compared to the current `**kwargs` method?",
+  "answer": "The new approach replaces loose typing with strict type safety, enabling IDEs to provide full autocompletion and inline documentation for provider-specific options. This allows developers to catch typos or invalid configuration values during static analysis rather than encountering runtime errors later.",
+  "file": "decisions\\0012-python-typeddict-options.md"
+}
+{
+  "question": "Can developers define custom chat options that extend the standard provider-specific types?",
+  "answer": "Yes, users can create custom option classes by subclassing existing provider-specific `TypedDict`s (e.g., `class MyAnthropicOptions(AnthropicChatOptions, total=False)`). These custom types can then be passed to the generic chat client via type parameters (e.g., `AnthropicChatClient[MyAnthropicOptions]`) while maintaining full type safety.",
+  "file": "decisions\\0012-python-typeddict-options.md"
+}
+{
+  "question": "What are the trade-offs of choosing TypedDict with Generic Type Parameters over the status quo?",
+  "answer": "While the new approach offers superior type safety, IDE support, and self-documenting code, it comes at the cost of a more complex implementation. Developers may need to use `type: ignore` comments for certain field overrides and must ensure they are using Python 3.13+ or `typing_extensions` to handle TypeVars with defaults.",
+  "file": "decisions\\0012-python-typeddict-options.md"
+}
+{
+  "question": "How does this design maintain consistency across different chat client providers like OpenAI, Anthropic, or Azure AI?",
+  "answer": "The design enforces a consistent API pattern where every chat client is parameterized by a specific `TypedDict` that extends the base `ChatOptions`. This ensures that regardless of the provider, developers interact with options through the same generic mechanism (`ChatClientBase[T]`), allowing each provider to expose unique settings without breaking the common interface.",
+  "file": "decisions\\0012-python-typeddict-options.md"
+}
+{
+  "question": "What happens if a developer provides an invalid option key when using the new TypedDict-based clients?",
+  "answer": "Static analysis tools and IDEs will flag the invalid key as an error immediately. Unlike the previous `**kwargs` approach where typos like 'random' would only cause failures at runtime, the new system prevents these errors during development by enforcing that only defined keys within the specific provider's `TypedDict` are allowed.",
+  "file": "decisions\\0012-python-typeddict-options.md"
+}
+{
+  "question": "Why is the proposal to consolidate streaming and non-streaming methods into a single API method considered beneficial for Python developers?",
+  "answer": "Consolidating the methods simplifies client implementations by reducing complexity and maintenance burden. Unlike .NET, Python supports proper typing with a single method using `@overload`, allowing one unified endpoint that behaves like the OpenAI Python client, making it easier to learn and use.",
+  "file": "decisions\\0013-python-get-response-simplification.md"
+}
+{
+  "question": "Will consolidating the chat client methods into a single function break the existing ChatAgent API?",
+  "answer": "No, the ChatAgent API will not break. While the internal implementation of `ChatClient` would change to accept a `stream` parameter, the public agent methods (`run()` and `run_stream()`) can remain unchanged internally by simply passing the appropriate flag (e.g., `get_response(stream=True/False)`).",
+  "file": "decisions\\0013-python-get-response-simplification.md"
+}
+{
+  "question": "How does this proposed consolidation affect the Function Invocation Decorator logic in `_tools.py`?",
+  "answer": "Currently, separate decorators handle streaming and non-streaming responses with ~200 lines of duplicated code. The proposal would replace these two separate wrappers with a single decorator that checks the `stream` parameter at runtime. It would use `@overload` to determine the correct return type (AsyncIterable vs ChatResponse) based on the argument, reducing duplication but increasing complexity within one function.",
+  "file": "decisions\\0013-python-get-response-simplification.md"
+}
+{
+  "question": "What are the implications for developers who have implemented custom chat clients under the current architecture?",
+  "answer": "This change represents a major breaking change for anyone implementing custom chat clients. They would need to update their code from implementing two separate methods (`_inner_get_response` and `_inner_get_streaming_response`) to implementing a single method that handles both cases, likely based on a `stream` boolean parameter.",
+  "file": "decisions\\0013-python-get-response-simplification.md"
+}
+{
+  "question": "How will type safety be maintained when merging the two response methods into one?",
+  "answer": "Type safety is maintained using Python's `@overload` decorator. The unified method signature would include overloads where `Literal[True]` for the stream parameter returns an `AsyncIterable`, and `Literal[False]` returns a `ChatResponse`. At runtime, the return type is determined dynamically based on the value of the `stream` argument.",
+  "file": "decisions\\0013-python-get-response-simplification.md"
+}
+{
+  "question": "Why should developers use Feature Collections instead of strongly typed settings on AgentRunOptions?",
+  "answer": "Feature Collections are used when services or data payloads are not known at compile time, vary by agent stack, or relate to components that are not integral parts of the framework. Using features allows passing arbitrary configurations loosely without advertising unsupported functionality to all users or requiring strict type checking for specific agent types.",
+  "file": "decisions\\0014-feature-collections.md"
+}
+{
+  "question": "How can a hosting library force an unknown agent type to use a custom chat history storage implementation?",
+  "answer": "The hosting library should create the desired ChatMessageStore instance and add it to the AgentRunOptions using the Feature Collection API (e.g., `new AgentFeatureCollection().WithFeature<ChatMessageStore>(messageStore)`). The agent can then check for this feature at runtime; if supported, it retrieves and uses the store, otherwise the configuration is safely ignored.",
+  "file": "decisions\\0014-feature-collections.md"
+}
+{
+  "question": "What happens if an agent does not support a specific capability that has been added to its Feature Collection?",
+  "answer": "If the agent does not support the capability associated with a feature in the collection, the configuration for that feature is simply ignored. This allows developers to pass configurations universally without needing to type-check the agent instance or handle exceptions for unsupported features.",
+  "file": "decisions\\0014-feature-collections.md"
+}
+{
+  "question": "In what scenario would a developer prefer using Feature Collections over calling specific method overloads on an agent?",
+  "answer": "Developers should use Feature Collections when they want to avoid typing the agent type to call specific overloads. This approach simplifies user code by allowing all agents that support a capability to check for and utilize the configuration directly, rather than requiring separate strong-typed methods for each supported agent class.",
+  "file": "decisions\\0014-feature-collections.md"
+}
+{
+  "question": "How does the 'WithFeature' method help in passing per-run configurations like a custom chat message store?",
+  "answer": "The `WithFeature` method allows developers to attach arbitrary services or data, such as a `ChatMessageStore`, directly to the `AgentRunOptions`. This ensures that the configuration applies only for that specific execution run, enabling scenarios where a hosting library needs to inject protocol-specific storage implementations dynamically.",
+  "file": "decisions\\0014-feature-collections.md"
+}
+{
+  "question": "How can an agent developer access the current session or run options from within a deeply nested tool call without passing them as explicit parameters?",
+  "answer": "Developers can use the ambient context provided by `AIAgent.CurrentRunContext` to access properties like the Session, Request Messages, and Run Options directly. This approach leverages `AsyncLocal<T>` principles to make the context available throughout the async call stack without manual propagation.",
+  "file": "decisions\\0015-agent-run-context.md"
+}
+{
+  "question": "What is a common pattern for propagating chat history or session state from a parent agent run to a child agent when using the Agent as an AIFunction?",
+  "answer": "A common pattern involves creating an `AsAIFunctionWithSessionPropagation` helper method. Inside this function, you can retrieve the parent's session via `AIAgent.CurrentRunContext?.Session`. You can then optionally clone the chat history from the parent session into a new `InMemoryChatHistoryProvider` to create a fresh session for the child agent while retaining the conversation history.",
+  "file": "decisions\\0015-agent-run-context.md"
+}
+{
+  "question": "Can components executing during an agent run modify the execution context, such as replacing the session or updating run options?",
+  "answer": "Yes. The design of `AgentRunContext` allows components like decorators or tools to modify context properties dynamically. For instance, a component can replace the current Session with a different one or update/replace the Run Options entirely during the execution flow.",
+  "file": "decisions\\0015-agent-run-context.md"
+}
+{
+  "question": "Why was an ambient context approach (like Option 2 in the proposal) chosen over passing context explicitly through method signatures?",
+  "answer": "The ambient context approach was chosen because it allows components to access run information without requiring explicit parameter passing through every layer of a deep call stack. This ensures that context flows naturally across async calls, reducing boilerplate code and aligning with patterns found in other frameworks like `HttpContext.Current` or `Activity.Current`.",
+  "file": "decisions\\0015-agent-run-context.md"
+}
+{
+  "question": "What specific properties are available within the `AgentRunContext` to assist in debugging or customizing agent behavior during a run?",
+  "answer": "The `AgentRunContext` provides access to key details including: 1) The specific Agent executing the run, 2) The Session associated with the current execution, 3) The Request Messages passed to the agent, and 4) The Run Options that control the agent's behavior. These can be read or modified as needed.",
+  "file": "decisions\\0015-agent-run-context.md"
+}
+{
+  "question": "What are the three main concepts currently creating cognitive overhead for developers regarding context management?",
+  "answer": "The current framework creates overhead through three distinct abstractions: `ContextProvider` (for injecting instructions, messages, and tools), `ChatMessageStore` (for storing/retrieving history), and `AgentThread` (which manages state and coordinates storage). Developers must understand the specific roles of each and how their lifecycle hooks interact.",
+  "file": "decisions\\0016-python-context-middleware.md"
+}
+{
+  "question": "How does the proposed solution address the need for tracking which provider added specific messages or tools?",
+  "answer": "The decision drivers explicitly include 'Attribution' as a key requirement. The new unified pattern, utilizing `ContextPlugin` and related middleware like `StorageContextMiddleware`, is designed to enable tracking of exactly which context source contributed specific messages or tools during the conversation flow.",
+  "file": "decisions\\0016-python-context-middleware.md"
+}
+{
+  "question": "What changes are being made to the naming conventions for session management in this update?",
+  "answer": "As part of addressing issue #3587, `AgentThread` is being renamed to `AgentSession`. The documentation specifies a 'clean break' with no aliases, meaning existing code using `AgentThread` will need to be updated to use the new `AgentSession` terminology.",
+  "file": "decisions\\0016-python-context-middleware.md"
+}
+{
+  "question": "How does the framework handle serialization now that the dedicated `serialize` method is being removed from the agent?",
+  "answer": "The requirement to move the `serialize` method into the agent (Issue #3589) has been superseded. Instead, `AgentSession` provides built-in `to_dict()` and `from_dict()` methods for serialization. Developers should store JSON-serializable values directly in `session.state`, and providers handle the rest.",
+  "file": "decisions\\0016-python-context-middleware.md"
+}
+{
+  "question": "How can developers configure orthogonal storage when a service manages conversation history rather than local storage?",
+  "answer": "According to Issue #3590, developers can use `HistoryProvider` orthogonally by setting `load_messages=False`. This allows the service to manage storage while still using the framework's context patterns. Additionally, multiple history providers are allowed to coexist.",
+  "file": "decisions\\0016-python-context-middleware.md"
+}
+{
+  "question": "What are the two primary approaches supported by `ChatClientAgent` for configuring structured output?",
+  "answer": "The two approaches are: 1) Using `ResponseFormat` with manual deserialization, where you specify a JSON schema via `ChatOptions.ResponseFormat` and then deserialize the response text using `JsonSerializer.Deserialize<T>`. 2) Using the generic `RunAsync<T>` method, which accepts the output type as a generic parameter and returns an `AgentResponse<T>` allowing direct access to the parsed result.",
+  "file": "decisions\\0016-structured-output.md"
+}
+{
+  "question": "Why might a developer encounter an 'Invalid schema for response_format' error when using Approach 1 with primitive types or collections?",
+  "answer": "This error occurs because OpenAI and compatible APIs require the root of the JSON schema to be of type 'object'. If you attempt to specify a schema for a primitive (like a string) or an array directly, it violates this requirement. To fix this, the schema often needs to be wrapped in an artificial JSON object to satisfy the API constraints.",
+  "file": "decisions\\0016-structured-output.md"
+}
+{
+  "question": "In what scenarios is Approach 1 (ResponseFormat + Deserialize) preferred over Approach 2?",
+  "answer": "Approach 1 is necessary when: a) The agent must be configured with structured output at creation time (e.g., using `AIProjectClient`); b) The structured output type is not known until runtime; or c) the JSON schema is provided as text or a `JsonElement`, such as in declarative agents.",
+  "file": "decisions\\0016-structured-output.md"
+}
+{
+  "question": "What limitation exists when applying decorators like `OpenTelemetryAgent` to a `ChatClientAgent` that uses structured output?",
+  "answer": "Decorators prevent access to the generic `RunAsync<T>` method because it is an instance method of `ChatClientAgent` and not part of the base `AIAgent` interface. Consequently, if you wrap a `ChatClientAgent` in a decorator like `OpenTelemetryAgent`, you lose the ability to use the convenient Approach 2 for structured output.",
+  "file": "decisions\\0016-structured-output.md"
+}
+{
+  "question": "How does one access the parsed structured data when using the generic `RunAsync<T>` method?",
+  "answer": "When using `RunAsync<T>`, the method returns an `AgentResponse<T>`. The developer can access the successfully parsed structured result directly via the `Result` property of this response object (e.g., `response.Result.Name`), avoiding the need for manual deserialization.",
+  "file": "decisions\\0016-structured-output.md"
+}
+{
+  "question": "Why was an external container approach chosen over adding an `AdditionalProperties` property directly to the `AIAgent` base class?",
+  "answer": "The decision makers selected an external container approach (Option D) to avoid increasing the core framework's surface area and to ensure no breaking changes are introduced. This allows hosting libraries or users to attach metadata without modifying the base `AIAgent` or `AgentSession` classes, while still enabling extensibility through wrapper objects.",
+  "file": "decisions\\0017-agent-additional-properties.md"
+}
+{
+  "question": "How does the chosen metadata approach differ from using `AdditionalProperties` on `AgentRunOptions`?",
+  "answer": "The chosen approach uses an external wrapper for agent and session-level metadata (Option 1), which is purely descriptive and describes the agent or session itself. In contrast, `AgentRunOptions.AdditionalProperties` are passed down the stack to influence specific execution runs. This separation prevents unexpected side effects where session metadata might inadvertently alter run-time behavior.",
+  "file": "decisions\\0017-agent-additional-properties.md"
+}
+{
+  "question": "What are the implications of using an external wrapper for agent metadata regarding performance and allocation?",
+  "answer": "A key benefit is that no additional memory allocation occurs on `AIAgent` or `AgentSession` instances when no custom metadata is required. The external wrapper objects are only instantiated by hosting libraries, protocol adapters, or user code when specific metadata (like A2A agent cards) needs to be attached.",
+  "file": "decisions\\0017-agent-additional-properties.md"
+}
+{
+  "question": "What challenges might developers face when implementing this new metadata pattern?",
+  "answer": "The primary challenge is that callers and libraries must manage two related objects: the agent/session instance and its associated metadata wrapper. They need to ensure these remain correctly associated throughout the lifecycle of the application, as the framework does not enforce this link automatically within the base classes.",
+  "file": "decisions\\0017-agent-additional-properties.md"
+}
+{
+  "question": "How does this change support extensibility for protocol adapters like A2A or AG-UI?",
+  "answer": "By allowing an external wrapper to use `AdditionalPropertiesDictionary` internally, protocol adapters and hosting libraries can attach protocol-specific descriptors (e.g., agent cards) or session tags without needing to subclass the core types. This maintains consistency with existing patterns used in `AgentRunOptions`, `AgentResponse`, and `AgentResponseUpdate`.",
+  "file": "decisions\\0017-agent-additional-properties.md"
+}
+{
+  "question": "What are the primary drawbacks of the current custom SerializeSession/DeserializeSession approach compared to standard serialization mechanisms?",
+  "answer": "The current approach requires each AgentSession implementation to write its own serialization logic, leading to potential inconsistencies and errors. It also limits support to only one format at a time (e.g., you cannot easily support both JSON and XML simultaneously) and prevents the direct serialization of lists of AgentSessions without individual handling.",
+  "file": "decisions\\0018-agentthread-serialization.md"
+}
+{
+  "question": "Why is it difficult to serialize AgentSessions that have attached behaviors like custom ChatMessageStores?",
+  "answer": "AgentSession behaviors often hold references to external resources or SDK clients (like a specific storage backend client) that cannot be recreated via standard deserialization. Additionally, these behaviors carry their own state which must be correctly reconstructed and re-attached during the deserialization process.",
+  "file": "decisions\\0018-agentthread-serialization.md"
+}
+{
+  "question": "How does Option 1 in the proposal handle the separation of state and behavior during serialization?",
+  "answer": "Option 1 suggests separating state from behavior by marking the behavior property with [JsonIgnore]. This allows only the state to be serialized using standard mechanisms (like System.Text.Json). Upon deserialization, the behavior is null; it is then created and re-attached automatically when the AgentSession is first used by the Agent.",
+  "file": "decisions\\0018-agentthread-serialization.md"
+}
+{
+  "question": "What is a significant limitation of Option 1 regarding accessing behaviors immediately after deserialization?",
+  "answer": "Under Option 1, an AgentSession exists in an incomplete state immediately after deserialization because its behavior properties are null. If a user attempts to call methods like `GetService<MyBehavior>()` before the session is used by the Agent, it will return null until the first usage triggers the re-attachment of the behavior.",
+  "file": "decisions\\0018-agentthread-serialization.md"
+}
+{
+  "question": "What architectural changes are required for behaviors like ChatMessageStore and AIContextProviders under Option 1?",
+  "answer": "Behaviors such as ChatMessageStore and AIContextProviders would need to be refactored to accept their state as input during construction and expose that state publicly. This allows the serialization system to capture the state separately while enabling the behavior logic to reconstruct its internal configuration based on that state.",
+  "file": "decisions\\0018-agentthread-serialization.md"
+}
+{
+  "question": "Why does the current architecture prevent context compaction from working effectively inside the tool loop?",
+  "answer": "The current architecture has three main barriers: 1) The `HistoryProvider.get_messages()` method is called only once at the start of the run, so the tool loop doesn't re-read history; 2) `ChatMiddleware` operates on a copy of the message list, meaning changes to it don't affect the growing internal list used for subsequent calls; and 3) `FunctionMiddleware` wraps individual tool executions rather than the LLM call itself, preventing it from modifying history between iterations.",
+  "file": "decisions\\0019-python-context-compaction-strategy.md"
+}
+{
+  "question": "What is the critical correctness constraint that any context compaction strategy must satisfy regarding tool interactions?",
+  "answer": "Any compaction strategy must preserve atomic groups consisting of an assistant message containing `tool_calls` followed immediately by its corresponding `tool` result messages. Removing one part of this pair without the other will cause API errors, as LLM APIs (like OpenAI or Azure) require these to remain together.",
+  "file": "decisions\\0019-python-context-compaction-strategy.md"
+}
+{
+  "question": "How does the proposed design address the complexity of identifying atomic tool call groups during compaction?",
+  "answer": "The design addresses this by precomputing message boundaries. Variant C1 uses `MessageGroups`, while Variant C2 attaches `_group_*` annotations directly to messages. This allows strategy authors to treat these groups as atomic units without needing to rediscover raw message boundaries on every compaction pass.",
+  "file": "decisions\\0019-python-context-compaction-strategy.md"
+}
+{
+  "question": "What specific scenario makes context compaction particularly critical for long-running agents?",
+  "answer": "Context compaction is especially vital for agents that execute many tool calls in succession (ranging from tens to hundreds). Without compaction, the conversation history can grow unboundedly, quickly approaching token limits and causing failures.",
+  "file": "decisions\\0019-python-context-compaction-strategy.md"
+}
+{
+  "question": "Why does modifying `context.messages` within a `ChatMiddleware` iteration fail to reduce context growth?",
+  "answer": "Modifying `context.messages` in middleware only affects the specific copy of the list passed to that single LLM call. The tool loop maintains its own internal message list which continues to grow with every added tool result, and since the middleware operates on a copy, these changes do not persist or reduce the underlying list used for future iterations.",
+  "file": "decisions\\0019-python-context-compaction-strategy.md"
+}
+{
+  "question": "Which class serves as the central abstraction for agent interactions in the Microsoft Foundry integration?",
+  "answer": "The `ChatClientAgent` class is kept as the central public surface for all agent interactions, unifying both direct responses and versioned agent scenarios.",
+  "file": "decisions\\0020-foundry-agent-type-naming.md"
+}
+{
+  "question": "How should developers create a 'Direct Responses' style agent without creating persistent server-side resources?",
+  "answer": "Developers can use `AIProjectClient.AsAIAgent(...)` with model, instructions, and name parameters directly, or compose a `ChatClientAgent` using a `ProjectResponsesClient` instance.",
+  "file": "decisions\\0020-foundry-agent-type-naming.md"
+}
+{
+  "question": "What is the recommended approach for managing server-side versioned agents in this integration?",
+  "answer": "Use the native `AIProjectClient.Agents` APIs to create or retrieve `AgentVersion` resources, then wrap the resulting `AgentRecord` or `AgentVersion` with `AIProjectClient.AsAIAgent(...)`.",
+  "file": "decisions\\0020-foundry-agent-type-naming.md"
+}
+{
+  "question": "Are wrapper types like `FoundryAgent` or `FoundryResponsesChatClient` available for use in new applications?",
+  "answer": "No, these public wrapper types are not part of the chosen direction; they were rejected to avoid duplicating behavior and creating parallel type hierarchies.",
+  "file": "decisions\\0020-foundry-agent-type-naming.md"
+}
+{
+  "question": "What is the current status of helper methods like `AIProjectClient.CreateAIAgentAsync`?",
+  "answer": "These compatibility helpers remain only as obsolete migration shims and should not be used for new development.",
+  "file": "decisions\\0020-foundry-agent-type-naming.md"
+}
+{
+  "question": "How does the Agent Framework ensure that the `run_skill_script` tool is only advertised to the model when scripts are actually available?",
+  "answer": "The framework dynamically checks if any registered skills contain defined scripts. If no skills have scripts, the `run_skill_script` tool is explicitly excluded from the list of tools presented to the model, and instructions regarding script execution are omitted from the default system prompt to prevent confusion.",
+  "file": "decisions\\0021-agent-skills-design.md"
+}
+{
+  "question": "What is the mechanism for supporting custom runtimes or languages within file-based skills?",
+  "answer": "File-based scripts support user-defined executors. This allows developers to specify custom runtimes and programming languages for these scripts, whereas code and class-based scripts execute in-process as C# delegates.",
+  "file": "decisions\\0021-agent-skills-design.md"
+}
+{
+  "question": "What are the four abstract base types that all skill implementations must adhere to according to this architecture?",
+  "answer": "The architecture defines four abstract base types: `AgentSkill` (the core skill container), `AgentSkillResource` (for supplementary data like files or code snippets), `AgentSkillScript` (for executable logic), and `AgentSkillsSource` (which enables the retrieval of skills from various origins).",
+  "file": "decisions\\0021-agent-skills-design.md"
+}
+{
+  "question": "How can a developer extend the Agent Framework to retrieve skills from non-standard sources like databases or REST APIs?",
+  "answer": "Developers can implement custom skill sources by creating new classes that inherit from and implement the `AgentSkillsSource` abstract base type. This common abstraction allows the framework to uniformly integrate diverse origins such as databases, REST APIs, or package registries alongside standard filesystem sources.",
+  "file": "decisions\\0021-agent-skills-design.md"
+}
+{
+  "question": "What is the specific role of the `load_skill(skillName)` tool in the interaction between the model and the skill system?",
+  "answer": "The `load_skill` tool returns the full body of a skill, including its instructions, listed resources, and scripts. It serves as the primary method for the model to discover detailed content after the system prompt has listed available skill names and descriptions.",
+  "file": "decisions\\0021-agent-skills-design.md"
+}
+{
+  "question": "How does the new design improve the `agent-framework-core` package size and maintainability?",
+  "answer": "The core package is now lightweight because it has been stripped of all provider-specific code and dependencies (such as `openai`, `azure-identity`, etc.). It now contains only abstractions, middleware infrastructure, and telemetry. Provider implementations have been moved to separate packages like `agent-framework-openai` and the `azure-ai` package.",
+  "file": "decisions\\0021-provider-leading-clients.md"
+}
+{
+  "question": "What are the new class names for OpenAI clients following this design decision?",
+  "answer": "The classes have been renamed to reflect the provider rather than the specific API. The client previously named `OpenAIResponsesClient` is now called `OpenAIChatClient`, and the one previously named `OpenAIChatClient` (for Chat Completions) is now `OpenAIChatCompletionClient`. Old names remain as deprecated aliases for backward compatibility.",
+  "file": "decisions\\0021-provider-leading-clients.md"
+}
+{
+  "question": "How have the import namespaces changed to guide users and improve discoverability?",
+  "answer": "The core package now uses lazy-loading gateways. Users should import from specific provider packages: `from agent_framework.openai` will surface all OpenAI-related clients, while `from agent_framework.azure` will surface Foundry, Azure AI, and other Azure-specific classes. This separates concerns and prevents the OpenAI package from being polluted with Azure dependencies.",
+  "file": "decisions\\0021-provider-leading-clients.md"
+}
+{
+  "question": "How does the new design unify model configuration across different cloud providers?",
+  "answer": "All client constructors now accept a unified `model` parameter, replacing provider-specific parameters like `model_id`, `deployment_name`, or `model_deployment_name`. This allows developers to use the same `OpenAIChatClient` with either OpenAI (using a model name) or Azure OpenAI (using a deployment name) seamlessly. Environment variables have also been unified, such as using `OPENAI_MODEL` instead of separate variables for different APIs.",
+  "file": "decisions\\0021-provider-leading-clients.md"
+}
+{
+  "question": "Where are the deprecated Azure-specific classes located in the new architecture?",
+  "answer": "All deprecated classes, including `OpenAIAssistantsClient`, various `AzureOpenAI*Client` classes, and provider wrappers like `AzureAIClient` and `AzureAIProjectAgentProvider`, have been consolidated into a single file named `_deprecated_azure_openai.py` within the `azure-ai` package. This ensures the OpenAI package remains clean of Azure dependencies while providing a clear path for future deletion.",
+  "file": "decisions\\0021-provider-leading-clients.md"
+}
+{
+  "question": "Why might chat history diverge between a `ChatHistoryProvider`-managed conversation and an AI service-managed one when using tools?",
+  "answer": "Divergence occurs due to two main discrepancies: first, the AI service persists messages after every individual service call within the tool loop, whereas the default `ChatHistoryProvider` persists all messages only once at the end of the full run. Second, if a tool-call loop terminates mid-way, the `FunctionResultContent` from that final step is stored by the provider but never sent to or persisted by the AI service.",
+  "file": "decisions\\0022-chat-history-persistence-consistency.md"
+}
+{
+  "question": "What specific challenge arises for developers when trying to implement conversation resumption logic with mixed storage backends?",
+  "answer": "Developers face a consistency challenge where the last message in history differs based on the storage mechanism. If using service-side storage, the trailing `FunctionResultContent` is not stored, leaving the last entry as the `FunctionCallContent`. However, if using `ChatHistoryProvider`, that trailing content is persisted. This makes it difficult to write resumption logic that works correctly without explicitly inspecting which backend is being used.",
+  "file": "decisions\\0022-chat-history-persistence-consistency.md"
+}
+{
+  "question": "How does 'per-service-call persistence' affect the handling of trailing `FunctionResultContent` compared to 'per-run persistence'?",
+  "answer": "With per-service-call persistence, messages are stored after each individual call, so if a tool loop terminates, the resulting `FunctionResultContent` was never sent to a subsequent service call and is therefore naturally not persisted by the AI service. This approach aligns with the service's behavior without requiring trimming logic. In contrast, per-run persistence requires explicit trimming of trailing `FunctionResultContent` at the end of the run to match what the service would have stored.",
+  "file": "decisions\\0022-chat-history-persistence-consistency.md"
+}
+{
+  "question": "What are the primary decision drivers influencing the design of chat history consistency for tool-calling agents?",
+  "answer": "The key drivers are: A) Consistency, ensuring framework-managed history matches service-stored history to minimize surprises; B) Atomicity, preventing partially-updated states in failed runs unless explicitly opted into; C) Recoverability, allowing intermediate progress recovery during long-running loops if interrupted; and D) Simplicity, ensuring the default behavior is easy for users to understand.",
+  "file": "decisions\\0022-chat-history-persistence-consistency.md"
+}
+{
+  "question": "If an agent run fails mid-way through a multi-step tool-calling loop, what does the 'Atomicity' driver suggest regarding chat history state?",
+  "answer": "The Atomicity driver suggests that a failed run should not leave the chat history in a partially-updated state. The default behavior should avoid saving incomplete or inconsistent data unless the user explicitly opts into allowing intermediate states for recovery purposes.",
+  "file": "decisions\\0022-chat-history-persistence-consistency.md"
+}
+{
+  "question": "How does the proposed architecture support using both Azure AI Foundry evaluators and local custom evaluators on the same dataset without code restructuring?",
+  "answer": "The architecture supports this through a provider-agnostic API where evaluation logic is separated from configuration. Developers can run Foundry LLM-as-judge evaluators alongside fast local checks (like regex or keyword matching) by implementing the standard `Evaluator` protocol (Python) or `IAgentEvaluator` interface (.NET). This allows mixing multiple providers on the same data without requiring code restructuring, as any library wrapping a custom evaluation logic can participate.",
+  "file": "decisions\\0023-foundry-evals-integration.md"
+}
+{
+  "question": "What are the specific manual efforts developers currently face when using Foundry Evals with agent-framework agents that this new architecture aims to eliminate?",
+  "answer": "Currently, developers must manually transform `Message`/`Content` types into OpenAI-style schemas, map tool definitions from `FunctionTool` format to evaluator-compatible schemas, wire up the correct Foundry data source type (e.g., `azure_ai_traces`, `jsonl`) based on their scenario, and handle App Insights trace ID queries along with response collection. The new architecture leverages existing framework knowledge of agents, tools, and conversations to automate these mappings, reducing friction significantly.",
+  "file": "decisions\\0023-foundry-evals-integration.md"
+}
+{
+  "question": "How does the system ensure that evaluation results are viewable in the Azure AI Foundry portal while maintaining support for non-Foundry evaluators?",
+  "answer": "The architecture ensures 'Foundry-native results' by generating output formats compatible with the Foundry portal's dashboards and comparison views when the Foundry provider is selected. Simultaneously, it maintains a provider-agnostic core API where specific provider configurations are decoupled from the evaluation calls. This allows developers to use third-party libraries or local evaluators that generate their own result formats without breaking the system, while still enabling direct visualization in Foundry when desired.",
+  "file": "decisions\\0023-foundry-evals-integration.md"
+}
+{
+  "question": "In what ways does the architecture support evaluating multi-agent workflows and complex conversation trajectories beyond simple query-response pairs?",
+  "answer": "The design explicitly supports single agents and multi-agent workflows with per-agent breakdowns to pinpoint underperformance. It captures full conversation trajectories, including tool calls and their results, rather than just final query/response pairs. Furthermore, it offers flexible 'conversation factoring,' allowing developers to split conversations into query/response segments in multiple ways (e.g., last turn only, full trajectory, or per-turn) depending on what specific metrics they wish to measure.",
+  "file": "decisions\\0023-foundry-evals-integration.md"
+}
+{
+  "question": "What is the process for a developer to add a new third-party evaluation library like DeepEval or RAGAS to this framework?",
+  "answer": "To integrate a new library, a developer simply needs to implement the standard `Evaluator` protocol in Python or the `IAgentEvaluator` interface in .NET. The protocol is intentionally simple (`evaluate(items) → results`), meaning no specific list of supported libraries exists and no complex wrapper code is required. Once implemented, the new evaluator can be run alongside existing ones on the same data without needing to restructure the core evaluation logic.",
+  "file": "decisions\\0023-foundry-evals-integration.md"
+}
+{
+  "question": "How should I handle an ADR that has been superseded by another decision?",
+  "answer": "If an ADR is superseded, you should update its 'status' field to include the reference to the new document, for example: status: superseded by [ADR-0001](0001-madr-architecture-decisions.md).",
+  "file": "decisions\\adr-short-template.md"
+}
+{
+  "question": "What is the recommended approach for documenting the list of people involved in an ADR decision?",
+  "answer": "You should explicitly define three separate lists: 'deciders' (everyone involved in the final decision), 'consulted' (subject-matter experts with two-way communication), and 'informed' (those kept up-to-date via one-way communication).",
+  "file": "decisions\\adr-short-template.md"
+}
+{
+  "question": "Can I remove optional fields like 'contact' or 'date' from an ADR template?",
+  "answer": "Yes, the documentation explicitly states that elements such as 'status', 'contact', and 'date' are optional and can be removed if they do not apply to your specific context.",
+  "file": "decisions\\adr-short-template.md"
+}
+{
+  "question": "What information must be included in the 'Decision Outcome' section?",
+  "answer": "This section must clearly state the chosen option by title and provide a justification explaining why it was selected, such as meeting key criteria or resolving a specific force mentioned in the drivers.",
+  "file": "decisions\\adr-short-template.md"
+}
+{
+  "question": "How should I format the 'Context and Problem Statement' section?",
+  "answer": "You can write this section in free form using two to three sentences, tell an illustrative story, or articulate the problem as a question, optionally adding links to collaboration boards or issue management systems.",
+  "file": "decisions\\adr-short-template.md"
+}
+{
+  "question": "What information should be included in the metadata section of an Architecture Decision Record (ADR)?",
+  "answer": "The metadata section must include optional elements such as status (e.g., proposed, accepted, deprecated), contact person, date of last update, list of deciders, consulted parties, and informed stakeholders to ensure transparency and traceability.",
+  "file": "decisions\\adr-template.md"
+}
+{
+  "question": "How should the 'Context and Problem Statement' section be structured in an ADR?",
+  "answer": "This section should describe the context and problem using two to three sentences or a short illustrative story, ideally articulating the problem as a question and including links to collaboration boards or issue management systems for further details.",
+  "file": "decisions\\adr-template.md"
+}
+{
+  "question": "What is the purpose of the 'Decision Drivers' section in an ADR?",
+  "answer": "The 'Decision Drivers' section lists the forces, concerns, or constraints that influenced the decision-making process, helping to explain why certain options were prioritized over others.",
+  "file": "decisions\\adr-template.md"
+}
+{
+  "question": "How are the consequences of a chosen architectural option documented in an ADR?",
+  "answer": "Consequences are categorized into 'Good' (positive outcomes like quality improvements) and 'Bad' (negative outcomes or compromises), providing a clear view of the trade-offs associated with the decision.",
+  "file": "decisions\\adr-template.md"
+}
+{
+  "question": "What role does the 'Validation' section play in an ADR?",
+  "answer": "The 'Validation' section describes how compliance with the architecture decision is verified, such as through code reviews, ArchUnit tests, or other automated checks to ensure the decision is correctly implemented.",
+  "file": "decisions\\adr-template.md"
+}
+{
+  "question": "How should I determine the correct sequence number when creating a new ADR file?",
+  "answer": "You should copy the template to 'docs/decisions/NNNN-title-with-dashes.md' where NNNN is the next sequential number. Before finalizing, you must check existing Pull Requests to ensure no one else has already claimed that sequence number.",
+  "file": "decisions\\README.md"
+}
+{
+  "question": "Who are required to be listed as 'deciders' in a new ADR?",
+  "answer": "The list of deciders must include the GitHub IDs of the people who will sign off on the decision. Specifically, the relevant Engineering Manager (EM) and architect must be included either as deciders or marked as informed about all decisions.",
+  "file": "decisions\\README.md"
+}
+{
+  "question": "What is the required initial status for a new ADR before it is finalized?",
+  "answer": "The status field in a new ADR must initially be set to 'proposed'. It should only be updated to 'accepted' once the decision has been agreed upon by the deciders and the date of approval is recorded.",
+  "file": "decisions\\README.md"
+}
+{
+  "question": "How should I document the analysis of different options when writing an ADR?",
+  "answer": "For each considered alternative, you must list its good, neutral, and bad aspects. If a detailed investigation was performed, you can include it in the 'More Information' section either inline or as links to external documents.",
+  "file": "decisions\\README.md"
+}
+{
+  "question": "What is the process for handling an ADR if the decision needs to be changed later?",
+  "answer": "Decisions can be superseded by creating a new ADR. When doing so, it is useful to record any negative outcomes or reasons for the change in the original ADR to maintain historical context.",
+  "file": "decisions\\README.md"
+}
+{
+  "question": "What are the primary differences between the Foundry SDK and the Agent Framework SDK?",
+  "answer": "The Foundry SDK is a thin-client, autogenerated library designed for accessing specific agent service capabilities across multiple languages. In contrast, the Agent Framework SDK is a general-purpose framework focused on agentic application development, providing common abstractions to create and orchestrate heterogeneous agent systems that can span both local and cloud environments.",
+  "file": "specs\\001-foundry-sdk-alignment.md"
+}
+{
+  "question": "How does this specification solve the issue of disjointed developer experience in Semantic Kernel regarding Foundry Agents?",
+  "answer": "The solution introduces helper methods that allow developers to seamlessly retrieve or create an `AIAgent` using a `PersistentAgentsClient`. This integration eliminates the friction previously seen where Foundry Agent support was not fully integrated into the SDK, making it easier for developers to discover and use Foundry Agents within multi-agent orchestrations.",
+  "file": "specs\\001-foundry-sdk-alignment.md"
+}
+{
+  "question": "Which method should be used to retrieve an existing server-side agent as a `ChatClientAgent`?",
+  "answer": "You should use the static extension method `GetAIAgentAsync`. This method takes a `PersistentAgentsClient`, an `agentId`, optional `chatOptions`, and a `CancellationToken` to return a `ChatClientAgent` instance that can be used to perform operations on the persistent agent.",
+  "file": "specs\\001-foundry-sdk-alignment.md"
+}
+{
+  "question": "What parameters are required when creating a new server-side agent using the Agent Framework?",
+  "answer": "When creating an `AIAgent`, you must provide the `PersistentAgentsClient`, the `model` to be used, and configuration details such as the `name`, `description`, and `instructions`. You can also optionally configure tools, tool resources, temperature, top-p settings, and response formats.",
+  "file": "specs\\001-foundry-sdk-alignment.md"
+}
+{
+  "question": "What are the success metrics for this feature integration?",
+  "answer": "The key success metrics include ensuring that the complexity of basic samples remains comparable to other agent frameworks and enabling developers to easily discover how to utilize Foundry Agents within Agent Framework multi-agent orchestrations without confusion.",
+  "file": "specs\\001-foundry-sdk-alignment.md"
+}
+{
+  "question": "What success metric indicates that users are successfully referring to external Azure resources using the new feature?",
+  "answer": "The feature is considered successful when 40% of project client users are actively using connections for accessing external resources.",
+  "file": "specs\\spec-template.md"
+}
+{
+  "question": "Why was this feature introduced regarding the complexity of the system today?",
+  "answer": "Previously, users had to understand the distinction between control plane and data plane endpoints and utilize multiple packages to stitch their application code together, which caused confusion and increased dependency counts.",
+  "file": "specs\\spec-template.md"
+}
+{
+  "question": "How can a connection be used to create an AzureAISearchIndex in Python?",
+  "answer": "You instantiate an `AzureAISearchIndex` object by passing the `connection` parameter (e.g., 'my-ai-search-connection') along with your index name, and then pass this object to `client.indexes.create_index()`.",
+  "file": "specs\\spec-template.md"
+}
+{
+  "question": "What is the scope of uniqueness for a connection name within the system?",
+  "answer": "A connection name must be unique across the entire resource, allowing the system to unambiguously resolve the specific connection details when provided with just the name.",
+  "file": "specs\\spec-template.md"
+}
+{
+  "question": "How does the system utilize a connection ID passed during dataset creation?",
+  "answer": "When creating a dataset, passing a connection ID allows services to parse that ID and use it to access the underlying resource (e.g., an Azure blob) without requiring users to manage separate endpoint logic.",
+  "file": "specs\\spec-template.md"
+}
+{
+  "question": "How does a new interaction with an agent affect its TTL timer?",
+  "answer": "Each new interaction with an agent resets the TTL timer, effectively extending the session's lifetime from that moment onward.",
+  "file": "features\\durable-agents\\durable-agents-ttl.md"
+}
+{
+  "question": "Can I configure different TTL durations for specific agents while keeping a global default?",
+  "answer": "Yes, you can set a global default TTL and then override it for specific agent types by passing a custom `timeToLive` parameter when adding the agent (e.g., `options.AddAIAgent(agent, timeToLive: TimeSpan.FromDays(1))`). You can also disable TTL for a specific agent by setting its TTL to null.",
+  "file": "features\\durable-agents\\durable-agents-ttl.md"
+}
+{
+  "question": "What is the default minimum deletion delay and can it be changed?",
+  "answer": "The default minimum deletion delay is 5 minutes, which is also the maximum allowed value. While reducing this below 5 minutes is possible for testing or rapid cleanup of short-lived sessions, doing so increases system load and should be done with caution.",
+  "file": "features\\durable-agents\\durable-agents-ttl.md"
+}
+{
+  "question": "What specific data is removed when an agent session expires?",
+  "answer": "When a session expires, its entire state is deleted, including conversation history, any custom state data, and the expiration timestamps associated with that session.",
+  "file": "features\\durable-agents\\durable-agents-ttl.md"
+}
+{
+  "question": "How does the system handle the timing of deletion operations for expired sessions?",
+  "answer": "The runtime schedules a delete operation when the current time exceeds the expiration timestamp. If the scheduled delete operation runs after the minimum delay constraints, it checks if the session is still idle; if so, it deletes the state. If the session has become active again (resetting the timer), the delete operation is rescheduled for the next expiration time.",
+  "file": "features\\durable-agents\\durable-agents-ttl.md"
+}
+{
+  "question": "How does the new embedding abstraction design combine features from Semantic Kernel and MEAI?",
+  "answer": "The abstraction combines the best of both by establishing both a Protocol (`SupportsGetEmbeddings`) for duck-typing and an Abstract Base Class (`BaseEmbeddingClient`) for implementations, mirroring the Agent Framework's chat client pattern. It adopts MEAI's generic input/output types (allowing text, image, audio) and options structure while strictly following AF's TypeVar naming conventions like `SuffixT`.",
+  "file": "features\\vector-stores-and-embeddings\\README.md"
+}
+{
+  "question": "What data model formats are supported by the `@vectorstoremodel` decorator?",
+  "answer": "The `@vectorstoremodel` decorator supports a wide range of data structures, including Pydantic models, Python dataclasses, plain classes, and dictionaries. This flexibility allows developers to define vector store schemas using their preferred approach without being locked into a single format.",
+  "file": "features\\vector-stores-and-embeddings\\README.md"
+}
+{
+  "question": "How can developers enable Agent tools for common vector store operations?",
+  "answer": "Developers can expose vector store capabilities to agents by using the provided helper functions: `create_search_tool`, `create_upsert_tool`, `create_get_tool`, and `create_delete_tool`. These functions wrap the underlying CRUD and search logic into agent-usable tools.",
+  "file": "features\\vector-stores-and-embeddings\\README.md"
+}
+{
+  "question": "Does the framework require NumPy for handling embedding vectors?",
+  "answer": "No, the framework does not have a dependency on NumPy. By default, embeddings are returned as standard Python `list[float]`. This design choice keeps dependencies low, and users can cast the lists to NumPy arrays if they specifically need them.",
+  "file": "features\\vector-stores-and-embeddings\\README.md"
+}
+{
+  "question": "What search capabilities are unified in the vector store interface?",
+  "answer": "The vector store provides a unified search interface that supports different search types via the `search_type` parameter. The supported options include standard `vector` search and `keyword_hybrid` search, allowing for flexible retrieval strategies within a single API.",
+  "file": "features\\vector-stores-and-embeddings\\README.md"
+}

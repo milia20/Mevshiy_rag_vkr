@@ -33,16 +33,22 @@ import numpy as np
 from tqdm.auto import tqdm
 
 from src.search_strategies import (
-    SparseSearcher, SparseConfig,
+    SparseConfig,
     DenseConfig, DenseSearcher,
-    HybridSearcher, HybridConfig
+    HybridSearcher, HybridConfig, QdrantSparseSearcher
 )
 
+SparseSearcher = QdrantSparseSearcher
 logger = logging.getLogger(__name__)
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
+
+logging.getLogger("urllib3").setLevel(logging.WARNING)
+logging.getLogger("requests").setLevel(logging.WARNING)
+logging.getLogger("qdrant_client").setLevel(logging.WARNING)
+logging.getLogger("httpx").setLevel(logging.WARNING)
 
 
 @dataclass
@@ -535,18 +541,30 @@ def run_bm25_grid(
 
     for k1, b in product(cfg.bm25_k1_values, cfg.bm25_b_values):
         logger.info("Testing BM25: k1=%.2f, b=%.2f", k1, b)
-
+        use_qdrant_sparse = True
         try:
-            # Create sparse searcher with k1, b parameters
             sparse_cfg = SparseConfig(
                 top_k=cfg.top_k,
                 k1=k1,
-                b=b
+                b=b,
+                # Qdrant-specific params
+                collection_name=f"{cfg.collection_prefix}_sparse_k1{k1}_b{b}",
+                qdrant_url=cfg.qdrant_url,
             )
-            sparse_searcher = SparseSearcher(docs=docs, cfg=sparse_cfg)
 
-            # Run benchmark
+            def create_sparse_searcher(docs: List[Dict], cfg: SparseConfig, use_qdrant: bool = False):
+                if use_qdrant:
+                    return QdrantSparseSearcher(docs=docs, cfg=cfg)
+                else:
+                    return SparseSearcher(docs=docs, cfg=cfg)
+
+            sparse_searcher = create_sparse_searcher(docs=docs, cfg=sparse_cfg, use_qdrant=use_qdrant_sparse)
+
             agg = run_benchmark_for_searcher(sparse_searcher, queries, ground_truth, top_k=cfg.top_k)
+
+            # Cleanup if using Qdrant
+            if use_qdrant_sparse and hasattr(sparse_searcher, 'cleanup'):
+                sparse_searcher.cleanup()
 
             entry = {
                 "method": "bm25",

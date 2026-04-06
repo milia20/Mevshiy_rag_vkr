@@ -7,7 +7,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(
 
 QDRANT_HOST = "localhost"
 QDRANT_PORT = 6333
-COLLECTION_NAME = "test_hnsw_default"   # или любая ваша коллекция, где есть данные
+COLLECTION_NAME = "test_hnsw_default"
 EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"   # та же модель, что при индексации
 
 def main():

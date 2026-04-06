@@ -290,3 +290,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# python "D:\P_work\Rag-VKR\src\indexing\qdrant_experiments.py" --input "D:\P_work\Rag-VKR\src\indexing\processed\chunks_en.jsonl"

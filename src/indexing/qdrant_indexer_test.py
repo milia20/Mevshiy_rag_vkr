@@ -5,12 +5,10 @@ import logging
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Sequence
 
-from sentence_transformers import SentenceTransformer
-from tqdm.auto import tqdm
-
 from qdrant_client import QdrantClient
 from qdrant_client import models
-
+from sentence_transformers import SentenceTransformer
+from tqdm.auto import tqdm
 
 _FIELD_TYPE_MAP: Dict[str, models.PayloadSchemaType] = {
     "keyword": models.PayloadSchemaType.KEYWORD,
@@ -315,3 +313,18 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# # Default
+# python qdrant_indexer.py --input chunks_en.jsonl --collection docs_default
+#
+# # Optimized HNSW
+# python qdrant_indexer.py --input chunks_en.jsonl --config optimized --collection docs_optimized
+#
+# # With payload indexes and verification
+# python qdrant_indexer.py --input chunks_en.jsonl --create-indexes --verify --output-stats results.json
+#
+# # In-memory testing
+# python qdrant_indexer.py --input chunks_en.jsonl --in-memory --collection test_docs
+#
+# # all experiments
+# python experiment_config.py --input chunks_en.jsonl
