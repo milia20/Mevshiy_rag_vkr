@@ -5,20 +5,84 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "fastapi>=0.110.0",
-    "langchain-text-splitters>=1.1.1",
-    "pandas>=3.0.1",
-    "qdrant-client>=1.17.1",
-    "rank-bm25>=0.2.2",
-    "requests>=2.33.0",
-    "sentence-transformers>=5.3.0",
-    "matplotlib>=3.10.0",
-    "plotly>=6.0.0",
+    "fastapi~=0.136.1",
+    "langchain-text-splitters~=1.1.2",
+    "pandas[performance, parquet]~=3.0.2",
+    "qdrant-client~=1.17.1",
+    "rank-bm25~=0.2.2",
+    "requests~=2.33.1",
+    "sentence-transformers~=5.4.1",
+    "matplotlib~=3.10.9",
+    "plotly~=6.7.0",
     "scipy>=1.15.0",
     "seaborn>=0.13.2",
     "tqdm>=4.67.3",
     "tabulate>=0.10.0",
-    "uvicorn>=0.27.1",
-    "openai>=2.30.0",
+    "uvicorn~=0.46.0",
+    "openai~=2.35.1",
     "faiss-cpu>=1.13.2",
+    "loguru~=0.7.3",
+    "pydantic-settings~=2.14.0",
+    "pydantic[email]~=2.13.4"
 ]
+
+[project.optional-dependencies]
+dev = [
+    #    "alembic-postgresql-enum",
+    #    "alembic",
+    "black",
+    #    "faker",
+    #    "httpx",
+    "isort",
+    "pre-commit",
+    #    "ipykernel",
+    #    "line-profiler",
+    #    "locust",
+    #    "memory-profiler",
+    "pytest",
+    "pytest-async",
+    "pytest-cov",
+    "pytest-mock",
+    "pytest-randomly",
+    "pytest-xdist",
+    "pyupgrade",
+    "ruff",
+]
+
+[tool.setup_settings]
+remote_files_urls = [
+    "https://raw.githubusercontent.com/user/repo/main/main_calc.py",
+    "https://raw.githubusercontent.com/user/repo/main/helpers.py"
+]
+llms = [
+    "openai/gpt-oss-120b",
+    "qwen/qwen3.5-35b-a3b",
+    "google/gemma-3-12b"
+]
+
+
+[tool.uv.pip]
+generate-hashes = true
+no-build-isolation = true
+emit-index-url = true
+
+[tool.pip-tools]
+generate-hashes = true
+no-build-isolation = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+testpaths = "tests"
+pythonpath = [".", "app"]
+addopts = "-ra"
+
+[tool.black]
+line-length = 120
+target-version = ['py39', 'py313']
+exclude = '''
+/(.venv|__pycache__|alembic)/|\.json$
+'''
+
+[tool.setuptools]
+packages = { find = { namespaces = false } }

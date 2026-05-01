@@ -8,14 +8,14 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(
 QDRANT_HOST = "localhost"
 QDRANT_PORT = 6333
 COLLECTION_NAME = "test_hnsw_default"
-EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"   # та же модель, что при индексации
+EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"  # та же модель, что при индексации
 
 def main():
     indexer = QdrantIndexer(
         host=QDRANT_HOST,
         port=QDRANT_PORT,
         collection_name=COLLECTION_NAME,
-        in_memory=False,      # используем постоянное хранилище
+        in_memory=False,  # используем постоянное хранилище
     )
 
     if not indexer.client.collection_exists(COLLECTION_NAME):
@@ -31,10 +31,10 @@ def main():
     try:
         results = indexer.search(
             query_text=question,
-            limit=3, # сколько лучших фрагментов показать
+            limit=3,  # сколько лучших фрагментов показать
             model_name=EMBEDDING_MODEL,
             collection_name=COLLECTION_NAME,
-            score_threshold=0.5,         # отсекаем совсем непохожие
+            score_threshold=0.5,  # отсекаем совсем непохожие
         )
     except Exception as e:
         print(f"Ошибка при поиске: {e}")
@@ -57,6 +57,7 @@ def main():
             print()
 
     indexer.close()
+
 
 if __name__ == "__main__":
     main()
