@@ -2,15 +2,15 @@ from __future__ import annotations
 
 import json
 import logging
+from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Sequence
+from typing import Any
 
-from qdrant_client import QdrantClient
-from qdrant_client import models
+from qdrant_client import QdrantClient, models
 from sentence_transformers import SentenceTransformer
 from tqdm.auto import tqdm
 
-_FIELD_TYPE_MAP: Dict[str, models.PayloadSchemaType] = {
+_FIELD_TYPE_MAP: dict[str, models.PayloadSchemaType] = {
     "keyword": models.PayloadSchemaType.KEYWORD,
     "integer": models.PayloadSchemaType.INTEGER,
     "float": models.PayloadSchemaType.FLOAT,
@@ -29,17 +29,18 @@ class CollectionSpec:
 
 
 class QdrantIndexer:
+
     def __init__(
         self,
         host: str = "localhost",
         port: int = 6333,
         collection_name: str = "mkdocs_docs",
         *,
-        url: Optional[str] = None,
+        url: str | None = None,
         in_memory: bool = False,
-        local_path: Optional[str] = None,
+        local_path: str | None = None,
         prefer_grpc: bool = True,
-        timeout: Optional[float] = 60.0,
+        timeout: float | None = 60.0,
     ):
         self.collection_name = collection_name
 
@@ -55,9 +56,9 @@ class QdrantIndexer:
     def create_collection(
         self,
         vector_size: int,
-        hnsw_config: Dict[str, Any],
+        hnsw_config: dict[str, Any],
         *,
-        collection_name: Optional[str] = None,
+        collection_name: str | None = None,
         recreate: bool = False,
     ) -> str:
         name = collection_name or self.collection_name
@@ -80,7 +81,9 @@ class QdrantIndexer:
 
         return name
 
-    def create_payload_index(self, field_name: str, field_type: str = "keyword", *, collection_name: Optional[str] = None) -> None:
+    def create_payload_index(
+        self, field_name: str, field_type: str = "keyword", *, collection_name: str | None = None
+    ) -> None:
         name = collection_name or self.collection_name
         ft = _FIELD_TYPE_MAP.get(field_type.lower())
         if ft is None:
@@ -93,15 +96,15 @@ class QdrantIndexer:
         )
 
     def add_embeddings_to_chunks(
-        self, 
-        chunks: List[Dict[str, Any]], 
+        self,
+        chunks: list[dict[str, Any]],
         model_name: str = "sentence-transformers/all-MiniLM-L6-v2",
         batch_size: int = 32,
-        show_progress: bool = True
-    ) -> List[Dict[str, Any]]:
+        show_progress: bool = True,
+    ) -> list[dict[str, Any]]:
         """
         Add embeddings to chunks using SentenceTransformer model.
-        
+
         Parameters:
         -----------
         chunks: List[Dict[str, Any]]
@@ -112,7 +115,7 @@ class QdrantIndexer:
             Batch size for embedding generation
         show_progress: bool
             Whether to show progress bar
-            
+
         Returns:
         --------
         List[Dict[str, Any]]
@@ -120,32 +123,39 @@ class QdrantIndexer:
         """
         logging.info(f"Loading model: {model_name}")
         model = SentenceTransformer(model_name)
-        
+
         texts = [chunk.get("text", "") for chunk in chunks]
-        
+
         if show_progress:
             logging.info(f"Generating embeddings for {len(texts)} chunks...")
-        
+
         # Generate embeddings in batches
         embeddings = model.encode(
             texts,
             batch_size=batch_size,
             convert_to_numpy=True,
             show_progress_bar=show_progress,
-            normalize_embeddings=True  # Normalize for cosine similarity
+            normalize_embeddings=True,  # Normalize for cosine similarity
         )
-        
+
         # Add embeddings to chunks
         chunks_with_embeddings = []
         for i, chunk in enumerate(chunks):
             chunk_copy = chunk.copy()
             chunk_copy["vector"] = embeddings[i].tolist()
             chunks_with_embeddings.append(chunk_copy)
-        
+
         logging.info(f"Generated embeddings with dimension: {embeddings.shape[1]}")
         return chunks_with_embeddings
-    
-    def index_documents(self, chunks: List[Dict[str, Any]], batch_size: int = 200, *, collection_name: Optional[str] = None, show_progress: bool = True) -> int:
+
+    def index_documents(
+        self,
+        chunks: list[dict[str, Any]],
+        batch_size: int = 200,
+        *,
+        collection_name: str | None = None,
+        show_progress: bool = True,
+    ) -> int:
         if batch_size < 1:
             raise ValueError("batch_size must be >= 1")
         if batch_size < 100 or batch_size > 500:
@@ -163,9 +173,9 @@ class QdrantIndexer:
             start = b_idx * batch_size
             end = min(start + batch_size, len(chunks))
             batch = chunks[start:end]
-            ids: List[str] = []
-            vectors: List[Sequence[float]] = []
-            payloads: List[Dict[str, Any]] = []
+            ids: list[str] = []
+            vectors: list[Sequence[float]] = []
+            payloads: list[dict[str, Any]] = []
 
             for i, ch in enumerate(batch):
                 md = ch.get("metadata") or {}
@@ -179,7 +189,7 @@ class QdrantIndexer:
                 if vec is None:
                     raise ValueError("Each chunk must include a vector under key 'vector' or 'embedding'.")
 
-                payload: Dict[str, Any] = {}
+                payload: dict[str, Any] = {}
                 payload.update(md if isinstance(md, dict) else {})
                 for k, v in ch.items():
                     if k in {"vector", "embedding", "metadata"}:
@@ -205,7 +215,9 @@ class QdrantIndexer:
 
         return int(count)
 
-    def setup_experiment_collections(self, vector_size: int, *, base_name: Optional[str] = None, recreate: bool = False) -> Dict[str, str]:
+    def setup_experiment_collections(
+        self, vector_size: int, *, base_name: str | None = None, recreate: bool = False
+    ) -> dict[str, str]:
         base = base_name or self.collection_name
 
         specs = [
@@ -219,7 +231,7 @@ class QdrantIndexer:
             ),
         ]
 
-        created: Dict[str, str] = {}
+        created: dict[str, str] = {}
         for spec in specs:
             self.create_collection(
                 vector_size=vector_size,
@@ -236,41 +248,34 @@ class QdrantIndexer:
         return created
 
 
-
-
-def load_chunks_with_embeddings(chunks_path: str, model_name: str = "sentence-transformers/all-MiniLM-L6-v2") -> tuple[List[Dict[str, Any]], int]:
+def load_chunks_with_embeddings(
+    chunks_path: str, model_name: str = "sentence-transformers/all-MiniLM-L6-v2"
+) -> tuple[list[dict[str, Any]], int]:
     """
     Load chunks from JSONL file and add embeddings.
-    
+
     Parameters:
     -----------
     chunks_path: str
         Path to chunks JSONL file
     model_name: str
         Name of sentence transformer model
-        
+
     Returns:
     --------
     tuple[List[Dict[str, Any]], int]
         Chunks with embeddings and embedding dimension
     """
-    chunks = []
-    with open(chunks_path, "r", encoding="utf-8") as f:
-        for line in f:
-            if line.strip():
-                chunks.append(json.loads(line))
-    
+    with open(chunks_path, encoding="utf-8") as f:
+        chunks = [json.loads(line) for line in f if line.strip()]
+
     # Create indexer to add embeddings
     indexer = QdrantIndexer()
-    chunks_with_embeddings = indexer.add_embeddings_to_chunks(
-        chunks, 
-        model_name=model_name,
-        show_progress=True
-    )
-    
+    chunks_with_embeddings = indexer.add_embeddings_to_chunks(chunks, model_name=model_name, show_progress=True)
+
     # Get embedding dimension from first chunk
     vector_size = len(chunks_with_embeddings[0]["vector"])
-    
+
     return chunks_with_embeddings, vector_size
 
 
@@ -280,36 +285,37 @@ def main():
         level=logging.INFO,
         format="%(asctime)s | %(levelname)s | %(message)s",
     )
-    
+
     # Load chunks for English documentation
     chunks_path_en = "./processed/chunks_en.jsonl"
     chunks_en, vector_size = load_chunks_with_embeddings(chunks_path_en)
-    
-    # Load chunks for Russian documentation  
+
+    # Load chunks for Russian documentation
     chunks_path_ru = "./processed/chunks_ru.jsonl"
     chunks_ru, _ = load_chunks_with_embeddings(chunks_path_ru)
-    
+
     indexer = QdrantIndexer(host="localhost", port=6333)
-    
+
     # Create collections for English docs
     created_en = indexer.setup_experiment_collections(vector_size, recreate=True, base_name="mkdocs_docs_en")
     logging.info(f"Created English collections: {created_en}")
-    
+
     # Create collections for Russian docs
     created_ru = indexer.setup_experiment_collections(vector_size, recreate=True, base_name="mkdocs_docs_ru")
     logging.info(f"Created Russian collections: {created_ru}")
-    
+
     # Index English documents
     for coll_name in created_en.values():
         count = indexer.index_documents(chunks_en, batch_size=200, collection_name=coll_name)
         logging.info(f"Uploaded {count} English points to {coll_name}")
-    
+
     # Index Russian documents
     for coll_name in created_ru.values():
         count = indexer.index_documents(chunks_ru, batch_size=200, collection_name=coll_name)
         logging.info(f"Uploaded {count} Russian points to {coll_name}")
-    
+
     logging.info("Indexing completed successfully!")
+
 
 if __name__ == "__main__":
     main()

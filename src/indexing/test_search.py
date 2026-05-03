@@ -10,6 +10,7 @@ QDRANT_PORT = 6333
 COLLECTION_NAME = "test_hnsw_default"
 EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"  # та же модель, что при индексации
 
+
 def main():
     indexer = QdrantIndexer(
         host=QDRANT_HOST,
@@ -46,13 +47,13 @@ def main():
         print(f"Найдено {len(results)} фрагментов:\n")
         for i, res in enumerate(results, 1):
             print(f"--- Результат {i} (score = {res['score']:.4f}) ---")
-            text = res['payload'].get('text', '')
+            text = res["payload"].get("text", "")
             print(f"Текст: {text[:500]}{'...' if len(text) > 500 else ''}")
-            source = res['payload'].get('source', 'неизвестно')
-            doc_title = res['payload'].get('doc_title', '')
+            source = res["payload"].get("source", "неизвестно")
+            doc_title = res["payload"].get("doc_title", "")
             if doc_title:
                 print(f"Источник: {doc_title} ({source})")
-            elif source != 'неизвестно':
+            elif source != "неизвестно":
                 print(f"Источник: {source}")
             print()
 

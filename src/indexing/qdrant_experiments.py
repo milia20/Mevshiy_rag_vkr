@@ -9,11 +9,9 @@ import json
 import logging
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List
 
+from qdrant_uploader import HNSWConfig, QdrantIndexer
 from sentence_transformers import SentenceTransformer
-
-from qdrant_uploader import QdrantIndexer, HNSWConfig
 
 logger = logging.getLogger(__name__)
 
@@ -21,6 +19,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class ExperimentConfig:
     """Configuration for a single indexing experiment"""
+
     name: str
     collection_name: str
     hnsw_config: HNSWConfig
@@ -66,9 +65,9 @@ def run_experiment(
     embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2",
 ) -> dict:
     """Run a single indexing experiment"""
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"Running Experiment: {exp.name}")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
     print(f"Collection: {exp.collection_name}")
     print(f"HNSW: m={exp.hnsw_config.m}, ef_construct={exp.hnsw_config.ef_construct}")
 
@@ -153,7 +152,7 @@ def run_all_experiments(
     *,
     add_embeddings: bool = True,
     embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2",
-) -> List[dict]:
+) -> list[dict]:
     """Run all indexing experiments"""
     results = []
 
@@ -174,9 +173,9 @@ def run_all_experiments(
     with open(output_file, "w") as f:
         json.dump(results, f, indent=2, default=str)
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"Experiment results saved to {output_file}")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     # Print summary
     success_count = sum(1 for r in results if r.get("status") == "success")
@@ -187,20 +186,13 @@ def run_all_experiments(
 
 def main():
     """CLI entry point for running experiments"""
-    parser = argparse.ArgumentParser(
-        description="Run Qdrant indexing experiments for thesis"
-    )
-    parser.add_argument(
-        "--input",
-        type=str,
-        required=True,
-        help="Input JSONL file with chunks"
-    )
+    parser = argparse.ArgumentParser(description="Run Qdrant indexing experiments for thesis")
+    parser.add_argument("--input", type=str, required=True, help="Input JSONL file with chunks")
     parser.add_argument(
         "--vector-size",
         type=int,
         default=None,
-        help="Vector dimension (default: derived from embedding model when embeddings are enabled)"
+        help="Vector dimension (default: derived from embedding model when embeddings are enabled)",
     )
     parser.add_argument(
         "--embedding-model",
@@ -214,30 +206,21 @@ def main():
         help="Do not generate embeddings; expects vectors already present in input file",
     )
 
-    parser.add_argument(
-        "--batch-size",
-        type=int,
-        default=256,
-        help="Batch size for uploading (default: 256)"
-    )
+    parser.add_argument("--batch-size", type=int, default=256, help="Batch size for uploading (default: 256)")
     parser.add_argument(
         "--output",
         type=str,
         default=Path(__file__).parent / "experiments/indexing_results.json",
-        help="Output path for results JSON"
+        help="Output path for results JSON",
     )
     parser.add_argument(
         "--experiment",
         type=str,
         choices=["all", "baseline", "optimized_speed", "optimized_memory", "high_precision"],
         default="all",
-        help="Which experiment(s) to run"
+        help="Which experiment(s) to run",
     )
-    parser.add_argument(
-        "--verbose",
-        action="store_true",
-        help="Enable verbose logging"
-    )
+    parser.add_argument("--verbose", action="store_true", help="Enable verbose logging")
 
     args = parser.parse_args()
 
@@ -279,16 +262,17 @@ def main():
     print(f"\nResults saved to {output_file}")
 
     # Print summary
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("EXPERIMENT SUMMARY")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
     for r in results:
         status = "✓" if r.get("status") == "success" else "✗"
         print(f"{status} {r['experiment']}: {r.get('status', 'unknown')}")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
 
 if __name__ == "__main__":
     main()
 
-# python "D:\P_work\Rag-VKR\src\indexing\qdrant_experiments.py" --input "D:\P_work\Rag-VKR\src\indexing\processed\chunks_en.jsonl"
+# python "D:\P_work\Rag-VKR\src\indexing\qdrant_experiments.py"
+# --input "D:\P_work\Rag-VKR\src\indexing\processed\chunks_en.jsonl"

@@ -1,0 +1,67 @@
+name: docker linter
+
+env:
+    GLOBAL_FAILED: false
+
+on:
+  pull_request:
+      paths:
+          - "**.Dockerfile"  # Trigger only on changes to files (commits).
+          - "compose.yaml"
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: "docker-linter"
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    permissions:
+        pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run hadolint
+        run: |
+           cat *.Dockerfile | docker run --rm -i hadolint/hadolint > lint-report.txt
+        # cat compose.yaml | docker run --rm -i hadolint/hadolint >> lint-report.txt
+        # doesn't work: https://github.com/hadolint/hadolint/issues/1091
+        continue-on-error: true
+
+      - name: Limit report to 100 lines
+        if: ${{ github.event_name == 'pull_request'}}
+        run: |
+            if [[ $(wc -l < lint-report.txt) != 0 ]]; then
+                tail -n 100 lint-report.txt > lint-limited-report.txt;
+                echo true >> $GLOBAL_FAILED;
+            else
+                echo "No docker📦 errors found 🎉✨" > lint-limited-report.txt;
+                echo false >> $GLOBAL_FAILED;
+            fi
+
+
+      - name: Upload lint report
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-report
+          path: lint-limited-report.txt
+
+      - name: Post lint results as PR comment
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          header: Dockerfile errors
+          path: lint-limited-report.txt
+          hide: true
+          skip_unchanged: true
+
+      - name: Fail build
+        if: ${{ env.GLOBAL_FAILED == true }}
+        run: exit 1

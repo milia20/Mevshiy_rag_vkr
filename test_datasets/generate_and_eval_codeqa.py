@@ -2,7 +2,7 @@ import os
 import random
 import re
 import time
-from typing import List, Dict, Any, Tuple
+from typing import Any
 
 import pandas as pd
 import requests
@@ -32,10 +32,10 @@ class OllamaClient:
                 response = requests.post(self.api_url, json=payload, timeout=60)
                 response.raise_for_status()
                 return response.json().get("choices")[0].get("text", "I don't know").strip()
-            except (requests.RequestException, ValueError) as e:
+            except (requests.RequestException, ValueError):
                 if attempt == max_retries - 1:
                     return "I don't know"
-                time.sleep(2 ** attempt)
+                time.sleep(2**attempt)
 
 
 def normalize_text(text: str) -> str:
@@ -46,7 +46,7 @@ def normalize_text(text: str) -> str:
     return text
 
 
-def extract_numbers(text: str) -> List[str]:
+def extract_numbers(text: str) -> list[str]:
     number_pattern = r"\d+\.?\d*"
     numbers = re.findall(number_pattern, text)
     return [num for num in numbers if num]
@@ -61,7 +61,7 @@ def calculate_similarity(s1: str, s2: str) -> float:
     max_len = max(len(s1), len(s2))
     s1_padded = s1.ljust(max_len)
     s2_padded = s2.ljust(max_len)
-    for c1, c2 in zip(s1_padded, s2_padded):
+    for c1, c2 in zip(s1_padded, s2_padded, strict=False):
         if c1 == c2:
             matches += 1
     return matches / max_len
@@ -70,18 +70,21 @@ def calculate_similarity(s1: str, s2: str) -> float:
 def is_contained_with_tolerance(needle: str, haystack: str) -> bool:
     needle_words = set(needle.split())
     haystack_words = set(haystack.split())
-    if len(needle_words) <= 2:
+    need = 2
+    if len(needle_words) <= need:
         return needle_words.issubset(haystack_words)
     intersection = needle_words.intersection(haystack_words)
     if len(needle_words) == 0:
         return True
-    return len(intersection) / len(needle_words) >= 0.7
+    precent = 0.7
+    return len(intersection) / len(needle_words) >= precent
 
 
 def is_substring_with_flexibility(needle: str, haystack: str) -> bool:
     if not needle or not haystack:
         return False
-    if len(needle) < 3:
+    need = 3
+    if len(needle) < need:
         return needle == haystack
     if len(needle) <= len(haystack):
         return is_contained_with_tolerance(needle, haystack)
@@ -98,13 +101,15 @@ def evaluate_answer_complex(generated_answer: str, correct_answer: str) -> bool:
         return True
     gen_tokens = set(gen_norm.split())
     corr_tokens = set(corr_norm.split())
-    if corr_tokens and len(gen_tokens.intersection(corr_tokens)) / len(corr_tokens) >= 0.8:
+    precent = 0.8
+    if corr_tokens and len(gen_tokens.intersection(corr_tokens)) / len(corr_tokens) >= precent:
         return True
     gen_nums = extract_numbers(generated_answer)
     corr_nums = extract_numbers(correct_answer)
     if gen_nums and corr_nums and set(gen_nums) == set(corr_nums):
         return True
-    if calculate_similarity(gen_norm, corr_norm) >= 0.85:
+    precent_2 = 0.85
+    if calculate_similarity(gen_norm, corr_norm) >= precent_2:
         return True
     if is_substring_with_flexibility(gen_norm, corr_norm):
         return True
@@ -121,19 +126,19 @@ def build_prompt(code: str, question: str) -> str:
     )
 
 
-def read_lines(file_path: str) -> List[str]:
-    with open(file_path, "r", encoding="utf-8") as f:
+def read_lines(file_path: str) -> list[str]:
+    with open(file_path, encoding="utf-8") as f:
         return [line.rstrip("\n") for line in f]
 
 
-def load_triplets(question_path: str, code_path: str, answer_path: str) -> List[Tuple[str, str, str]]:
+def load_triplets(question_path: str, code_path: str, answer_path: str) -> list[tuple[str, str, str]]:
     qs = read_lines(question_path) if os.path.exists(question_path) else []
     cs = read_lines(code_path) if os.path.exists(code_path) else []
     ans = read_lines(answer_path) if os.path.exists(answer_path) else []
     if len(qs) == 0 or len(cs) == 0 or len(ans) == 0:
         return []
     n = min(len(qs), len(cs), len(ans))
-    return list(zip(qs[:n], cs[:n], ans[:n]))
+    return list(zip(qs[:n], cs[:n], ans[:n], strict=False))
 
 
 def evaluate_codeqa(
@@ -142,16 +147,16 @@ def evaluate_codeqa(
     question_path: str,
     code_path: str,
     answer_path: str,
-    sample_size: int = None,
-) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+    sample_size: int | None = None,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     triplets = load_triplets(question_path, code_path, answer_path)
     if not triplets:
         return [], []
     if sample_size and len(triplets) > sample_size:
         triplets = random.sample(triplets, sample_size)
 
-    results_full: List[Dict[str, Any]] = []
-    results_simple: List[Dict[str, Any]] = []
+    results_full: list[dict[str, Any]] = []
+    results_simple: list[dict[str, Any]] = []
 
     for question, code, correct_answer in tqdm(triplets, desc=f"Evaluating {dataset_name}"):
         prompt = build_prompt(code, question)
@@ -191,8 +196,8 @@ def main():
 
     ollama_client = OllamaClient()
 
-    all_full: List[Dict[str, Any]] = []
-    all_simple: List[Dict[str, Any]] = []
+    all_full: list[dict[str, Any]] = []
+    all_simple: list[dict[str, Any]] = []
 
     # data_sample/python
     ds_base = os.path.join("../datasets/CodeQA-main", "data_sample", "python")

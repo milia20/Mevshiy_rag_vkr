@@ -17,12 +17,12 @@ import logging
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
 from tqdm.auto import tqdm
+
 
 @dataclass
 class GTConfig:
@@ -49,7 +49,7 @@ def setup_logging():
     )
 
 
-def load_chunks(chunks_jsonl_path: str) -> Tuple[List[str], List[Dict]]:
+def load_chunks(chunks_jsonl_path: str) -> tuple[list[str], list[dict]]:
     """
     Load chunks from JSONL file.
 
@@ -61,8 +61,8 @@ def load_chunks(chunks_jsonl_path: str) -> Tuple[List[str], List[Dict]]:
     if not path.exists():
         raise FileNotFoundError(f"Chunks file not found: {chunks_jsonl_path}")
 
-    texts: List[str] = []
-    metadata_list: List[Dict] = []
+    texts: list[str] = []
+    metadata_list: list[dict] = []
 
     with path.open("r", encoding="utf-8") as f:
         for line in f:
@@ -85,14 +85,13 @@ def load_chunks(chunks_jsonl_path: str) -> Tuple[List[str], List[Dict]]:
 #         return sum(1 for _ in f if _.strip())
 
 
-
 def create_embeddings_memmap(
-    texts: List[str],
+    texts: list[str],
     model_name: str,
     memmap_path: str,
     batch_size: int = 64,
     dtype: np.dtype = np.float32,
-) -> Tuple[np.memmap, int]:
+) -> tuple[np.memmap, int]:
     """
     Encode texts using SentenceTransformer and write to numpy.memmap.
 
@@ -107,7 +106,7 @@ def create_embeddings_memmap(
     logging.info("Loading model: %s", model_name)
     try:
         model = SentenceTransformer(model_name)
-    except Exception as e:
+    except Exception:
         logging.exception("Failed to load sentence transformer model.")
         raise
 
@@ -136,7 +135,7 @@ def create_embeddings_memmap(
                 show_progress_bar=False,
                 normalize_embeddings=False,  # we'll normalize later explicitly
             )
-        except Exception as e:
+        except Exception:
             logging.exception("Encoding failed on batch %d:%d", i, j)
             raise
 
@@ -158,7 +157,7 @@ def normalize_inplace_memmap(memmap: np.memmap) -> None:
     """
     logging.info("Normalizing embeddings (inplace).")
     # Compute norms in batches to avoid temporarily allocating huge arrays
-    n, dim = memmap.shape
+    n, _ = memmap.shape
     batch = 8192  # tune if needed
     for i in range(0, n, batch):
         j = min(n, i + batch)
@@ -189,12 +188,12 @@ def build_faiss_index(embeddings: np.ndarray) -> faiss.Index:
 
 def generate_ground_truth(
     memmap: np.memmap,
-    metadata_list: List[Dict],
+    metadata_list: list[dict],
     index: faiss.Index,
     output_path: str,
     top_k: int = 10,
     batch_size: int = 512,
-) -> Dict[str, List[str]]:
+) -> dict[str, list[str]]:
     """
     For every vector (treated as a query) find top_k most similar OTHER vectors.
 
@@ -214,7 +213,7 @@ def generate_ground_truth(
     output_file = Path(output_path)
     output_file.parent.mkdir(parents=True, exist_ok=True)
 
-    results_map: Dict[str, List[str]] = {}
+    results_map: dict[str, list[str]] = {}
 
     k_search = min(n, top_k + 1)  # search +1 to allow excluding self
     logging.info("Searching nearest neighbors: top_k=%d (search k=%d)", top_k, k_search)
@@ -228,12 +227,12 @@ def generate_ground_truth(
             # FAISS returns (distances, indices)
             distances, indices = index.search(queries, k_search)
 
-            for row_idx_in_batch, (d_row, ind_row) in enumerate(zip(distances, indices)):
+            for row_idx_in_batch, (_, ind_row) in enumerate(zip(distances, indices, strict=False)):
                 global_query_idx = i + row_idx_in_batch
                 query_chunk_id = chunk_ids[global_query_idx]
 
                 # filter out the query itself
-                neighbors: List[str] = []
+                neighbors: list[str] = []
                 for idx in ind_row:
                     if idx == global_query_idx:
                         continue
@@ -253,8 +252,7 @@ def generate_ground_truth(
     return results_map
 
 
-
-def build_ground_truth_pipeline(cfg: GTConfig) -> Dict[str, List[str]]:
+def build_ground_truth_pipeline(cfg: GTConfig) -> dict[str, list[str]]:
     """
     Full pipeline orchestration.
 
@@ -268,7 +266,6 @@ def build_ground_truth_pipeline(cfg: GTConfig) -> Dict[str, List[str]]:
 
     # Create embeddings memmap (or reuse if exists)
     memmap_path = cfg.emb_memmap_path
-    dims = None
 
     # If memmap exists with correct shape, reuse it.
     if Path(memmap_path).exists():
@@ -278,17 +275,13 @@ def build_ground_truth_pipeline(cfg: GTConfig) -> Dict[str, List[str]]:
         # try to reshape: dims = mem.shape[1] if mem.ndim == 2 else unknown
         if mem.ndim == 2 and mem.shape[0] == n:
             memmap = mem.reshape(mem.shape)
-            dims = memmap.shape[1]
+            # dims = memmap.shape[1]
             logging.info("Reused memmap with shape %s", memmap.shape)
         else:
             logging.warning("Existing memmap shape mismatch; recreating.")
-            memmap, dims = create_embeddings_memmap(
-                texts, cfg.model_name, memmap_path, cfg.batch_size, cfg.dtype
-            )
+            memmap, _ = create_embeddings_memmap(texts, cfg.model_name, memmap_path, cfg.batch_size, cfg.dtype)
     else:
-        memmap, dims = create_embeddings_memmap(
-            texts, cfg.model_name, memmap_path, cfg.batch_size, cfg.dtype
-        )
+        memmap, _ = create_embeddings_memmap(texts, cfg.model_name, memmap_path, cfg.batch_size, cfg.dtype)
 
     # Normalize embeddings to unit length for cosine via inner product
     normalize_inplace_memmap(memmap)

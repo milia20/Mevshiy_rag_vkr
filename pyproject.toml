@@ -1,13 +1,13 @@
 [project]
 name = "rag-vkr"
-version = "0.1.0"
-description = "Add your description here"
+version = "0.2.0"
+description = "Final qualifying thesis for the HSE master's program"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "fastapi~=0.136.1",
     "langchain-text-splitters~=1.1.2",
-    "pandas[performance, parquet]~=3.0.2",
+    "pandas[parquet,performance]~=3.0.2",
     "qdrant-client~=1.17.1",
     "rank-bm25~=0.2.2",
     "requests~=2.33.1",
@@ -19,47 +19,74 @@ dependencies = [
     "tqdm>=4.67.3",
     "tabulate>=0.10.0",
     "uvicorn~=0.46.0",
-    "openai~=2.35.1",
+    "openai~=2.36.0",
     "faiss-cpu>=1.13.2",
     "loguru~=0.7.3",
-    "pydantic-settings~=2.14.0",
-    "pydantic[email]~=2.13.4"
+    "pydantic-settings~=2.14.1",
+    "pydantic[email]~=2.13.4",
+    "jsonlines>=4.0.0",
+    "ipykernel>=7.2.0",
 ]
 
 [project.optional-dependencies]
-dev = [
-    #    "alembic-postgresql-enum",
-    #    "alembic",
-    "black",
-    #    "faker",
-    #    "httpx",
-    "isort",
-    "pre-commit",
-    #    "ipykernel",
-    #    "line-profiler",
-    #    "locust",
-    #    "memory-profiler",
+test = [
     "pytest",
     "pytest-async",
     "pytest-cov",
     "pytest-mock",
     "pytest-randomly",
     "pytest-xdist",
+    #    "faker",
+    #    "httpx",
+]
+dev = [
+    "black[jupyter]",
+    "isort",
+    "pre-commit",
     "pyupgrade",
     "ruff",
+    "ipykernel",
+    #    "line-profiler",
+    #    "locust",
+    #    "memory-profiler",
+    #    "alembic-postgresql-enum",
+    #    "alembic",
 ]
 
 [tool.setup_settings]
 remote_files_urls = [
-    "https://raw.githubusercontent.com/user/repo/main/main_calc.py",
-    "https://raw.githubusercontent.com/user/repo/main/helpers.py"
+    "https://raw.githubusercontent.com/vladislavneon/RuBQ/master/RuBQ_2.0/RuBQ_2.0_test.json",
+    "https://raw.githubusercontent.com/vladislavneon/RuBQ/master/RuBQ_2.0/RuBQ_2.0_paragraphs.json",
+    "https://api.github.com/repos/slivka83/ru_rag_test_dataset/contents/files",
+    "https://raw.githubusercontent.com/slivka83/ru_rag_test_dataset/main/ru_rag_test_dataset.pkl",
+    "https://storage.cloud.google.com/natural_questions/v1.0-simplified/simplified-nq-train.jsonl.gz"
 ]
 llms = [
-    "openai/gpt-oss-120b",
     "qwen/qwen3.5-35b-a3b",
-    "google/gemma-3-12b"
+    "qwen/qwen3.6-35b-a3b",
+    "openai/gpt-oss-120b",
+    "google/gemma-3-12b",
+    "google/gemma-4-26b-a4b",
 ]
 
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+testpaths = ["tests"]
+pythonpath = [".", "src"]
+addopts = [
+    "-ra",
+    #    "--cov=extract_and_download",
+    #    "--cov-report=term-missing",
+    #    "--cov-report=html:htmlcov",
+    #    "--cov-report=xml:coverage.xml",
+    #    "--randomly-seed=42",
+    "--numprocesses=auto",
+]
+#filterwarnings = [
+#    "ignore::DeprecationWarning",
+#    "ignore::UserWarning",
+#]
 
 [tool.uv.pip]
 generate-hashes = true
@@ -70,19 +97,69 @@ emit-index-url = true
 generate-hashes = true
 no-build-isolation = true
 
-[tool.pytest.ini_options]
-asyncio_mode = "auto"
-asyncio_default_fixture_loop_scope = "session"
-testpaths = "tests"
-pythonpath = [".", "app"]
-addopts = "-ra"
 
 [tool.black]
 line-length = 120
-target-version = ['py39', 'py313']
+target-version = ['py313']
 exclude = '''
-/(.venv|__pycache__|alembic)/|\.json$
+/(.venv|__pycache__)/|\.json$
 '''
+
+[tool.isort]
+profile = "black"
+line_length = 120
+skip_gitignore = true
+skip_glob = ["**/migrations/*", "**/settings/*"]
+
+
+[tool.ruff]
+target-version = "py313"
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+    "E", "W", "F", # pycodestyle + pyflakes (база flake8)
+    "I", # isort: сортировка импортов
+    "UP", # pyupgrade: modern syntax
+    "PD", # pyupgrade: modern syntax
+    "ASYNC", # pyupgrade: modern syntax
+    "FAST", # pyupgrade: modern syntax
+    "NPY", # pyupgrade: modern syntax
+    "PERF", # pyupgrade: modern syntax
+    "B", # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "N", # pep8-naming
+    "RUF", # Ruff-specific правила
+    #    "PL", # Pylint-like правила (опционально, если нужны сложные проверки)
+]
+
+# Игноры, аналогичные в pylint
+ignore = [
+    "RUF001", "RUF002", "RUF003",
+    "E501", # line-length — контролируется ruff.format
+    "N802", "N806", # C0103: naming conventions
+    "D100", "D101", # C0114, C0115: docstrings
+    "F401", # E0401: import errors (если есть динамические импорты)
+]
+
+extend-safe-fixes = ["B905", "RUF015"]
+extend-unsafe-fixes = []
+unfixable = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = false
+docstring-code-line-length = "dynamic"
+
+[tool.ruff.lint.isort]
+#combine-as-imports = true
+known-first-party = ["your_package"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S101", "PLR2004"]  # Разрешить assert в тестах
 
 [tool.setuptools]
 packages = { find = { namespaces = false } }

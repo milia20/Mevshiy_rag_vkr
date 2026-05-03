@@ -7,7 +7,7 @@ import json
 import logging
 import uuid
 
-from fastembed import TextEmbedding, SparseTextEmbedding, LateInteractionTextEmbedding
+from fastembed import LateInteractionTextEmbedding, SparseTextEmbedding, TextEmbedding
 from qdrant_client import QdrantClient, models
 from tqdm import tqdm
 
@@ -36,6 +36,7 @@ def generate_point_id(chunk_id: str, fallback_idx: int) -> int:
     # Проверяем, является ли chunk_id валидным UUID
     try:
         import uuid
+
         uuid.UUID(chunk_id)
         # Если UUID валиден, используем его int-представление (первые 64 бита)
         return uuid.UUID(chunk_id).int >> 64
@@ -44,17 +45,16 @@ def generate_point_id(chunk_id: str, fallback_idx: int) -> int:
 
     # fallback: хешируем строку в integer (используем первые 8 байт)
     import hashlib
+
     hash_bytes = hashlib.md5(str(chunk_id).encode()).digest()[:8]
-    return int.from_bytes(hash_bytes, byteorder='big')
+    return int.from_bytes(hash_bytes, byteorder="big")
 
 
 def load_jsonl(filepath: str) -> list[dict]:
     """Загружает записи из JSONL-файла"""
     records = []
-    with open(filepath, "r", encoding="utf-8") as f:
-        for line in f:
-            if line.strip():
-                records.append(json.loads(line))
+    with open(filepath, encoding="utf-8") as f:
+        records = [json.loads(line) for line in f if line.strip()]
     return records
 
 
@@ -69,7 +69,7 @@ def prepare_payload(record: dict, chunk_idx: int) -> dict:
         "answer": record.get("answer", ""),
         "file": record.get("file", "unknown"),  # ← ключевое поле для бенчмарка
         "chunk_id": record.get("chunk_id", str(uuid.uuid4())),
-        **{k: v for k, v in record.items() if k not in ["question", "answer", "file", "chunk_id"]}
+        **{k: v for k, v in record.items() if k not in ["question", "answer", "file", "chunk_id"]},
     }
 
 
@@ -111,9 +111,7 @@ def create_benchmark_collections(client: QdrantClient, prefix: str, vector_size:
                     "late_interaction": models.VectorParams(
                         size=colbert_size,
                         distance=models.Distance.COSINE,
-                        multivector_config=models.MultiVectorConfig(
-                            comparator=models.MultiVectorComparator.MAX_SIM
-                        ),
+                        multivector_config=models.MultiVectorConfig(comparator=models.MultiVectorComparator.MAX_SIM),
                     ),
                 },
                 sparse_vectors_config={"bm25": models.SparseVectorParams(modifier=models.Modifier.IDF)},
@@ -152,7 +150,7 @@ def main():
         logger.warning("⚠ ColBERT недоступен: %s", e)
 
     # 3. Получение размера вектора и создание коллекций
-    sample_vec = list(dense_model.embed(["test"]))[0]
+    sample_vec = next(iter(dense_model.embed(["test"])))
     vector_size = len(sample_vec)
 
     create_benchmark_collections(qdrant_client, COLLECTION_PREFIX, vector_size)
@@ -167,21 +165,15 @@ def main():
     logger.info("Генерация векторов (батчами по %d)...", BATCH_SIZE)
 
     for batch_start in tqdm(range(0, len(texts), BATCH_SIZE), desc="Embedding"):
-        batch_texts = texts[batch_start:batch_start + BATCH_SIZE]
-        batch_payloads = payloads[batch_start:batch_start + BATCH_SIZE]
+        batch_texts = texts[batch_start : batch_start + BATCH_SIZE]
+        batch_payloads = payloads[batch_start : batch_start + BATCH_SIZE]
 
-        dense_vecs, sparse_vecs, colbert_vecs = generate_vectors(
-            batch_texts, dense_model, sparse_model, colbert_model
-        )
+        dense_vecs, sparse_vecs, colbert_vecs = generate_vectors(batch_texts, dense_model, sparse_model, colbert_model)
 
         # --- Dense collection ---
         points = [
-            models.PointStruct(
-                id=p["chunk_id"],
-                vector=v.tolist(),
-                payload=p
-            )
-            for p, v in zip(batch_payloads, dense_vecs)
+            models.PointStruct(id=p["chunk_id"], vector=v.tolist(), payload=p)
+            for p, v in zip(batch_payloads, dense_vecs, strict=False)
         ]
         qdrant_client.upsert(f"{COLLECTION_PREFIX}_dense", points)
 
@@ -189,13 +181,10 @@ def main():
         points = [
             models.PointStruct(
                 id=p["chunk_id"],
-                vector={"bm25": models.SparseVector(
-                    indices=v.indices.tolist(),
-                    values=v.values.tolist()
-                )},
-                payload=p
+                vector={"bm25": models.SparseVector(indices=v.indices.tolist(), values=v.values.tolist())},
+                payload=p,
             )
-            for p, v in zip(batch_payloads, sparse_vecs)
+            for p, v in zip(batch_payloads, sparse_vecs, strict=False)
         ]
         qdrant_client.upsert(f"{COLLECTION_PREFIX}_sparse", points)
 
@@ -205,14 +194,11 @@ def main():
                 id=p["chunk_id"],
                 vector={
                     "dense": dv.tolist(),
-                    "bm25": models.SparseVector(
-                        indices=sv.indices.tolist(),
-                        values=sv.values.tolist()
-                    )
+                    "bm25": models.SparseVector(indices=sv.indices.tolist(), values=sv.values.tolist()),
                 },
-                payload=p
+                payload=p,
             )
-            for p, dv, sv in zip(batch_payloads, dense_vecs, sparse_vecs)
+            for p, dv, sv in zip(batch_payloads, dense_vecs, sparse_vecs, strict=False)
         ]
         qdrant_client.upsert(f"{COLLECTION_PREFIX}_hybrid", points)
 
@@ -224,14 +210,11 @@ def main():
                     vector={
                         "dense": dv.tolist(),
                         "late_interaction": [mv.tolist() for mv in cv],
-                        "bm25": models.SparseVector(
-                            indices=sv.indices.tolist(),
-                            values=sv.values.tolist()
-                        )
+                        "bm25": models.SparseVector(indices=sv.indices.tolist(), values=sv.values.tolist()),
                     },
-                    payload=p
+                    payload=p,
                 )
-                for p, dv, sv, cv in zip(batch_payloads, dense_vecs, sparse_vecs, colbert_vecs)
+                for p, dv, sv, cv in zip(batch_payloads, dense_vecs, sparse_vecs, colbert_vecs, strict=False)
             ]
             qdrant_client.upsert(f"{COLLECTION_PREFIX}_colbert", points)
 

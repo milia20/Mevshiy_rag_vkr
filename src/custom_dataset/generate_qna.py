@@ -9,51 +9,47 @@ import requests
 
 
 class OpenRouterClient:
-    def __init__(self, model_name: str = "google/gemma-3-27b-it:free", api_key: str = None):
+
+    def __init__(self, model_name: str = "google/gemma-3-27b-it:free", api_key: str | None = None):
         self.model_name = model_name
         self.api_key = api_key or os.getenv("OPENROUTER_API_KEY")
         self.api_url = "https://openrouter.ai/api/v1/chat/completions"
 
         if not self.api_key:
             raise ValueError(
-                "OpenRouter API key is required. Set OPENROUTER_API_KEY environment variable or pass api_key parameter.")
+                "OpenRouter API key is required. Set OPENROUTER_API_KEY environment variable or pass api_key parameter."
+            )
 
-    def generate_answer(self, prompt: str, max_retries: int = 3) -> str:
+    def generate_answer(self, prompt: str, max_retries: int = 3) -> str | None:
         payload = {
             "model": self.model_name,
             "messages": [{"role": "user", "content": prompt}],
             "temperature": 0.7,
-            "max_tokens": 2000
+            "max_tokens": 2000,
         }
-        headers = {
-            "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json"
-        }
+        headers = {"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"}
         for attempt in range(max_retries):
             try:
                 response = requests.post(self.api_url, json=payload, headers=headers, timeout=240)
                 response.raise_for_status()
-                return response.json().get("choices")[0].get("message", {}).get("content",
-                                                                                "").strip()
+                return response.json().get("choices")[0].get("message", {}).get("content", "").strip()
             except Exception as e:
                 if attempt == max_retries - 1:
                     print(f"Error generating answer after {max_retries} attempts: {e}")
                     return ""
-                time.sleep(2 ** attempt)
+                time.sleep(2**attempt)
 
 
 class OllamaClient:
-    def __init__(self, model_name: str = "google/gemma-3-12b",
-                 api_url: str = "http://127.0.0.1:1234/v1/chat/completions"):
+
+    def __init__(
+        self, model_name: str = "google/gemma-3-12b", api_url: str = "http://127.0.0.1:1234/v1/chat/completions"
+    ):
         self.model_name = model_name
         self.api_url = api_url
 
     def generate_answer(self, prompt: str, max_retries: int = 3) -> str | None | Any:
-        payload = {
-            "model": self.model_name,
-            "messages": [{"role": "user", "content": prompt}],
-            "stream": False
-        }
+        payload = {"model": self.model_name, "messages": [{"role": "user", "content": prompt}], "stream": False}
         for attempt in range(max_retries):
             try:
                 response = requests.post(self.api_url, json=payload, timeout=240)
@@ -71,7 +67,7 @@ class OllamaClient:
                 if attempt == max_retries - 1:
                     print(f"Error generating answer after {max_retries} attempts: {e}")
                     return ""
-                time.sleep(2 ** attempt)
+                time.sleep(2**attempt)
 
 
 def parse_qna(json_text: str):
@@ -90,10 +86,9 @@ def generate_qna_for_lang(lang_dir: Path, client, max_pairs: int = 200, lang: st
     """Generate Q&A pairs for the given language directory."""
     pairs = []
     batch_size = 5
-    extensions = ['*.md', '*.mdx', '*.rst']
+    extensions = ["*.md", "*.mdx", "*.rst"]
     doc_generator = chain.from_iterable(lang_dir.rglob(ext) for ext in extensions)
     for batch_start in range(0, max_pairs, batch_size):
-
         md_file = next(doc_generator, None)
 
         if not md_file:
@@ -101,7 +96,7 @@ def generate_qna_for_lang(lang_dir: Path, client, max_pairs: int = 200, lang: st
             return pairs
 
         try:
-            with open(md_file, 'r', encoding='utf-8') as f:
+            with open(md_file, encoding="utf-8") as f:
                 content = f.read()
         except Exception as e:
             print(f"Error reading {md_file}: {e}")
@@ -119,8 +114,10 @@ Documentation content:
 
 Example format:
 [
-    {{"question": "How do I install FastAPI?", "answer": "You can install FastAPI using pip: pip install fastapi"}},
-    {{"question": "What is dependency injection in FastAPI?", "answer": "Dependency injection is a way to declare dependencies for your path operations..."}}
+    {{"question": "How do I install FastAPI?",
+     "answer": "You can install FastAPI using pip: pip install fastapi"}},
+    {{"question": "What is dependency injection in FastAPI?",
+     "answer": "Dependency injection is a way to declare dependencies for your path operations..."}}
 ]
 
 Generate the answer in {lang} {current_batch_size} diverse and useful Q&A pairs:
@@ -132,14 +129,15 @@ Generate the answer in {lang} {current_batch_size} diverse and useful Q&A pairs:
                 batch_pairs = parse_qna(response)
                 for question, answer in batch_pairs:
                     if question and answer:
-                        pairs.append({
-                            "question": question,
-                            "answer": answer,
-                            "file": file_path,
-                        })
+                        pairs.append(
+                            {
+                                "question": question,
+                                "answer": answer,
+                                "file": file_path,
+                            }
+                        )
 
-                print(
-                    f"Generated {len(batch_pairs)} pairs for {file_path} (batch {batch_start // batch_size + 1})")
+                print(f"Generated {len(batch_pairs)} pairs for {file_path} (batch {batch_start // batch_size + 1})")
 
                 if len(pairs) >= max_pairs:
                     break
@@ -170,8 +168,7 @@ if __name__ == "__main__":
 
             print(f"Generated questions: {len(en_pairs)}")
 
-            with Path(f"{Path(__file__).parent}/qna_{directory.name}_en.jsonl").open("w",
-                                                                                     encoding="utf-8") as f:
+            with Path(f"{Path(__file__).parent}/qna_{directory.name}_en.jsonl").open("w", encoding="utf-8") as f:
                 for item in en_pairs:
                     f.write(json.dumps(item, ensure_ascii=False) + "\n")
 

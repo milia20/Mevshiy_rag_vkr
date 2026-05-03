@@ -1,4 +1,4 @@
-﻿import json
+import json
 import pickle
 import uuid
 from pathlib import Path
@@ -10,7 +10,7 @@ def transform_dataset(
     dataset_path: str,
     output_qa_path: str,
     output_chunks_path: str,
-    files_dir: str = None,               # добавлен параметр
+    files_dir: str | None = None,  # добавлен параметр
     chunk_size: int = 512,
     chunk_overlap: int = 50,
 ) -> None:
@@ -37,11 +37,11 @@ def transform_dataset(
         Перекрытие между чанками.
     """
     print(f"Loading dataset from {dataset_path}...")
-    with open(dataset_path, 'rb') as f:
+    with open(dataset_path, "rb") as f:
         df = pickle.load(f)
 
     # Убедимся, что столбцы есть
-    required_columns = ['Вопрос', 'Правильный ответ', 'Контекст', 'Файл']
+    required_columns = ["Вопрос", "Правильный ответ", "Контекст", "Файл"]
     for col in required_columns:
         if col not in df.columns:
             raise ValueError(f"Column '{col}' not found in dataframe. Available: {df.columns.tolist()}")
@@ -64,22 +64,18 @@ def transform_dataset(
     all_chunks = []
 
     for idx, row in df.iterrows():
-        question = row['Вопрос']
-        answer = row['Правильный ответ']
-        source_file = row['Файл']
-        context_column = row['Контекст']   # сохраняем для метаданных
+        question = row["Вопрос"]
+        answer = row["Правильный ответ"]
+        source_file = row["Файл"]
+        context_column = row["Контекст"]  # сохраняем для метаданных
 
         # Добавляем QA пару
-        qa_pairs.append({
-            "id": idx,
-            "question": question,
-            "answer": answer
-        })
+        qa_pairs.append({"id": idx, "question": question, "answer": answer})
 
         # Читаем содержимое файла
         file_path = files_dir / source_file
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, encoding="utf-8") as f:
                 raw_content = f.read()
         except FileNotFoundError:
             print(f"Warning: File {file_path} not found. Skipping chunk generation for row {idx}.")
@@ -103,22 +99,22 @@ def transform_dataset(
                     "source": source_file,
                     "question": question,
                     "answer": answer,
-                    "context_from_column": context_column,   # опционально
+                    "context_from_column": context_column,  # опционально
                     "chunk_id": chunk_id,
-                    "row_index": idx
-                }
+                    "row_index": idx,
+                },
             }
             all_chunks.append(chunk_record)
 
     print(f"Saving {len(qa_pairs)} QA pairs to {output_qa_path}...")
-    with open(output_qa_path, 'w', encoding='utf-8') as f:
+    with open(output_qa_path, "w", encoding="utf-8") as f:
         for pair in qa_pairs:
-            f.write(json.dumps(pair, ensure_ascii=False) + '\n')
+            f.write(json.dumps(pair, ensure_ascii=False) + "\n")
 
     print(f"Saving {len(all_chunks)} chunks to {output_chunks_path}...")
-    with open(output_chunks_path, 'w', encoding='utf-8') as f:
+    with open(output_chunks_path, "w", encoding="utf-8") as f:
         for chunk in all_chunks:
-            f.write(json.dumps(chunk, ensure_ascii=False) + '\n')
+            f.write(json.dumps(chunk, ensure_ascii=False) + "\n")
 
     print("Done")
 

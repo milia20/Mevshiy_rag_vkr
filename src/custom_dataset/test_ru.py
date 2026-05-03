@@ -3,7 +3,6 @@ import json
 from src.indexing.qdrant_uploader import HNSWConfig, QdrantIndexer
 
 if __name__ == "__main__":
-
     CHUNKS_FILE = r"D:\P_work\Rag-VKR\src\custom_dataset\ru_rag\chunks.jsonl"
     EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
     BATCH_SIZE = 256
@@ -14,7 +13,7 @@ if __name__ == "__main__":
     }
 
     print("\n[1/5] Checking input file")
-    with open(CHUNKS_FILE, "r", encoding="utf-8") as f:
+    with open(CHUNKS_FILE, encoding="utf-8") as f:
         chunk_count = sum(1 for line in f if line.strip())
     print(f"✓ Found {chunk_count} chunks in {CHUNKS_FILE}")
 
@@ -29,7 +28,7 @@ if __name__ == "__main__":
 
     print("\n[3/5] Loading chunks and generating embeddings")
     chunks = []
-    with open(CHUNKS_FILE, "r", encoding="utf-8") as f:
+    with open(CHUNKS_FILE, encoding="utf-8") as f:
         for i, line in enumerate(f):
             if i == 1000:
                 break
@@ -76,8 +75,10 @@ if __name__ == "__main__":
         verification = indexer.verify_index(collection_name=coll_name)
         print(f"\n{coll_name}:")
         print(f"  Points: {verification.get('points_count', 'N/A')}")
-        print(f"  HNSW: m={verification.get('hnsw_config', {}).get('m', 'N/A')}, "
-              f"ef={verification.get('hnsw_config', {}).get('ef_construct', 'N/A')}")
+        print(
+            f"  HNSW: m={verification.get('hnsw_config', {}).get('m', 'N/A')}, "
+            f"ef={verification.get('hnsw_config', {}).get('ef_construct', 'N/A')}"
+        )
 
     print("SEARCH TEST")
     test_queries = [

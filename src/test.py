@@ -93,9 +93,7 @@ def main() -> None:
         sparse_vec = _fake_sparse_vector(text)
         dense_points.append(models.PointStruct(id=i, vector=dense_vec, payload=payload))
         sparse_points.append(models.PointStruct(id=i, vector={"bm25": sparse_vec}, payload=payload))
-        hybrid_points.append(
-            models.PointStruct(id=i, vector={"dense": dense_vec, "bm25": sparse_vec}, payload=payload)
-        )
+        hybrid_points.append(models.PointStruct(id=i, vector={"dense": dense_vec, "bm25": sparse_vec}, payload=payload))
 
     client.upsert(dense_collection, points=dense_points)
     client.upsert(sparse_collection, points=sparse_points)

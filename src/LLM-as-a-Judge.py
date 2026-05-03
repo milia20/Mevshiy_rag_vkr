@@ -8,10 +8,13 @@ llm_as_judge.py
 """
 
 import json
+import traceback
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import Any
 
+import jsonlines
 import openai
+from fastembed import SparseTextEmbedding, TextEmbedding
 from qdrant_client import QdrantClient, models
 
 # ==================== КОНФИГУРАЦИЯ ====================
@@ -22,7 +25,7 @@ API_KEY = "lm-studio"
 
 JUDGE_MODELS = [
     {"name": "Судья 1 (qwen3.5-35b)", "model_id": "qwen/qwen3.5-35b-a3b"},
-    {"name": "Судья 2 (gemma-3-12b)", "model_id": "google/gemma-3-12b"}
+    {"name": "Судья 2 (gemma-3-12b)", "model_id": "google/gemma-3-12b"},
 ]
 GENERATOR_MODEL = "qwen/qwen3.5-35b-a3b"
 
@@ -43,26 +46,22 @@ SPARSE_MODEL_NAME = "prithivida/Splade_PP_en_v1"
 
 # ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ====================
 
-def call_llm(model_id: str, messages: List[Dict[str, str]], temperature: float = 0.7, max_tokens: int = 1024) -> str:
+
+def call_llm(model_id: str, messages: list[dict[str, str]], temperature: float = 0.7, max_tokens: int = 1024) -> str:
     """Вызов LLM через LM Studio API"""
     client = openai.OpenAI(base_url=BASE_URL, api_key=API_KEY)
 
     try:
         response = client.chat.completions.create(
-            model=model_id,
-            messages=messages,
-            temperature=temperature,
-            max_tokens=max_tokens,
-            timeout=120
+            model=model_id, messages=messages, temperature=temperature, max_tokens=max_tokens, timeout=120
         )
         return response.choices[0].message.content or ""
     except Exception as e:
-        return f"❌ Ошибка: {str(e)}"
+        return f"❌ Ошибка: {e!s}"
 
 
-def load_test_queries(filepath: str, max_queries: Optional[int] = None) -> List[Dict]:
+def load_test_queries(filepath: str, max_queries: int | None = None) -> list[dict]:
     """Загружает тестовые запросы из JSONL"""
-    import jsonlines
 
     queries = []
     path = Path(filepath)
@@ -70,18 +69,19 @@ def load_test_queries(filepath: str, max_queries: Optional[int] = None) -> List[
     if not path.exists():
         raise FileNotFoundError(f"Файл не найден: {filepath}")
 
-    with jsonlines.open(path, mode='r') as reader:
+    with jsonlines.open(path, mode="r") as reader:
         for i, line in enumerate(reader):
             if max_queries and i >= max_queries:
                 break
             if line.get("question") and line.get("file"):
-                queries.append({
-                    "question": line.get("question", ""),
-                    "expected_answer": line.get("answer", ""),
-                    "expected_file": line.get("file", ""),
-                    "metadata": {k: v for k, v in line.items()
-                                 if k not in ["question", "answer", "file"]}
-                })
+                queries.append(
+                    {
+                        "question": line.get("question", ""),
+                        "expected_answer": line.get("answer", ""),
+                        "expected_file": line.get("file", ""),
+                        "metadata": {k: v for k, v in line.items() if k not in ["question", "answer", "file"]},
+                    }
+                )
 
     print(f"✓ Загружено {len(queries)} тестовых запросов")
     return queries
@@ -89,12 +89,11 @@ def load_test_queries(filepath: str, max_queries: Optional[int] = None) -> List[
 
 def _get_embedding_models():
     """Ленивая загрузка моделей эмбеддингов"""
-    from fastembed import TextEmbedding, SparseTextEmbedding
+
     return TextEmbedding(model_name=DENSE_MODEL_NAME), SparseTextEmbedding(model_name=SPARSE_MODEL_NAME)
 
 
-def search_qdrant(client: QdrantClient, query: str, collection: str,
-                  method: str, top_k: int = 5) -> List[Dict]:
+def search_qdrant(client: QdrantClient, query: str, collection: str, method: str, top_k: int = 5) -> list[dict]:
     """
     Поиск в Qdrant с поддержкой разных стратегий.
     Возвращает список документов с текстом и метаданными.
@@ -103,7 +102,7 @@ def search_qdrant(client: QdrantClient, query: str, collection: str,
     try:
         if method == "dense":
             dense_model, _ = _get_embedding_models()
-            query_vec = list(dense_model.embed([query]))[0]
+            query_vec = next(iter(dense_model.embed([query])))
             res = client.query_points(
                 collection_name=collection,
                 query=query_vec.tolist(),
@@ -113,13 +112,10 @@ def search_qdrant(client: QdrantClient, query: str, collection: str,
 
         elif method == "sparse":
             _, sparse_model = _get_embedding_models()
-            query_vec = list(sparse_model.embed([query]))[0]
+            query_vec = next(iter(sparse_model.embed([query])))
             res = client.query_points(
                 collection_name=collection,
-                query=models.SparseVector(
-                    indices=query_vec.indices.tolist(),
-                    values=query_vec.values.tolist()
-                ),
+                query=models.SparseVector(indices=query_vec.indices.tolist(), values=query_vec.values.tolist()),
                 using="bm25",
                 limit=top_k,
             )
@@ -127,8 +123,8 @@ def search_qdrant(client: QdrantClient, query: str, collection: str,
 
         elif method in ["hybrid_rrf", "hybrid_dbsf"]:
             dense_model, sparse_model = _get_embedding_models()
-            query_dense = list(dense_model.embed([query]))[0]
-            query_sparse = list(sparse_model.embed([query]))[0]
+            query_dense = next(iter(dense_model.embed([query])))
+            query_sparse = next(iter(sparse_model.embed([query])))
 
             if method == "hybrid_rrf":
                 query_param = models.RrfQuery(rrf=models.Rrf(k=30))
@@ -142,10 +138,10 @@ def search_qdrant(client: QdrantClient, query: str, collection: str,
                     models.Prefetch(query=query_dense.tolist(), using="dense", limit=top_k * 2),
                     models.Prefetch(
                         query=models.SparseVector(
-                            indices=query_sparse.indices.tolist(),
-                            values=query_sparse.values.tolist()
+                            indices=query_sparse.indices.tolist(), values=query_sparse.values.tolist()
                         ),
-                        using="bm25", limit=top_k * 2
+                        using="bm25",
+                        limit=top_k * 2,
                     ),
                 ],
                 limit=top_k,
@@ -154,7 +150,7 @@ def search_qdrant(client: QdrantClient, query: str, collection: str,
         else:
             print(f"⚠ Неизвестный метод поиска: {method}, используем dense")
             dense_model, _ = _get_embedding_models()
-            query_vec = list(dense_model.embed([query]))[0]
+            query_vec = next(iter(dense_model.embed([query])))
             res = client.query_points(
                 collection_name=collection,
                 query=query_vec.tolist(),
@@ -173,24 +169,27 @@ def search_qdrant(client: QdrantClient, query: str, collection: str,
         # Пробуем разные поля для текста
         doc_text = payload.get("text") or payload.get("answer") or payload.get("content") or ""
         if doc_text:
-            documents.append({
-                "text": doc_text[:2000],  # Ограничиваем длину контекста
-                "file": payload.get("file", "unknown"),
-                "title": payload.get("title", ""),
-                "score": getattr(point, 'score', None)
-            })
+            documents.append(
+                {
+                    "text": doc_text[:2000],  # Ограничиваем длину контекста
+                    "file": payload.get("file", "unknown"),
+                    "title": payload.get("title", ""),
+                    "score": getattr(point, "score", None),
+                }
+            )
 
     return documents
 
 
-def generate_answer_with_context(question: str, context_docs: List[Dict],
-                                 model_id: str, temperature: float = 0.3) -> str:
+def generate_answer_with_context(
+    question: str, context_docs: list[dict], model_id: str, temperature: float = 0.3
+) -> str:
     """Генерирует ответ на вопрос, используя документы как контекст"""
 
     # Формируем контекст из найденных документов
     context_parts = []
     for i, doc in enumerate(context_docs[:TOP_K], 1):
-        source = doc.get('title') or doc.get('file') or f"Источник {i}"
+        source = doc.get("title") or doc.get("file") or f"Источник {i}"
         context_parts.append(f"【{source}】\n{doc['text']}")
 
     context_text = "\n\n".join(context_parts)
@@ -213,16 +212,12 @@ def generate_answer_with_context(question: str, context_docs: List[Dict],
 
 ОТВЕТ:"""
 
-    messages = [
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": user_prompt}
-    ]
+    messages = [{"role": "system", "content": system_prompt}, {"role": "user", "content": user_prompt}]
 
     return call_llm(model_id, messages, temperature=temperature, max_tokens=512)
 
 
-def evaluate_answer_3class(question: str, generated: str, reference: str,
-                           judge_config: Dict) -> Dict[str, Any]:
+def evaluate_answer_3class(question: str, generated: str, reference: str, judge_config: dict) -> dict[str, Any]:
     """
     Оценивает ответ по трёхклассовой шкале:
 
@@ -269,10 +264,7 @@ def evaluate_answer_3class(question: str, generated: str, reference: str,
 
 Оцени ответ по трёхклассовой шкале."""
 
-    messages = [
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": user_prompt}
-    ]
+    messages = [{"role": "system", "content": system_prompt}, {"role": "user", "content": user_prompt}]
 
     raw = call_llm(judge_config["model_id"], messages, temperature=0.1, max_tokens=256)
 
@@ -283,12 +275,13 @@ def evaluate_answer_3class(question: str, generated: str, reference: str,
             result = json.loads(raw[start:end])
         else:
             raise ValueError("No JSON found")
-    except:
+    except Exception as e:
+        print(e)
         result = {
             "verdict": "неправильно",
             "confidence": 0.0,
             "reasoning": f"Ошибка парсинга: {raw[:100]}",
-            "key_issues": ["Не удалось распарсить ответ судьи"]
+            "key_issues": ["Не удалось распарсить ответ судьи"],
         }
 
     # Валидация verdict
@@ -299,7 +292,7 @@ def evaluate_answer_3class(question: str, generated: str, reference: str,
     return result
 
 
-def print_statistics(results: List[Dict]) -> None:
+def print_statistics(results: list[dict]) -> None:
     """Выводит детальную статистику оценки"""
 
     print("\n" + "═" * 70)
@@ -350,7 +343,7 @@ def print_statistics(results: List[Dict]) -> None:
 
     # === ПО СУДЬЯМ ===
     if len(by_judge) > 1:
-        print(f"\n👥 Оценка по судьям:")
+        print("\n👥 Оценка по судьям:")
         print("─" * 50)
         for jname, stats in by_judge.items():
             acc = stats["точно"] / total * 100 if total > 0 else 0
@@ -359,8 +352,9 @@ def print_statistics(results: List[Dict]) -> None:
             print(f"   🟡 Неточно: {stats['неточно']} | 🔴 Неправильно: {stats['неправильно']}")
 
     # === СОГЛАСОВАННОСТЬ СУДЕЙ ===
-    if len(by_judge) >= 2:
-        print(f"\n🤝 Согласованность судей:")
+    judge_count = 2
+    if len(by_judge) >= judge_count:
+        print("\n🤝 Согласованность судей:")
         print("─" * 50)
 
         # Группируем результаты по вопросам
@@ -374,10 +368,10 @@ def print_statistics(results: List[Dict]) -> None:
 
         # Считаем совпадения
         judges = list(by_judge.keys())
-        if len(judges) >= 2 and by_question:
+        if len(judges) >= judge_count and by_question:
             matches, total_pairs = 0, 0
-            for q, verdicts_q in by_question.items():
-                if len(verdicts_q) >= 2:
+            for verdicts_q in by_question.values():
+                if len(verdicts_q) >= judge_count:
                     vals = list(verdicts_q.values())
                     if vals[0] == vals[1]:
                         matches += 1
@@ -386,15 +380,17 @@ def print_statistics(results: List[Dict]) -> None:
             if total_pairs > 0:
                 agreement = matches / total_pairs * 100
                 print(f"   Совпадение вердиктов: {agreement:.1f}% ({matches}/{total_pairs})")
-                if agreement >= 80:
+                top = 80
+                med = 60
+                if agreement >= top:
                     print("   ✅ Высокая согласованность")
-                elif agreement >= 60:
+                elif agreement >= med:
                     print("   ⚠ Средняя согласованность")
                 else:
                     print("   ❌ Низкая согласованность — пересмотрите критерии")
 
     # === ПО ФАЙЛАМ-ИСТОЧНИКАМ ===
-    print(f"\n📁 Качество по файлам-источникам:")
+    print("\n📁 Качество по файлам-источникам:")
     print("─" * 50)
     for fname, stats in sorted(by_file.items(), key=lambda x: sum(x[1].values()), reverse=True)[:10]:
         total_f = sum(stats.values())
@@ -404,19 +400,21 @@ def print_statistics(results: List[Dict]) -> None:
     print("\n" + "═" * 70)
 
 
-def export_results(results: List[Dict], filepath: str = "judge_results.json"):
+def export_results(results: list[dict], filepath: str = "judge_results.json"):
     """Экспортирует результаты в JSON для анализа"""
-    export_data = []
+    # export_data = []
     # Делаем сериализуемую копию
-    for r in results:
-        export_data.append({
+    export_data = [
+        {
             "question": r.get("question", "")[:300],
             "expected_file": r.get("expected_file"),
             "context_files": r.get("context_files", []),
             "generated_answer": r.get("generated_answer", "")[:500],
             "judge": r.get("judge", {}).get("name"),
-            "evaluation": r.get("evaluation", {})
-        })
+            "evaluation": r.get("evaluation", {}),
+        }
+        for r in results
+    ]
 
     with open(filepath, "w", encoding="utf-8") as f:
         json.dump(export_data, f, ensure_ascii=False, indent=2)
@@ -464,11 +462,7 @@ def main():
 
         print("   🔍 Поиск документов...")
         context = search_qdrant(
-            client=qdrant_client,
-            query=qdata["question"],
-            collection=COLLECTION_NAME,
-            method=SEARCH_METHOD,
-            top_k=TOP_K
+            client=qdrant_client, query=qdata["question"], collection=COLLECTION_NAME, method=SEARCH_METHOD, top_k=TOP_K
         )
 
         if not context:
@@ -479,10 +473,7 @@ def main():
         # ── Генерация ответа ──
         print("   ✍️  Генерация ответа...")
         generated = generate_answer_with_context(
-            question=qdata["question"],
-            context_docs=context,
-            model_id=GENERATOR_MODEL,
-            temperature=0.2
+            question=qdata["question"], context_docs=context, model_id=GENERATOR_MODEL, temperature=0.2
         )
         print(f"   ✓ {generated[:120]}...")
 
@@ -493,23 +484,25 @@ def main():
                 question=qdata["question"],
                 generated=generated,
                 reference=qdata.get("expected_answer", ""),
-                judge_config=judge
+                judge_config=judge,
             )
 
             verdict = evaluation.get("verdict", "N/A")
             emoji = {"точно": "🟢", "неточно": "🟡", "неправильно": "🔴"}.get(verdict, "⚪")
             print(f"      {emoji} {verdict} | {evaluation.get('reasoning', '')[:50]}")
 
-            all_results.append({
-                "question": qdata["question"],
-                "expected_file": qdata["expected_file"],
-                "expected_answer": qdata.get("expected_answer", ""),
-                "generated_answer": generated,
-                "context_files": [d["file"] for d in context],
-                "context_scores": [d.get("score") for d in context],
-                "judge": judge,
-                "evaluation": evaluation
-            })
+            all_results.append(
+                {
+                    "question": qdata["question"],
+                    "expected_file": qdata["expected_file"],
+                    "expected_answer": qdata.get("expected_answer", ""),
+                    "generated_answer": generated,
+                    "context_files": [d["file"] for d in context],
+                    "context_scores": [d.get("score") for d in context],
+                    "judge": judge,
+                    "evaluation": evaluation,
+                }
+            )
 
         # time.sleep(0.5) # Пауза для стабильности API
 
@@ -523,7 +516,7 @@ def main():
         exact = sum(1 for r in all_results if r["evaluation"].get("verdict") == "точно")
         accuracy = exact / total * 100
 
-        print(f"\n🎯 ИТОГ:")
+        print("\n🎯 ИТОГ:")
         if accuracy >= 70:
             print("   ✅ Система показывает высокое качество ответов")
         elif accuracy >= 40:
@@ -544,7 +537,6 @@ if __name__ == "__main__":
         exit(130)
     except Exception as e:
         print(f"\n❌ Критическая ошибка: {e}")
-        import traceback
 
         traceback.print_exc()
         exit(1)

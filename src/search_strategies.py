@@ -19,12 +19,12 @@ from __future__ import annotations
 
 import logging
 import time
+from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Sequence, Tuple
+from typing import Any
 
 import numpy as np
-from qdrant_client import QdrantClient
-from qdrant_client import models
+from qdrant_client import QdrantClient, models
 from rank_bm25 import BM25Okapi
 from tqdm.auto import tqdm
 
@@ -45,7 +45,7 @@ class DenseConfig:
 @dataclass
 class SparseConfig:
     # Общие параметры
-    tokenizer: Optional[Any] = None
+    tokenizer: Any | None = None
     top_k: int = 10
 
     # BM25 параметры (для in-memory SparseSearcher)
@@ -53,10 +53,10 @@ class SparseConfig:
     b: float = 0.75
 
     # Qdrant-specific параметры (для QdrantSparseSearcher)
-    collection_name: Optional[str] = None
+    collection_name: str | None = None
     qdrant_url: str = "http://localhost:6333"
     sparse_vector_field: str = "sparse_vector"
-    vocabulary: Optional[Dict[str, int]] = None
+    vocabulary: dict[str, int] | None = None
     use_idf: bool = True
     on_disk: bool = False
     recreate_collection: bool = True
@@ -68,7 +68,9 @@ class QdrantSparseConfig:
     sparse_vector_field: str = "sparse_vector"
     top_k: int = 10
     with_payload: bool = True
-    vocabulary: Optional[Dict[str, int]] = None # vocabulary for token->index mapping (if using BM25-style sparse encoding)
+    vocabulary: dict[str, int] | None = (
+        None  # vocabulary for token->index mapping (if using BM25-style sparse encoding)
+    )
     use_idf: bool = False  # Use IDF weighting (requires pre-computed IDF values in vocabulary)
 
 
@@ -84,7 +86,6 @@ class FilterConfig:
     vector_field: str = "vector"
     ef_search: int = 64
     top_k: int = 10
-
 
 
 def _now():
@@ -103,7 +104,7 @@ class DenseSearcher:
         self.cfg = cfg
         logger.info("DenseSearcher initialized (collection=%s, ef_search=%d)", cfg.collection_name, cfg.ef_search)
 
-    def search(self, query_vector: List[float], top_k: int = None) -> Tuple[List[Dict], Dict]:
+    def search(self, query_vector: list[float], top_k: int | None = None) -> tuple[list[dict], dict]:
         """
         Search using dense vectors.
         """
@@ -118,13 +119,10 @@ class DenseSearcher:
                 with_payload=True,
             )
 
-            results = []
-            for hit in hits.points:
-                results.append({
-                    "id": str(hit.id),
-                    "score": hit.score,
-                    "text": hit.payload.get("text", "") if hit.payload else ""
-                })
+            results = [
+                {"id": str(hit.id), "score": hit.score, "text": hit.payload.get("text", "") if hit.payload else ""}
+                for hit in hits.points
+            ]
 
             elapsed = time.perf_counter() - t0
 
@@ -136,7 +134,7 @@ class DenseSearcher:
 
 
 # Sparse Searcher (BM25 - in-memory)
-def _default_tokenizer(text: str) -> List[str]:
+def _default_tokenizer(text: str) -> list[str]:
     # simple whitespace + lowercase tokenizer; you can replace with spaCy / nltk if needed
     return [t for t in text.lower().split() if t]
 
@@ -148,10 +146,12 @@ class SparseSearcher:
     The constructor expects a list of documents (each doc is dict with 'id' and 'text').
     """
 
-    def __init__(self, docs: List[Dict[str, Any]], cfg: SparseConfig = SparseConfig()):
+    def __init__(self, docs: list[dict[str, Any]], cfg: SparseConfig | None = None):
         """
         docs: List[{"id": <chunk_id>, "text": "<raw text>"}]
         """
+        if cfg is None:
+            cfg = SparseConfig()
         self.cfg = cfg
         self.tokenizer = cfg.tokenizer or _default_tokenizer
 
@@ -162,7 +162,7 @@ class SparseSearcher:
         self.bm25 = BM25Okapi(self.tokenized_corpus)
         logger.info("BM25 index built (n_docs=%d)", len(self.docs_text))
 
-    def search(self, query_text: str, top_k: Optional[int] = None) -> Tuple[List[Dict], Dict]:
+    def search(self, query_text: str, top_k: int | None = None) -> tuple[list[dict], dict]:
         k = top_k or self.cfg.top_k
         t0 = _now()
 
@@ -171,9 +171,7 @@ class SparseSearcher:
         # get top indices
         top_idx = np.argsort(scores)[::-1][:k]
 
-        results = []
-        for idx in top_idx:
-            results.append({"id": self.ids[int(idx)], "score": float(scores[int(idx)]), "payload": None})
+        results = [{"id": self.ids[int(idx)], "score": float(scores[int(idx)]), "payload": None} for idx in top_idx]
 
         duration = _now() - t0
         meta = {"time_s": duration, "qps": 1.0 / duration if duration > 0 else float("inf"), "k": k}
@@ -196,7 +194,7 @@ class QdrantSparseSearcher:
         - Query tokenization and sparse vector conversion
     """
 
-    def __init__(self, docs: List[Dict[str, Any]], cfg: SparseConfig):
+    def __init__(self, docs: list[dict[str, Any]], cfg: SparseConfig):
         """
         Initialize QdrantSparseSearcher.
 
@@ -214,9 +212,10 @@ class QdrantSparseSearcher:
         # Initialize Qdrant client
         try:
             from qdrant_client import QdrantClient
+
             self.client = QdrantClient(url=cfg.qdrant_url, prefer_grpc=False)
-        except ImportError:
-            raise ImportError("qdrant_client is required for QdrantSparseSearcher")
+        except ImportError as e:
+            raise ImportError("qdrant_client is required for QdrantSparseSearcher") from e
 
         # Validate collection name
         if not cfg.collection_name:
@@ -225,8 +224,11 @@ class QdrantSparseSearcher:
         # Build vocabulary and initialize collection
         self._initialize(cfg)
 
-        logger.info("QdrantSparseSearcher initialized (collection=%s, vocab_size=%d)",
-                    cfg.collection_name, len(self.vocabulary) if self.vocabulary else 0)
+        logger.info(
+            "QdrantSparseSearcher initialized (collection=%s, vocab_size=%d)",
+            cfg.collection_name,
+            len(self.vocabulary) if self.vocabulary else 0,
+        )
 
     def _initialize(self, cfg: SparseConfig):
         """Build vocabulary, create collection, and upsert documents."""
@@ -241,9 +243,10 @@ class QdrantSparseSearcher:
         # Upsert documents as sparse vectors
         self._upsert_documents(self.docs, batch_size=100)
 
-    def _build_vocabulary(self, docs: List[Dict[str, Any]], tokenizer) -> Dict[str, int]:
+    def _build_vocabulary(self, docs: list[dict[str, Any]], tokenizer) -> dict[str, int]:
         """Build vocabulary with token->index mapping and optional IDF values."""
         import math
+
         from tqdm.auto import tqdm
 
         all_tokens = set()
@@ -278,10 +281,8 @@ class QdrantSparseSearcher:
             collection_name=collection_name,
             vectors_config={},  # Empty for sparse-only
             sparse_vectors_config={
-                vector_field: models.SparseVectorParams(
-                    index=models.SparseIndexParams(on_disk=on_disk)
-                )
-            }
+                vector_field: models.SparseVectorParams(index=models.SparseIndexParams(on_disk=on_disk))
+            },
         )
         logger.info("Sparse collection created: %s", collection_name)
 
@@ -310,7 +311,7 @@ class QdrantSparseSearcher:
 
         return models.SparseVector(indices=indices, values=values)
 
-    def _upsert_documents(self, docs: List[Dict[str, Any]], batch_size: int = 100):
+    def _upsert_documents(self, docs: list[dict[str, Any]], batch_size: int = 100):
         """Index documents into Qdrant as sparse vectors."""
         from qdrant_client import models
         from tqdm.auto import tqdm
@@ -326,7 +327,7 @@ class QdrantSparseSearcher:
                 models.PointStruct(
                     id=doc["id"],
                     vector={self.cfg.sparse_vector_field: sparse_vec},
-                    payload={"text": doc["text"], "chunk_id": doc["id"]}
+                    payload={"text": doc["text"], "chunk_id": doc["id"]},
                 )
             )
 
@@ -339,7 +340,7 @@ class QdrantSparseSearcher:
 
         logger.info("Upserted %d documents to sparse collection", len(docs))
 
-    def search(self, query_text: str, top_k: Optional[int] = None) -> Tuple[List[Dict], Dict]:
+    def search(self, query_text: str, top_k: int | None = None) -> tuple[list[dict], dict]:
         """
         Search using sparse vectors in Qdrant.
 
@@ -357,42 +358,30 @@ class QdrantSparseSearcher:
             # Search in Qdrant
             hits = self.client.query_points(
                 collection_name=self.cfg.collection_name,
-                query=models.NamedSparseVector(
-                    name=self.cfg.sparse_vector_field,
-                    vector=sparse_query
-                ),
+                query=models.NamedSparseVector(name=self.cfg.sparse_vector_field, vector=sparse_query),
                 limit=k,
                 with_payload=True,
             )
 
             # Format results to match SparseSearcher output
-            results = []
-            for hit in hits.points:
-                results.append({
-                    "id": str(hit.id),
-                    "score": float(hit.score),
-                    "payload": hit.payload if hit.payload else {}
-                })
+            results = [
+                {"id": str(hit.id), "score": float(hit.score), "payload": hit.payload if hit.payload else {}}
+                for hit in hits.points
+            ]
 
             elapsed = _now() - t0
             meta = {
                 "time_s": elapsed,
                 "qps": 1.0 / elapsed if elapsed > 0 else float("inf"),
                 "k": k,
-                "searcher": "qdrant_sparse"
+                "searcher": "qdrant_sparse",
             }
             return results, meta
 
         except Exception as e:
             logger.error("Qdrant sparse search failed: %s", e)
             elapsed = _now() - t0
-            return [], {
-                "time_s": elapsed,
-                "qps": 0,
-                "k": k,
-                "error": str(e),
-                "searcher": "qdrant_sparse"
-            }
+            return [], {"time_s": elapsed, "qps": 0, "k": k, "error": str(e), "searcher": "qdrant_sparse"}
 
     def cleanup(self):
         """Delete the collection (useful for testing)."""
@@ -408,7 +397,7 @@ class QdrantSparseSearcher:
 # -------------------------
 
 
-def reciprocal_rank_fusion(result_lists: List[List[Dict]], rrf_k: int = 60, top_k: int = 10) -> List[Dict]:
+def reciprocal_rank_fusion(result_lists: list[list[dict]], rrf_k: int = 60, top_k: int = 10) -> list[dict]:
     """
     Combine multiple ranked result lists using Reciprocal Rank Fusion (RRF).
 
@@ -454,8 +443,10 @@ class HybridSearcher:
         self,
         dense_searcher: DenseSearcher,
         sparse_searcher: Any,  # SparseSearcher OR QdrantSparseSearcher
-        cfg: HybridConfig = HybridConfig()
+        cfg: HybridConfig | None = None,
     ):
+        if cfg is None:
+            cfg = HybridConfig()
         self.dense = dense_searcher
         self.sparse = sparse_searcher
         self.cfg = cfg
@@ -464,7 +455,9 @@ class HybridSearcher:
         self.sparse_type = "bm25" if isinstance(sparse_searcher, SparseSearcher) else "qdrant_sparse"
         logger.info("HybridSearcher initialized (sparse_backend=%s)", self.sparse_type)
 
-    def search(self, query_text: str, query_vector: Optional[Sequence[float]] = None, top_k: Optional[int] = None) -> Tuple[List[Dict], Dict]:
+    def search(
+        self, query_text: str, query_vector: Sequence[float] | None = None, top_k: int | None = None
+    ) -> tuple[list[dict], dict]:
         """
         Run sparse and dense retrieval and fuse with RRF.
 
@@ -487,13 +480,13 @@ class HybridSearcher:
 
         meta = {
             "time_s": sparse_meta["time_s"] + dense_meta["time_s"] + duration,
-            "qps": 1.0 / (sparse_meta["time_s"] + dense_meta["time_s"] + duration) if (sparse_meta["time_s"] + dense_meta["time_s"] + duration) > 0 else float("inf"),
-            "components": {
-                "sparse": sparse_meta,
-                "dense": dense_meta,
-                "rrf_fuse_s": duration
-            },
-            "sparse_backend": self.sparse_type
+            "qps": (
+                1.0 / (sparse_meta["time_s"] + dense_meta["time_s"] + duration)
+                if (sparse_meta["time_s"] + dense_meta["time_s"] + duration) > 0
+                else float("inf")
+            ),
+            "components": {"sparse": sparse_meta, "dense": dense_meta, "rrf_fuse_s": duration},
+            "sparse_backend": self.sparse_type,
         }
         return fused, meta
 
@@ -507,7 +500,9 @@ class FilteredDenseSearcher(DenseSearcher):
     def __init__(self, client: QdrantClient, cfg: DenseConfig):
         super().__init__(client, cfg)
 
-    def search_with_filter(self, query_vector: Sequence[float], filter: Optional[models.Filter], top_k: Optional[int] = None) -> Tuple[List[Dict], Dict]:
+    def search_with_filter(
+        self, query_vector: Sequence[float], filter: models.Filter | None, top_k: int | None = None
+    ) -> tuple[list[dict], dict]:
         top_k = top_k or self.cfg.top_k
         t0 = time.perf_counter()
 
@@ -520,13 +515,10 @@ class FilteredDenseSearcher(DenseSearcher):
                 with_payload=True,
             )
 
-            results = []
-            for hit in hits.points:
-                results.append({
-                    "id": str(hit.id),
-                    "score": hit.score,
-                    "text": hit.payload.get("text", "") if hit.payload else ""
-                })
+            results = [
+                {"id": str(hit.id), "score": hit.score, "text": hit.payload.get("text", "") if hit.payload else ""}
+                for hit in hits.points
+            ]
 
             elapsed = time.perf_counter() - t0
             return results, {"time_s": elapsed, "n_results": len(results)}

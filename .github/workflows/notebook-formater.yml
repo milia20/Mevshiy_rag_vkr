@@ -1,0 +1,30 @@
+name: Run notebook.sh
+
+on:
+    pull_request:
+        paths:
+            - "**.ipynb"  # Trigger only on changes to files (commits).
+
+jobs:
+  run-notebook:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Run the notebook script
+      - name: Run Tools/notebook.sh
+        run: |
+          chmod +x Tools/notebook.sh
+          ./Tools/notebook.sh
+
+      # Commit the changes
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Apply changes from Tools/notebook.sh"
+          file_pattern: '*.ipynb'

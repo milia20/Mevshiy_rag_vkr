@@ -3,16 +3,16 @@ import statistics
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional
 
 import jsonlines
-from fastembed import TextEmbedding, SparseTextEmbedding, LateInteractionTextEmbedding
+from fastembed import LateInteractionTextEmbedding, SparseTextEmbedding, TextEmbedding
 from qdrant_client import QdrantClient, models
 
 
 @dataclass
 class SearchConfig:
     """Конфигурация для тестирования"""
+
     dense_model: str = "BAAI/bge-small-en-v1.5"
     sparse_model: str = "prithivida/Splade_PP_en_v1"
     colbert_model: str = "jinaai/jina-colbert-v2"
@@ -20,19 +20,20 @@ class SearchConfig:
     collection_name: str = "documents"  # имя коллекции с уже загруженными данными
     top_k: int = 10
     queries_file: str = "queries.jsonl"  # Путь к файлу с тестовыми запросами
-    max_queries: Optional[int] = None  # Ограничить количество запросов для теста (None = все)
+    max_queries: int | None = None  # Ограничить количество запросов для теста (None = все)
 
 
 @dataclass
 class TestQuery:
     """Структура тестового запроса из JSONL"""
+
     question: str
     answer: str
     expected_file: str
-    metadata: Dict = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
 
-def load_test_queries(filepath: str, max_queries: Optional[int] = None) -> List[TestQuery]:
+def load_test_queries(filepath: str, max_queries: int | None = None) -> list[TestQuery]:
     """
     Загружает тестовые запросы из JSONL-файла.
 
@@ -45,7 +46,7 @@ def load_test_queries(filepath: str, max_queries: Optional[int] = None) -> List[
     if not path.exists():
         raise FileNotFoundError(f"Файл с запросами не найден: {filepath}")
 
-    with jsonlines.open(path, mode='r') as reader:
+    with jsonlines.open(path, mode="r") as reader:
         for i, line in enumerate(reader):
             if max_queries and i >= max_queries:
                 break
@@ -54,8 +55,7 @@ def load_test_queries(filepath: str, max_queries: Optional[int] = None) -> List[
                 question=line.get("question", ""),
                 answer=line.get("answer", ""),
                 expected_file=line.get("file", ""),
-                metadata={k: v for k, v in line.items()
-                          if k not in ["question", "answer", "file"]}
+                metadata={k: v for k, v in line.items() if k not in ["question", "answer", "file"]},
             )
 
             if query.question and query.expected_file:
@@ -66,18 +66,14 @@ def load_test_queries(filepath: str, max_queries: Optional[int] = None) -> List[
 
 
 def load_sample_queries_from_collection(
-        client: QdrantClient,
-        collection_name: str,
-        sample_size: int = 20
-) -> List[TestQuery]:
+    client: QdrantClient, collection_name: str, sample_size: int = 20
+) -> list[TestQuery]:
     """
     Альтернативный метод: создаёт тестовые запросы из случайных документов в коллекции.
     Использует текст документа как "вопрос" и проверяет поиск по полю 'file'.
     """
     points, _ = client.scroll(
-        collection_name=collection_name,
-        limit=sample_size,
-        with_payload=["text", "file", "title"]
+        collection_name=collection_name, limit=sample_size, with_payload=["text", "file", "title"]
     )
 
     queries = []
@@ -89,11 +85,7 @@ def load_sample_queries_from_collection(
         if text and file_name:
             # Используем первые 100 символов как "вопрос" для симуляции поиска
             query_text = text[:100].strip()
-            queries.append(TestQuery(
-                question=query_text,
-                answer=text,
-                expected_file=file_name
-            ))
+            queries.append(TestQuery(question=query_text, answer=text, expected_file=file_name))
 
     return queries
 
@@ -102,7 +94,7 @@ class SearchBenchmark:
     def __init__(self, config: SearchConfig):
         self.config = config
         self.client = QdrantClient("http://localhost:6333")
-        self.queries: List[TestQuery] = []
+        self.queries: list[TestQuery] = []
 
         print("Загрузка моделей эмбеддингов...")
         self.dense_model = TextEmbedding(model_name=config.dense_model)
@@ -124,9 +116,9 @@ class SearchBenchmark:
             return f"{self.config.collection_prefix}_{suffix}"
         return self.config.collection_name
 
-    def search_dense(self, query: str, limit: int = 10) -> Dict:
+    def search_dense(self, query: str, limit: int = 10) -> dict:
         """Поиск только по плотным векторам"""
-        query_vec = list(self.dense_model.embed([query]))[0]
+        query_vec = next(iter(self.dense_model.embed([query])))
 
         start = time.time()
         result = self.client.query_points(
@@ -136,58 +128,40 @@ class SearchBenchmark:
         )
         latency = time.time() - start
 
-        return {
-            "method": "dense",
-            "latency": latency,
-            "points": result.points,
-            "query": query
-        }
+        return {"method": "dense", "latency": latency, "points": result.points, "query": query}
 
-    def search_sparse(self, query: str, limit: int = 10) -> Dict:
+    def search_sparse(self, query: str, limit: int = 10) -> dict:
         """Поиск только по разреженным векторам"""
-        query_vec = list(self.sparse_model.embed([query]))[0]
+        query_vec = next(iter(self.sparse_model.embed([query])))
 
         start = time.time()
         result = self.client.query_points(
             self._get_collection_name("sparse"),
-            query=models.SparseVector(
-                indices=query_vec.indices.tolist(),
-                values=query_vec.values.tolist()
-            ),
+            query=models.SparseVector(indices=query_vec.indices.tolist(), values=query_vec.values.tolist()),
             using="bm25",
             limit=limit,
         )
         latency = time.time() - start
 
-        return {
-            "method": "sparse",
-            "latency": latency,
-            "points": result.points,
-            "query": query
-        }
+        return {"method": "sparse", "latency": latency, "points": result.points, "query": query}
 
-    def search_hybrid_rrf(self, query: str, limit: int = 10, rrf_k: int = 30) -> Dict:
+    def search_hybrid_rrf(self, query: str, limit: int = 10, rrf_k: int = 30) -> dict:
         """Гибридный поиск с RRF fusion"""
-        query_dense = list(self.dense_model.embed([query]))[0]
-        query_sparse = list(self.sparse_model.embed([query]))[0]
+        query_dense = next(iter(self.dense_model.embed([query])))
+        query_sparse = next(iter(self.sparse_model.embed([query])))
 
         start = time.time()
         result = self.client.query_points(
             self._get_collection_name("hybrid"),
             query=models.RrfQuery(rrf=models.Rrf(k=rrf_k)),
             prefetch=[
-                models.Prefetch(
-                    query=query_dense.tolist(),
-                    using="dense",
-                    limit=limit * 2
-                ),
+                models.Prefetch(query=query_dense.tolist(), using="dense", limit=limit * 2),
                 models.Prefetch(
                     query=models.SparseVector(
-                        indices=query_sparse.indices.tolist(),
-                        values=query_sparse.values.tolist()
+                        indices=query_sparse.indices.tolist(), values=query_sparse.values.tolist()
                     ),
                     using="bm25",
-                    limit=limit * 2
+                    limit=limit * 2,
                 ),
             ],
             limit=limit,
@@ -199,52 +173,42 @@ class SearchBenchmark:
             "latency": latency,
             "points": result.points,
             "query": query,
-            "params": {"rrf_k": rrf_k}
+            "params": {"rrf_k": rrf_k},
         }
 
-    def search_hybrid_dbsf(self, query: str, limit: int = 10) -> Dict:
+    def search_hybrid_dbsf(self, query: str, limit: int = 10) -> dict:
         """Гибридный поиск с DBSF fusion"""
-        query_dense = list(self.dense_model.embed([query]))[0]
-        query_sparse = list(self.sparse_model.embed([query]))[0]
+        query_dense = next(iter(self.dense_model.embed([query])))
+        query_sparse = next(iter(self.sparse_model.embed([query])))
 
         start = time.time()
         result = self.client.query_points(
             self._get_collection_name("hybrid"),
             query=models.FusionQuery(fusion=models.Fusion.DBSF),
             prefetch=[
-                models.Prefetch(
-                    query=query_dense.tolist(),
-                    using="dense",
-                    limit=limit * 2
-                ),
+                models.Prefetch(query=query_dense.tolist(), using="dense", limit=limit * 2),
                 models.Prefetch(
                     query=models.SparseVector(
-                        indices=query_sparse.indices.tolist(),
-                        values=query_sparse.values.tolist()
+                        indices=query_sparse.indices.tolist(), values=query_sparse.values.tolist()
                     ),
                     using="bm25",
-                    limit=limit * 2
+                    limit=limit * 2,
                 ),
             ],
             limit=limit,
         )
         latency = time.time() - start
 
-        return {
-            "method": "hybrid_dbsf",
-            "latency": latency,
-            "points": result.points,
-            "query": query
-        }
+        return {"method": "hybrid_dbsf", "latency": latency, "points": result.points, "query": query}
 
-    def search_colbert(self, query: str, limit: int = 10) -> Dict:
+    def search_colbert(self, query: str, limit: int = 10) -> dict:
         """Поиск с ColBERT (late interaction)"""
         if not self.colbert_model:
             return None
 
-        query_dense = list(self.dense_model.embed([query]))[0]
-        query_sparse = list(self.sparse_model.embed([query]))[0]
-        query_colbert = list(self.colbert_model.embed([query]))[0]
+        query_dense = next(iter(self.dense_model.embed([query])))
+        query_sparse = next(iter(self.sparse_model.embed([query])))
+        query_colbert = next(iter(self.colbert_model.embed([query])))
 
         start = time.time()
         result = self.client.query_points(
@@ -252,32 +216,22 @@ class SearchBenchmark:
             query=[mv.tolist() for mv in query_colbert],
             using="late_interaction",
             prefetch=[
-                models.Prefetch(
-                    query=query_dense.tolist(),
-                    using="dense",
-                    limit=limit * 3
-                ),
+                models.Prefetch(query=query_dense.tolist(), using="dense", limit=limit * 3),
                 models.Prefetch(
                     query=models.SparseVector(
-                        indices=query_sparse.indices.tolist(),
-                        values=query_sparse.values.tolist()
+                        indices=query_sparse.indices.tolist(), values=query_sparse.values.tolist()
                     ),
                     using="bm25",
-                    limit=limit * 3
+                    limit=limit * 3,
                 ),
             ],
             limit=limit,
         )
         latency = time.time() - start
 
-        return {
-            "method": "colbert",
-            "latency": latency,
-            "points": result.points,
-            "query": query
-        }
+        return {"method": "colbert", "latency": latency, "points": result.points, "query": query}
 
-    def calculate_precision_by_file(self, search_result: Dict, expected_file: str, top_k: int = 10) -> Dict[str, float]:
+    def calculate_precision_by_file(self, search_result: dict, expected_file: str, top_k: int = 10) -> dict[str, float]:
         """
         Вычисляет метрики качества для результатов поиска.
         Проверяет, содержится ли ожидаемый файл в результатах.
@@ -310,10 +264,10 @@ class SearchBenchmark:
             "precision": precision,
             "recall": recall,
             "mrr": mrr,
-            "found_at_position": relevant_position if relevant_found else None
+            "found_at_position": relevant_position if relevant_found else None,
         }
 
-    def run_benchmark(self, queries: List[TestQuery], limit: int = 10):
+    def run_benchmark(self, queries: list[TestQuery], limit: int = 10):
         """Запускает полный бенчмарк всех методов поиска"""
         print(f"\n=== Запуск бенчмарка ({len(queries)} запросов) ===")
 
@@ -369,14 +323,10 @@ class SearchBenchmark:
         return all_results
 
     def tune_rrf_parameters(
-            self,
-            query: str,
-            expected_file: str,
-            k_values: List[int] = [10, 20, 30, 50, 100],
-            limit: int = 10
+        self, query: str, expected_file: str, k_values: list[int] | tuple[int] = (10, 20, 30, 50, 100), limit: int = 10
     ):
         """Подбирает оптимальный параметр k для RRF"""
-        print(f"\n=== Подбор параметров RRF ===")
+        print("\n=== Подбор параметров RRF ===")
         print(f"Запрос: {query[:80]}{'...' if len(query) > 80 else ''}")
 
         results = []
@@ -422,12 +372,11 @@ class SearchBenchmark:
 
         if valid_results:
             best_mrr = max(
-                [(m, statistics.mean([r["mrr"] for r in r_list])) for m, r_list in valid_results],
-                key=lambda x: x[1]
+                [(m, statistics.mean([r["mrr"] for r in r_list])) for m, r_list in valid_results], key=lambda x: x[1]
             )
             best_latency = min(
                 [(m, statistics.mean([r["latency"] for r in r_list]) * 1000) for m, r_list in valid_results],
-                key=lambda x: x[1]
+                key=lambda x: x[1],
             )
 
             print(f"• Лучшее качество (MRR): {best_mrr[0]} (MRR={best_mrr[1]:.2f})")
@@ -447,21 +396,22 @@ class SearchBenchmark:
         for method, results in self.results.items():
             serializable[method] = []
             for r in results:
-                serializable[method].append({
-                    "method": r["method"],
-                    "query": r["query"][:200],  # Обрезаем для читаемости
-                    "expected_file": next(
-                        (q.expected_file for q in self.queries if q.question == r["query"]),
-                        None
-                    ),
-                    "latency": r["latency"],
-                    "precision": r["precision"],
-                    "recall": r["recall"],
-                    "mrr": r["mrr"],
-                    "found_at_position": r.get("found_at_position"),
-                    "num_results": len(r["points"]),
-                    "params": r.get("params", {})
-                })
+                serializable[method].append(
+                    {
+                        "method": r["method"],
+                        "query": r["query"][:200],  # Обрезаем для читаемости
+                        "expected_file": next(
+                            (q.expected_file for q in self.queries if q.question == r["query"]), None
+                        ),
+                        "latency": r["latency"],
+                        "precision": r["precision"],
+                        "recall": r["recall"],
+                        "mrr": r["mrr"],
+                        "found_at_position": r.get("found_at_position"),
+                        "num_results": len(r["points"]),
+                        "params": r.get("params", {}),
+                    }
+                )
 
         with open(output_path, "w", encoding="utf-8") as f:
             json.dump(serializable, f, ensure_ascii=False, indent=2)
@@ -474,7 +424,7 @@ if __name__ == "__main__":
         collection_name="hnsw_optimized",  # Коллекция данными в Qdrant
         queries_file="./custom_dataset/datasets/qna_agent-framework_en.jsonl",  # файл с вопросами
         top_k=10,
-        max_queries=50  # для быстрого теста
+        max_queries=50,  # для быстрого теста
     )
 
     benchmark = SearchBenchmark(config)
@@ -485,9 +435,7 @@ if __name__ == "__main__":
     except FileNotFoundError:
         print(f"⚠ Файл {config.queries_file} не найден. Пробуем загрузить из коллекции...")
         queries = load_sample_queries_from_collection(
-            benchmark.client,
-            config.collection_name,
-            sample_size=config.max_queries or 20
+            benchmark.client, config.collection_name, sample_size=config.max_queries or 20
         )
 
     if not queries:
@@ -503,7 +451,7 @@ if __name__ == "__main__":
             query=queries[0].question,
             expected_file=queries[0].expected_file,
             k_values=[10, 20, 30, 50, 100],
-            limit=config.top_k
+            limit=config.top_k,
         )
 
     benchmark.print_summary()

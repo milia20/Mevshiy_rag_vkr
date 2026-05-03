@@ -29,8 +29,8 @@ from __future__ import annotations
 import json
 import re
 import uuid
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Dict, Iterable, List, Tuple
 
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
@@ -86,7 +86,7 @@ def clean_markdown(content: str) -> str:
 HEADER_PATTERN = re.compile(r"^(#{1,3})\s+(.*)")
 
 
-def split_by_headers(text: str) -> List[Tuple[List[str], str]]:
+def split_by_headers(text: str) -> list[tuple[list[str], str]]:
     """
     Split markdown text by headers while preserving hierarchy.
 
@@ -106,12 +106,11 @@ def split_by_headers(text: str) -> List[Tuple[List[str], str]]:
         List of sections with header hierarchy.
     """
 
-    sections: List[Tuple[List[str], str]] = []
-    headers: List[str] = []
-    buffer: List[str] = []
+    sections: list[tuple[list[str], str]] = []
+    headers: list[str] = []
+    buffer: list[str] = []
 
     for line in text.splitlines():
-
         match = HEADER_PATTERN.match(line)
 
         if match:
@@ -201,7 +200,7 @@ def process_markdown_file(
     path: Path,
     docs_root: Path,
     splitter: RecursiveCharacterTextSplitter,
-) -> List[Dict]:
+) -> list[dict]:
     """
     Process a single markdown document.
 
@@ -222,14 +221,12 @@ def process_markdown_file(
 
     sections = split_by_headers(cleaned)
 
-    chunks: List[Dict] = []
+    chunks: list[dict] = []
 
     for headers, section_text in sections:
-
         split_chunks = splitter.split_text(section_text)
 
         for chunk in split_chunks:
-
             chunk_id = str(uuid.uuid4())
 
             chunks.append(
@@ -272,10 +269,9 @@ def process_docs(
 
     splitter = create_text_splitter(chunk_size, chunk_overlap)
 
-    all_chunks: List[Dict] = []
+    all_chunks: list[dict] = []
 
     for md_file in scan_markdown_files(docs_root):
-
         chunks = process_markdown_file(
             md_file,
             docs_root,

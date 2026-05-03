@@ -1,0 +1,76 @@
+name: Pylint and pycodestyle
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: "linters"
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    permissions:
+        pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: "pyproject.toml"
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1.4
+        with:
+            virtualenvs-create: true
+            virtualenvs-in-project: true
+            virtualenvs-path: .venv
+            installer-parallel: true
+
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v4
+        with:
+            path: .venv
+            key: venv-linters-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Install dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --without docs --no-interaction --no-root
+
+      - name: Run pycodestyle
+        run: |
+          poetry run pycodestyle . --exclude=.venv --statistics --max-line-length=120 > lint-report.txt || true
+        continue-on-error: true
+
+      - name: Run Pylint
+        run: |
+          poetry run pylint **/*.py --ignore='.venv' --recursive=y --max-line-length=120 "--disable=C0103,C0114,C0115" >> lint-report.txt || true
+        continue-on-error: true
+
+      - name: Limit report to 100 lines
+        run: |
+          tail -n 100 lint-report.txt > lint-limited-report.txt
+
+      - name: Upload lint report
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-report
+          path: lint-limited-report.txt
+
+      - name: Post lint results as PR comment
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          header: Lint Results (First 100 Lines)
+          path: lint-limited-report.txt
+          hide: true
+          skip_unchanged: true

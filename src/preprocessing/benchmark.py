@@ -27,23 +27,23 @@ import time
 from dataclasses import dataclass
 from itertools import product
 from pathlib import Path
-from typing import Any, Dict, List, Tuple, Optional
+from typing import Any
 
 import numpy as np
 from tqdm.auto import tqdm
 
 from src.search_strategies import (
+    DenseConfig,
+    DenseSearcher,
+    HybridConfig,
+    HybridSearcher,
+    QdrantSparseSearcher,
     SparseConfig,
-    DenseConfig, DenseSearcher,
-    HybridSearcher, HybridConfig, QdrantSparseSearcher
 )
 
 SparseSearcher = QdrantSparseSearcher
 logger = logging.getLogger(__name__)
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 logging.getLogger("requests").setLevel(logging.WARNING)
@@ -54,6 +54,7 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 @dataclass
 class BenchConfig:
     """Benchmark configuration."""
+
     ground_truth_path: str = "../indexing/data/ground_truth_en.jsonl"
     chunks_path: str = "../indexing/processed/chunks_en.jsonl"
     embeddings_memmap: str = "../indexing/data/embeddings_en.memmap"
@@ -65,16 +66,16 @@ class BenchConfig:
     seed: int = 42
 
     # HNSW grid parameters (matching thesis requirements)
-    hnsw_m_values: Tuple[int, ...] = (8, 16, 32, 64)
-    hnsw_ef_construct_values: Tuple[int, ...] = (100, 200, 300)
-    hnsw_ef_search_values: Tuple[int, ...] = (50, 100, 200)
+    hnsw_m_values: tuple[int, ...] = (8, 16, 32, 64)
+    hnsw_ef_construct_values: tuple[int, ...] = (100, 200, 300)
+    hnsw_ef_search_values: tuple[int, ...] = (50, 100, 200)
 
     # BM25 grid parameters
-    bm25_k1_values: Tuple[float, ...] = (0.5, 1.0, 1.5, 2.0)
-    bm25_b_values: Tuple[float, ...] = (0.5, 0.75, 1.0)
+    bm25_k1_values: tuple[float, ...] = (0.5, 1.0, 1.5, 2.0)
+    bm25_b_values: tuple[float, ...] = (0.5, 0.75, 1.0)
 
     # Hybrid RRF constants
-    hybrid_rrf_constants: Tuple[int, ...] = (30, 60, 120, 240)
+    hybrid_rrf_constants: tuple[int, ...] = (30, 60, 120, 240)
 
     # Qdrant collection prefix
     collection_prefix: str = "thesis_bench"
@@ -85,17 +86,17 @@ class BenchConfig:
 # -------------------------
 
 
-def load_ground_truth(path: str) -> Dict[str, List[str]]:
+def load_ground_truth(path: str) -> dict[str, list[str]]:
     """
     Load ground truth from JSONL file.
     Expected format per line: {"query_id": ["relevant_chunk_id1", "relevant_chunk_id2", ...]}
     """
-    gt: Dict[str, List[str]] = {}
+    gt: dict[str, list[str]] = {}
     path_obj = Path(path)
     if not path_obj.exists():
         raise FileNotFoundError(f"Ground truth file not found: {path}")
 
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         for line_num, line in enumerate(f, 1):
             line = line.strip()
             if not line:
@@ -113,14 +114,14 @@ def load_ground_truth(path: str) -> Dict[str, List[str]]:
     return gt
 
 
-def load_chunks(path: str) -> List[Dict[str, Any]]:
+def load_chunks(path: str) -> list[dict[str, Any]]:
     """Load chunks from JSONL file."""
-    chunks: List[Dict[str, Any]] = []
+    chunks: list[dict[str, Any]] = []
     path_obj = Path(path)
     if not path_obj.exists():
         raise FileNotFoundError(f"Chunks file not found: {path}")
 
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         for line_num, line in enumerate(f, 1):
             line = line.strip()
             if not line:
@@ -148,6 +149,7 @@ def check_qdrant_availability(url: str, timeout: float = 5.0) -> bool:
     """Check if Qdrant server is available."""
     try:
         import requests
+
         response = requests.get(url, timeout=timeout)
         return response.status_code == 200
     except Exception as e:
@@ -160,7 +162,7 @@ def check_qdrant_availability(url: str, timeout: float = 5.0) -> bool:
 # -------------------------
 
 
-def precision_at_k(retrieved: List[str], relevant: List[str], k: int) -> float:
+def precision_at_k(retrieved: list[str], relevant: list[str], k: int) -> float:
     """Calculate Precision@K."""
     if k <= 0:
         return 0.0
@@ -170,7 +172,7 @@ def precision_at_k(retrieved: List[str], relevant: List[str], k: int) -> float:
     return len(set(topk).intersection(set(relevant))) / float(k)
 
 
-def recall_at_k(retrieved: List[str], relevant: List[str], k: int) -> float:
+def recall_at_k(retrieved: list[str], relevant: list[str], k: int) -> float:
     """Calculate Recall@K."""
     if len(relevant) == 0:
         return 0.0
@@ -178,7 +180,7 @@ def recall_at_k(retrieved: List[str], relevant: List[str], k: int) -> float:
     return len(set(topk).intersection(set(relevant))) / float(len(relevant))
 
 
-def mrr_at_k(retrieved: List[str], relevant: List[str], k: int) -> float:
+def mrr_at_k(retrieved: list[str], relevant: list[str], k: int) -> float:
     """Calculate Mean Reciprocal Rank@K."""
     topk = retrieved[:k]
     for i, did in enumerate(topk, start=1):
@@ -187,7 +189,7 @@ def mrr_at_k(retrieved: List[str], relevant: List[str], k: int) -> float:
     return 0.0
 
 
-def ndcg_at_k(retrieved: List[str], relevant: List[str], k: int) -> float:
+def ndcg_at_k(retrieved: list[str], relevant: list[str], k: int) -> float:
     """
     Calculate NDCG@K (Normalized Discounted Cumulative Gain).
     Assumes binary relevance (relevant=1, not relevant=0).
@@ -241,10 +243,10 @@ def detect_search_signature(searcher: Any) -> str:
 
 def run_benchmark_for_searcher(
     searcher: Any,
-    queries: List[Tuple[str, Dict[str, Any]]],
-    ground_truth: Dict[str, List[str]],
+    queries: list[tuple[str, dict[str, Any]]],
+    ground_truth: dict[str, list[str]],
     top_k: int = 10,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Run benchmark using a searcher object.
 
@@ -257,9 +259,14 @@ def run_benchmark_for_searcher(
     Returns:
         Aggregated metrics dictionary
     """
-    metrics_acc: Dict[str, List[float]] = {
-        "p1": [], "p3": [], "p5": [], "p10": [],
-        "recall10": [], "mrr10": [], "ndcg10": []
+    metrics_acc: dict[str, list[float]] = {
+        "p1": [],
+        "p3": [],
+        "p5": [],
+        "p10": [],
+        "recall10": [],
+        "mrr10": [],
+        "ndcg10": [],
     }
 
     total_search_time = 0.0
@@ -313,7 +320,7 @@ def run_benchmark_for_searcher(
 
         n_success += 1
 
-    def mean(arr: List[float]) -> float:
+    def mean(arr: list[float]) -> float:
         return float(np.mean(arr)) if arr else 0.0
 
     n_queries = n_success + n_failed
@@ -342,11 +349,11 @@ def run_benchmark_for_searcher(
 
 
 def run_hnsw_grid(
-    chunks: List[Dict[str, Any]],
+    chunks: list[dict[str, Any]],
     embeddings: np.ndarray,
-    ground_truth: Dict[str, List[str]],
+    ground_truth: dict[str, list[str]],
     cfg: BenchConfig,
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     """
     Run HNSW parameter grid search.
 
@@ -384,10 +391,15 @@ def run_hnsw_grid(
         idx = id_to_idx.get(qid)
         if idx is None or idx >= len(chunks):
             continue
-        queries.append((qid, {
-            "text": chunks[idx].get("text", ""),
-            "vector": embeddings[idx].tolist() if idx < len(embeddings) else [0.0] * cfg.embedding_dim
-        }))
+        queries.append(
+            (
+                qid,
+                {
+                    "text": chunks[idx].get("text", ""),
+                    "vector": embeddings[idx].tolist() if idx < len(embeddings) else [0.0] * cfg.embedding_dim,
+                },
+            )
+        )
 
     if not queries:
         logger.error("No queries prepared for HNSW grid.")
@@ -410,32 +422,26 @@ def run_hnsw_grid(
             # Create collection with HNSW config
             client.create_collection(
                 collection_name=coll_name,
-                vectors_config=models.VectorParams(
-                    size=cfg.embedding_dim,
-                    distance=models.Distance.COSINE
-                ),
-                hnsw_config=models.HnswConfigDiff(
-                    m=m,
-                    ef_construct=ef_c
-                )
+                vectors_config=models.VectorParams(size=cfg.embedding_dim, distance=models.Distance.COSINE),
+                hnsw_config=models.HnswConfigDiff(m=m, ef_construct=ef_c),
             )
 
             # Upload vectors in batches
             batch_size = 500
             for i in range(0, len(chunks), batch_size):
-                batch_chunks = chunks[i:i+batch_size]
-                batch_embeddings = embeddings[i:i+batch_size]
-                batch_ids = all_ids[i:i+batch_size]
+                batch_chunks = chunks[i : i + batch_size]
+                batch_embeddings = embeddings[i : i + batch_size]
+                batch_ids = all_ids[i : i + batch_size]
 
                 points = []
-                for j, (chunk, emb, cid) in enumerate(zip(batch_chunks, batch_embeddings, batch_ids)):
+                for j, (chunk, emb, cid) in enumerate(zip(batch_chunks, batch_embeddings, batch_ids, strict=False)):
                     if i + j >= len(embeddings):
                         break
                     points.append(
                         models.PointStruct(
                             id=cid if isinstance(cid, (int, str)) else str(cid),
                             vector=emb.tolist() if hasattr(emb, "tolist") else list(emb),
-                            payload={"text": chunk.get("text", "")}
+                            payload={"text": chunk.get("text", "")},
                         )
                     )
 
@@ -446,11 +452,7 @@ def run_hnsw_grid(
             time.sleep(1)
 
             # Create dense searcher
-            dense_cfg = DenseConfig(
-                collection_name=coll_name,
-                ef_search=ef_s,
-                top_k=cfg.top_k
-            )
+            dense_cfg = DenseConfig(collection_name=coll_name, ef_search=ef_s, top_k=cfg.top_k)
             dense_searcher = DenseSearcher(client=client, cfg=dense_cfg)
 
             # Run benchmark
@@ -462,7 +464,7 @@ def run_hnsw_grid(
                 "ef_construct": ef_c,
                 "ef_search": ef_s,
                 "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-                **agg
+                **agg,
             }
             results.append(entry)
 
@@ -489,7 +491,7 @@ def run_hnsw_grid(
                 "QPS": 0.0,
                 "n_queries": 0,
                 "n_success": 0,
-                "n_failed": len(queries)
+                "n_failed": len(queries),
             }
             results.append(entry)
 
@@ -502,10 +504,10 @@ def run_hnsw_grid(
 
 
 def run_bm25_grid(
-    chunks: List[Dict[str, Any]],
-    ground_truth: Dict[str, List[str]],
+    chunks: list[dict[str, Any]],
+    ground_truth: dict[str, list[str]],
     cfg: BenchConfig,
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     """
     Run BM25 parameter grid search.
 
@@ -552,7 +554,7 @@ def run_bm25_grid(
                 qdrant_url=cfg.qdrant_url,
             )
 
-            def create_sparse_searcher(docs: List[Dict], cfg: SparseConfig, use_qdrant: bool = False):
+            def create_sparse_searcher(docs: list[dict], cfg: SparseConfig, use_qdrant: bool = False):
                 if use_qdrant:
                     return QdrantSparseSearcher(docs=docs, cfg=cfg)
                 else:
@@ -563,16 +565,10 @@ def run_bm25_grid(
             agg = run_benchmark_for_searcher(sparse_searcher, queries, ground_truth, top_k=cfg.top_k)
 
             # Cleanup if using Qdrant
-            if use_qdrant_sparse and hasattr(sparse_searcher, 'cleanup'):
+            if use_qdrant_sparse and hasattr(sparse_searcher, "cleanup"):
                 sparse_searcher.cleanup()
 
-            entry = {
-                "method": "bm25",
-                "k1": k1,
-                "b": b,
-                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-                **agg
-            }
+            entry = {"method": "bm25", "k1": k1, "b": b, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"), **agg}
             results.append(entry)
 
         except Exception as e:
@@ -594,7 +590,7 @@ def run_bm25_grid(
                 "QPS": 0.0,
                 "n_queries": 0,
                 "n_success": 0,
-                "n_failed": len(queries)
+                "n_failed": len(queries),
             }
             results.append(entry)
 
@@ -607,12 +603,12 @@ def run_bm25_grid(
 
 
 def run_hybrid_grid(
-    chunks: List[Dict[str, Any]],
+    chunks: list[dict[str, Any]],
     embeddings: np.ndarray,
-    ground_truth: Dict[str, List[str]],
+    ground_truth: dict[str, list[str]],
     cfg: BenchConfig,
-    hnsw_collection: Optional[str] = None,
-) -> List[Dict[str, Any]]:
+    hnsw_collection: str | None = None,
+) -> list[dict[str, Any]]:
     """
     Run Hybrid (Dense + Sparse + RRF) parameter grid search.
 
@@ -649,10 +645,15 @@ def run_hybrid_grid(
         idx = id_to_idx.get(qid)
         if idx is None or idx >= len(chunks):
             continue
-        queries.append((qid, {
-            "text": chunks[idx].get("text", ""),
-            "vector": embeddings[idx].tolist() if idx < len(embeddings) else [0.0] * cfg.embedding_dim
-        }))
+        queries.append(
+            (
+                qid,
+                {
+                    "text": chunks[idx].get("text", ""),
+                    "vector": embeddings[idx].tolist() if idx < len(embeddings) else [0.0] * cfg.embedding_dim,
+                },
+            )
+        )
 
     if not queries:
         logger.error("No queries prepared for Hybrid grid.")
@@ -673,29 +674,26 @@ def run_hybrid_grid(
             if not client.collection_exists(hnsw_collection):
                 client.create_collection(
                     collection_name=hnsw_collection,
-                    vectors_config=models.VectorParams(
-                        size=cfg.embedding_dim,
-                        distance=models.Distance.COSINE
-                    ),
-                    hnsw_config=models.HnswConfigDiff(m=16, ef_construct=100)
+                    vectors_config=models.VectorParams(size=cfg.embedding_dim, distance=models.Distance.COSINE),
+                    hnsw_config=models.HnswConfigDiff(m=16, ef_construct=100),
                 )
 
                 # Upload vectors
                 batch_size = 500
                 for i in range(0, len(chunks), batch_size):
-                    batch_chunks = chunks[i:i+batch_size]
-                    batch_embeddings = embeddings[i:i+batch_size]
-                    batch_ids = all_ids[i:i+batch_size]
+                    batch_chunks = chunks[i : i + batch_size]
+                    batch_embeddings = embeddings[i : i + batch_size]
+                    batch_ids = all_ids[i : i + batch_size]
 
                     points = []
-                    for j, (chunk, emb, cid) in enumerate(zip(batch_chunks, batch_embeddings, batch_ids)):
+                    for j, (chunk, emb, cid) in enumerate(zip(batch_chunks, batch_embeddings, batch_ids, strict=False)):
                         if i + j >= len(embeddings):
                             break
                         points.append(
                             models.PointStruct(
                                 id=cid if isinstance(cid, (int, str)) else str(cid),
                                 vector=emb.tolist() if hasattr(emb, "tolist") else list(emb),
-                                payload={"text": chunk.get("text", "")}
+                                payload={"text": chunk.get("text", "")},
                             )
                         )
 
@@ -714,22 +712,13 @@ def run_hybrid_grid(
 
         try:
             # Create dense searcher
-            dense_cfg = DenseConfig(
-                collection_name=hnsw_collection,
-                ef_search=64,
-                top_k=cfg.top_k
-            )
+            dense_cfg = DenseConfig(collection_name=hnsw_collection, ef_search=64, top_k=cfg.top_k)
             dense_searcher = DenseSearcher(client=client, cfg=dense_cfg)
 
             # Create hybrid searcher
-            hybrid_cfg = HybridConfig(
-                rrf_k=rrf_k,
-                top_k=cfg.top_k
-            )
+            hybrid_cfg = HybridConfig(rrf_k=rrf_k, top_k=cfg.top_k)
             hybrid_searcher = HybridSearcher(
-                dense_searcher=dense_searcher,
-                sparse_searcher=sparse_searcher,
-                cfg=hybrid_cfg
+                dense_searcher=dense_searcher, sparse_searcher=sparse_searcher, cfg=hybrid_cfg
             )
 
             # Run benchmark
@@ -740,7 +729,7 @@ def run_hybrid_grid(
                 "rrf_k": rrf_k,
                 "hnsw_collection": hnsw_collection,
                 "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-                **agg
+                **agg,
             }
             results.append(entry)
 
@@ -763,7 +752,7 @@ def run_hybrid_grid(
                 "QPS": 0.0,
                 "n_queries": 0,
                 "n_success": 0,
-                "n_failed": len(queries)
+                "n_failed": len(queries),
             }
             results.append(entry)
 
@@ -775,7 +764,7 @@ def run_hybrid_grid(
 # -------------------------
 
 
-def save_results(results: List[Dict[str, Any]], output_path: str) -> None:
+def save_results(results: list[dict[str, Any]], output_path: str) -> None:
     """Save results to JSONL file."""
     outp = Path(output_path)
     outp.parent.mkdir(parents=True, exist_ok=True)
@@ -793,11 +782,11 @@ def save_results(results: List[Dict[str, Any]], output_path: str) -> None:
 
 
 def run_experiment(
-    cfg: Optional[BenchConfig] = None,
+    cfg: BenchConfig | None = None,
     run_hnsw: bool = True,
     run_bm25: bool = True,
     run_hybrid: bool = True,
-) -> Dict[str, List[Dict[str, Any]]]:
+) -> dict[str, list[dict[str, Any]]]:
     """
     Run complete benchmark experiment.
 
@@ -815,8 +804,8 @@ def run_experiment(
 
     # Set seeds for reproducibility
     random.seed(cfg.seed)
-    np.random.seed(cfg.seed)
-
+    rng = np.random.default_rng(cfg.seed)
+    rng.normal()
     logger.info("=" * 60)
     logger.info("BENCHMARK EXPERIMENT STARTED")
     logger.info("=" * 60)
@@ -828,14 +817,11 @@ def run_experiment(
     chunks = load_chunks(cfg.chunks_path)
     embeddings = load_embeddings_memmap(cfg.embeddings_memmap, cfg.embedding_dim)
 
-    logger.info("Loaded %d ground truth entries, %d chunks, embeddings shape: %s",
-                len(gt), len(chunks), embeddings.shape)
+    logger.info(
+        "Loaded %d ground truth entries, %d chunks, embeddings shape: %s", len(gt), len(chunks), embeddings.shape
+    )
 
-    all_results: Dict[str, List[Dict[str, Any]]] = {
-        "hnsw": [],
-        "bm25": [],
-        "hybrid": []
-    }
+    all_results: dict[str, list[dict[str, Any]]] = {"hnsw": [], "bm25": [], "hybrid": []}
 
     # Check Qdrant availability
     qdrant_available = check_qdrant_availability(cfg.qdrant_url)
@@ -866,11 +852,7 @@ def run_experiment(
             logger.warning("Skipping Hybrid: Qdrant not available")
 
     # Combine and save all results
-    combined_results = (
-        all_results["hnsw"] +
-        all_results["bm25"] +
-        all_results["hybrid"]
-    )
+    combined_results = all_results["hnsw"] + all_results["bm25"] + all_results["hybrid"]
 
     if combined_results:
         save_results(combined_results, cfg.results_out)
@@ -898,11 +880,6 @@ def run_experiment(
 if __name__ == "__main__":
     cfg = BenchConfig()
 
-    results = run_experiment(
-        cfg=cfg,
-        run_hnsw=True,
-        run_bm25=True,
-        run_hybrid=True
-    )
+    results = run_experiment(cfg=cfg, run_hnsw=True, run_bm25=True, run_hybrid=True)
 
     logger.info("Benchmark completed. Results saved to: %s", cfg.results_out)

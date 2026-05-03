@@ -1,0 +1,85 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+        exclude: (mkdocs.yml)
+      - id: check-symlinks
+      - id: destroyed-symlinks
+      - id: check-added-large-files
+        args: [ '--maxkb=5000' ]
+      - id: detect-private-key
+      - id: check-merge-conflict
+      - id: mixed-line-ending
+        args: [ --fix=lf ]
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.12
+    hooks:
+      - id: ruff-check
+        args: [ --fix, --exit-non-zero-on-fix ]  # Autofix + crash on changes
+        types_or: [ python, pyi, jupyter, pyproject ]
+  #            -   id: ruff-format
+  #                types_or: [ python, pyi, jupyter  ]
+
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.21.2
+    hooks:
+      - id: pyupgrade
+        args: [ --py313-plus ]
+
+  - repo: https://github.com/psf/black
+    rev: 26.3.1
+    hooks:
+      - id: black
+      - id: black-jupyter
+
+  - repo: https://github.com/PyCQA/isort
+    rev: '9.0.0a3'
+    hooks:
+      - id: isort
+        name: isort
+  #        args: [ --diff --verbose  ]
+
+  - repo: https://github.com/PyCQA/flake8
+    rev: 7.3.0
+    hooks:
+      - id: flake8
+        args:
+          - '--max-line-length=120'
+          - '--extend-exclude=.git,__pycache__,.tox,.eggs,*.egg,.venv'
+          - '--extend-ignore=E203,E501'
+  #  - repo: https://github.com/pylint-dev/pylint
+  #    rev: v4.0.5
+  #    hooks:
+  #      - id: pylint
+  #        name: pylint
+  #        args:
+  #          [ --max-line-length=120,
+  #            "--disable=C0103,C0114,C0115,E0401,R0903,E1101"
+  #          ]
+
+  - repo: https://github.com/koalaman/shellcheck-precommit
+    rev: v0.11.0
+    hooks:
+      - id: shellcheck
+  #                args: ["--severity=warning"]  # Optionally only show errors and warnings
+  - repo: local
+    hooks:
+      - id: pytest
+        name: Запуск pytest
+        entry: pytest
+        language: system
+        types: [ python ]             # запускается, только если изменены Python-файлы
+        pass_filenames: false         # не передаём изменившиеся файлы, запускаем весь набор тестов
+        always_run: false             # выполняется только при наличии изменений в Python-файлах
+        args: [
+          "-v",
+          "--tb=short",
+          # "--maxfail=1",
+          # "tests/",
+        ]

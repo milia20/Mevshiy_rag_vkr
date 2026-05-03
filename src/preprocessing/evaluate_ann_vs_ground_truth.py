@@ -22,7 +22,6 @@ import json
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List
 
 import faiss
 import numpy as np
@@ -31,7 +30,6 @@ from tqdm.auto import tqdm
 
 @dataclass
 class EvalConfig:
-
     ground_truth_path: str = "data/ground_truth/ground_truth.jsonl"
     embeddings_path: str = "data/ground_truth/embeddings.memmap"
 
@@ -49,22 +47,16 @@ class EvalConfig:
     ivf_nprobe: int = 10
 
 
-def load_ground_truth(path: str) -> Dict[str, List[str]]:
+def load_ground_truth(path: str) -> dict[str, list[str]]:
     """
     Load ground truth mapping:
         chunk_id -> [neighbor_ids]
     """
 
-    gt: Dict[str, List[str]] = {}
+    gt: dict[str, list[str]] = {}
 
-    with open(path, "r", encoding="utf-8") as f:
-
-        for line in f:
-            obj = json.loads(line)
-
-            for k, v in obj.items():
-                gt[k] = v
-
+    with open(path, encoding="utf-8") as f:
+        gt = {k: v for line in f for k, v in json.loads(line).items()}
     return gt
 
 
@@ -91,22 +83,13 @@ def build_hnsw_index(embeddings: np.ndarray, m: int = 32) -> faiss.Index:
     return index
 
 
-def build_ivf_index(
-    embeddings: np.ndarray,
-    nlist: int = 256,
-    nprobe: int = 10
-) -> faiss.Index:
+def build_ivf_index(embeddings: np.ndarray, nlist: int = 256, nprobe: int = 10) -> faiss.Index:
 
     dim = embeddings.shape[1]
 
     quantizer = faiss.IndexFlatIP(dim)
 
-    index = faiss.IndexIVFFlat(
-        quantizer,
-        dim,
-        nlist,
-        faiss.METRIC_INNER_PRODUCT
-    )
+    index = faiss.IndexIVFFlat(quantizer, dim, nlist, faiss.METRIC_INNER_PRODUCT)
 
     index.train(embeddings)
     index.add(embeddings)
@@ -117,8 +100,8 @@ def build_ivf_index(
 
 
 def compute_metrics(
-    ann_results: Dict[str, List[str]],
-    ground_truth: Dict[str, List[str]],
+    ann_results: dict[str, list[str]],
+    ground_truth: dict[str, list[str]],
     k: int,
 ):
 
@@ -128,7 +111,6 @@ def compute_metrics(
     hits = []
 
     for qid, ann_ids in ann_results.items():
-
         gt_ids = ground_truth.get(qid, [])
 
         if not gt_ids:
@@ -161,7 +143,6 @@ def compute_metrics(
             mrrs.append(0)
 
     metrics = {
-
         "recall@k": float(np.mean(recalls)),
         "precision@k": float(np.mean(precisions)),
         "mrr@k": float(np.mean(mrrs)),
@@ -186,41 +167,30 @@ def evaluate(cfg: EvalConfig):
     print("Building ANN index:", cfg.index_type)
 
     if cfg.index_type == "hnsw":
-
         index = build_hnsw_index(embeddings, cfg.hnsw_m)
 
     elif cfg.index_type == "ivf":
-
-        index = build_ivf_index(
-            embeddings,
-            cfg.ivf_nlist,
-            cfg.ivf_nprobe
-        )
+        index = build_ivf_index(embeddings, cfg.ivf_nlist, cfg.ivf_nprobe)
 
     else:
         raise ValueError("Unknown index type")
 
     print("Running ANN search...")
 
-    ann_results: Dict[str, List[str]] = {}
+    ann_results: dict[str, list[str]] = {}
 
     chunk_ids = list(gt.keys())
 
-    id_lookup = {i: cid for i, cid in enumerate(chunk_ids)}
+    id_lookup = dict(enumerate(chunk_ids))
 
     for i in tqdm(range(0, n, cfg.batch_size)):
-
         j = min(n, i + cfg.batch_size)
 
         queries = embeddings[i:j]
 
-        distances, indices = index.search(
-            queries,
-            cfg.top_k + 1
-        )
+        _, indices = index.search(queries, cfg.top_k + 1)
 
         for row_idx, idxs in enumerate(indices):
-
             query_idx = i + row_idx
 
             query_id = id_lookup.get(query_idx)
@@ -228,7 +198,6 @@ def evaluate(cfg: EvalConfig):
             neighbors = []
 
             for idx in idxs:
-
                 if idx == query_idx:
                     continue
 
@@ -244,11 +213,7 @@ def evaluate(cfg: EvalConfig):
 
     print("Computing metrics...")
 
-    metrics = compute_metrics(
-        ann_results,
-        gt,
-        cfg.top_k
-    )
+    metrics = compute_metrics(ann_results, gt, cfg.top_k)
 
     elapsed = time.time() - start
 
@@ -262,10 +227,6 @@ def evaluate(cfg: EvalConfig):
 
 
 if __name__ == "__main__":
-
-    config = EvalConfig(
-        index_type="hnsw",  # change to "ivf"
-        top_k=10
-    )
+    config = EvalConfig(index_type="hnsw", top_k=10)  # change to "ivf"
 
     evaluate(config)

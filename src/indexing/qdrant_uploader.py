@@ -12,18 +12,18 @@ import sys
 import uuid
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 from qdrant_client import QdrantClient
 from qdrant_client.models import (
     Distance,
-    VectorParams,
-    PointStruct,
-    PayloadSchemaType,
-    HnswConfigDiff,
-    Filter,
     FieldCondition,
+    Filter,
+    HnswConfigDiff,
     MatchValue,
+    PayloadSchemaType,
+    PointStruct,
+    VectorParams,
 )
 from sentence_transformers import SentenceTransformer
 from tqdm import tqdm
@@ -31,7 +31,7 @@ from transformers import logging as transformers_logging
 
 logger = logging.getLogger(__name__)
 
-_FIELD_TYPE_MAP: Dict[str, PayloadSchemaType] = {
+_FIELD_TYPE_MAP: dict[str, PayloadSchemaType] = {
     "keyword": PayloadSchemaType.KEYWORD,
     "integer": PayloadSchemaType.INTEGER,
     "float": PayloadSchemaType.FLOAT,
@@ -45,6 +45,7 @@ _FIELD_TYPE_MAP: Dict[str, PayloadSchemaType] = {
 @dataclass
 class CollectionSpec:
     """Specification for experiment collection"""
+
     name: str
     hnsw_m: int = 16
     hnsw_ef_construct: int = 100
@@ -55,6 +56,7 @@ class CollectionSpec:
 @dataclass
 class HNSWConfig:
     """HNSW configuration for collection optimization experiments"""
+
     m: int = 16
     ef_construct: int = 100
     full_scan_threshold: int = 10000
@@ -81,10 +83,10 @@ class QdrantIndexer:
         port: int = 6333,
         collection_name: str = "mkdocs_docs",
         *,
-        url: Optional[str] = None,
+        url: str | None = None,
         in_memory: bool = False,
-        local_path: Optional[str] = None,
-        api_key: Optional[str] = None,
+        local_path: str | None = None,
+        api_key: str | None = None,
         https: bool = False,
         prefer_grpc: bool = True,
         timeout: float = 300.0,
@@ -119,11 +121,11 @@ class QdrantIndexer:
     def create_collection(
         self,
         vector_size: int,
-        hnsw_config: Optional[HNSWConfig] = None,
+        hnsw_config: HNSWConfig | None = None,
         distance: Distance = Distance.COSINE,
         on_disk_payload: bool = False,
         force_recreate: bool = False,
-        collection_name: Optional[str] = None,
+        collection_name: str | None = None,
     ) -> str:
         """Create collection with specific HNSW parameters."""
         name = collection_name or self.collection_name
@@ -172,10 +174,10 @@ class QdrantIndexer:
         self,
         vector_size: int,
         *,
-        base_name: Optional[str] = None,
+        base_name: str | None = None,
         force_recreate: bool = False,
-        specs: Optional[List[CollectionSpec]] = None,
-    ) -> Dict[str, str]:
+        specs: list[CollectionSpec] | None = None,
+    ) -> dict[str, str]:
         """
         Create multiple collections for HNSW/payload experiments.
 
@@ -206,7 +208,7 @@ class QdrantIndexer:
                 ),
             ]
 
-        created: Dict[str, str] = {}
+        created: dict[str, str] = {}
         for spec in specs:
             logger.info(f"Creating experiment collection: {spec.name} ({spec.description})")
 
@@ -224,15 +226,14 @@ class QdrantIndexer:
         logger.info(f"Created {len(created)} experiment collections")
         return created
 
-
     def add_embeddings_to_chunks(
         self,
-        chunks: List[Dict[str, Any]],
+        chunks: list[dict[str, Any]],
         model_name: str = "sentence-transformers/all-MiniLM-L6-v2",
         batch_size: int = 32,
         show_progress: bool = True,
         normalize_embeddings: bool = True,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Add embeddings to chunks using SentenceTransformer model.
 
@@ -264,23 +265,19 @@ class QdrantIndexer:
         logger.info(f"Generated embeddings with dimension: {embeddings.shape[1]}")
         return chunks_with_embeddings, int(embeddings.shape[1])
 
-
     def create_payload_index(
         self,
         field_name: str,
         field_type: str = "keyword",
         *,
-        collection_name: Optional[str] = None,
+        collection_name: str | None = None,
     ) -> bool:
         """Create index for payload field to optimize filtered search."""
         name = collection_name or self.collection_name
 
         field_schema = _FIELD_TYPE_MAP.get(field_type.lower())
         if field_schema is None:
-            raise ValueError(
-                f"Unsupported field_type={field_type!r}. "
-                f"Supported: {sorted(_FIELD_TYPE_MAP.keys())}"
-            )
+            raise ValueError(f"Unsupported field_type={field_type!r}. Supported: {sorted(_FIELD_TYPE_MAP.keys())}")
 
         logger.info(f"Creating payload index for field '{field_name}' with type '{field_type}'")
 
@@ -300,8 +297,8 @@ class QdrantIndexer:
     def create_default_payload_indexes(
         self,
         *,
-        collection_name: Optional[str] = None,
-    ) -> Dict[str, bool]:
+        collection_name: str | None = None,
+    ) -> dict[str, bool]:
         """Create default payload indexes for common filtering fields."""
         indexes = {
             "doc_title": "keyword",
@@ -312,9 +309,7 @@ class QdrantIndexer:
 
         results = {}
         for field_name, field_type in indexes.items():
-            results[field_name] = self.create_payload_index(
-                field_name, field_type, collection_name=collection_name
-            )
+            results[field_name] = self.create_payload_index(field_name, field_type, collection_name=collection_name)
 
         return results
 
@@ -326,7 +321,7 @@ class QdrantIndexer:
         except (ValueError, TypeError):
             return hashlib.md5(str(chunk_id).encode()).hexdigest()
 
-    def _prepare_payload(self, chunk: Dict) -> Dict[str, Any]:
+    def _prepare_payload(self, chunk: dict) -> dict[str, Any]:
         """Prepare payload from chunk metadata."""
         metadata = chunk.get("metadata", {}) or {}
         payload = {
@@ -351,13 +346,13 @@ class QdrantIndexer:
 
     def index_documents(
         self,
-        chunks: List[Dict[str, Any]],
+        chunks: list[dict[str, Any]],
         batch_size: int = 256,
         vector_field: str = "vector",
         show_progress: bool = True,
         *,
-        collection_name: Optional[str] = None,
-    ) -> Dict[str, int]:
+        collection_name: str | None = None,
+    ) -> dict[str, int]:
         """Upload chunks to Qdrant with batching and progress tracking."""
         name = collection_name or self.collection_name
 
@@ -389,9 +384,7 @@ class QdrantIndexer:
                 try:
                     vector = chunk.get(vector_field) or chunk.get("embedding")
                     if vector is None:
-                        logger.warning(
-                            f"Chunk missing vector: {chunk.get('metadata', {}).get('chunk_id', 'unknown')}"
-                        )
+                        logger.warning(f"Chunk missing vector: {chunk.get('metadata', {}).get('chunk_id', 'unknown')}")
                         failed += 1
                         continue
 
@@ -441,10 +434,10 @@ class QdrantIndexer:
         vector_field: str = "vector",
         show_progress: bool = True,
         *,
-        collection_name: Optional[str] = None,
+        collection_name: str | None = None,
         add_embeddings: bool = True,
         embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2",
-    ) -> Tuple[Dict[str, int], Optional[int]]:
+    ) -> tuple[dict[str, int], int | None]:
         """
         Index documents from JSONL file.
 
@@ -457,11 +450,10 @@ class QdrantIndexer:
 
         logger.info(f"Loading chunks from {file_path}")
 
-        chunks = []
-        with open(file_path, "r", encoding="utf-8") as f:
-            for line in tqdm(f, desc="Loading chunks", disable=not show_progress):
-                if line.strip():
-                    chunks.append(json.loads(line))
+        with open(file_path, encoding="utf-8") as f:
+            chunks = [
+                json.loads(line) for line in tqdm(f, desc="Loading chunks", disable=not show_progress) if line.strip()
+            ]
 
         logger.info(f"Loaded {len(chunks)} chunks from file")
 
@@ -483,7 +475,7 @@ class QdrantIndexer:
 
         return stats, vector_dim
 
-    def verify_index(self, *, collection_name: Optional[str] = None) -> Dict[str, Any]:
+    def verify_index(self, *, collection_name: str | None = None) -> dict[str, Any]:
         """Verify indexing by counting points and checking collection info."""
         name = collection_name or self.collection_name
 
@@ -532,7 +524,8 @@ class QdrantIndexer:
                 },
                 "payload_schema": (
                     {k: str(v) for k, v in collection_info.payload_schema.items()}
-                    if collection_info.payload_schema else {}
+                    if collection_info.payload_schema
+                    else {}
                 ),
                 "status": "verified" if collection_info.points_count > 0 else "empty",
             }
@@ -549,7 +542,7 @@ class QdrantIndexer:
             logger.error(f"Verification failed: {e}")
             return {"status": "error", "error": str(e), "collection_name": name}
 
-    def get_collection_stats(self, *, collection_name: Optional[str] = None) -> Dict[str, Any]:
+    def get_collection_stats(self, *, collection_name: str | None = None) -> dict[str, Any]:
         """Get detailed collection statistics"""
         name = collection_name or self.collection_name
         info = self.client.get_collection(name)
@@ -563,15 +556,15 @@ class QdrantIndexer:
 
     def search(
         self,
-        query_text: Optional[str] = None,
-        query_vector: Optional[List[float]] = None,
+        query_text: str | None = None,
+        query_vector: list[float] | None = None,
         limit: int = 10,
-        filter_dict: Optional[Dict] = None,
-        score_threshold: Optional[float] = None,
+        filter_dict: dict | None = None,
+        score_threshold: float | None = None,
         model_name: str = "sentence-transformers/all-MiniLM-L6-v2",
         *,
-        collection_name: Optional[str] = None,
-    ) -> List[Dict]:
+        collection_name: str | None = None,
+    ) -> list[dict]:
         """Search for similar documents."""
         name = collection_name or self.collection_name
 
@@ -656,8 +649,7 @@ class QdrantIndexer:
             for r in points
         ]
 
-
-    def delete_collection(self, collection_name: Optional[str] = None) -> bool:
+    def delete_collection(self, collection_name: str | None = None) -> bool:
         """Delete the collection"""
         name = collection_name or self.collection_name
         try:
@@ -701,12 +693,8 @@ Examples:
     )
 
     # Connection arguments
-    parser.add_argument(
-        "--host", type=str, default="localhost", help="Qdrant host (default: localhost)"
-    )
-    parser.add_argument(
-        "--port", type=int, default=6333, help="Qdrant port (default: 6333)"
-    )
+    parser.add_argument("--host", type=str, default="localhost", help="Qdrant host (default: localhost)")
+    parser.add_argument("--port", type=int, default=6333, help="Qdrant port (default: 6333)")
     parser.add_argument(
         "--in-memory",
         action="store_true",
@@ -877,11 +865,8 @@ def main():
             logger.info("EXPERIMENT Creating multiple collections")
 
             # Load and embed chunks first to get vector size
-            chunks = []
-            with open(args.input, "r", encoding="utf-8") as f:
-                for line in f:
-                    if line.strip():
-                        chunks.append(json.loads(line))
+            with open(args.input, encoding="utf-8") as f:
+                chunks = [json.loads(line) for line in f if line.strip()]
 
             vector_size = args.vector_size
             chunks, vector_size = indexer.add_embeddings_to_chunks(
@@ -922,7 +907,7 @@ def main():
                 )
 
             # Index documents from file
-            stats, vector_dim = indexer.index_documents_from_file(
+            _stats, _vector_dim = indexer.index_documents_from_file(
                 file_path=args.input,
                 batch_size=args.batch_size,
                 add_embeddings=args.add_embeddings,
@@ -1009,7 +994,7 @@ if __name__ == "__main__":
                 raise FileNotFoundError(f"Chunks file not found: {CHUNKS_FILE}")
 
             # Count lines
-            with open(CHUNKS_FILE, "r", encoding="utf-8") as f:
+            with open(CHUNKS_FILE, encoding="utf-8") as f:
                 chunk_count = sum(1 for line in f if line.strip())
             print(f"✓ Found {chunk_count} chunks in {CHUNKS_FILE}")
 
@@ -1023,11 +1008,8 @@ if __name__ == "__main__":
             print("✓ Qdrant client initialized")
 
             print("\n[3/5] Loading chunks and generating embeddings...")
-            chunks = []
-            with open(CHUNKS_FILE, "r", encoding="utf-8") as f:
-                for line in tqdm(f, desc="Loading"):
-                    if line.strip():
-                        chunks.append(json.loads(line))
+            with open(CHUNKS_FILE, encoding="utf-8") as f:
+                chunks = [json.loads(line) for line in tqdm(f, desc="Loading") if line.strip()]
 
             print(f"✓ Loaded {len(chunks)} chunks")
 
@@ -1069,8 +1051,10 @@ if __name__ == "__main__":
                 verification = indexer.verify_index(collection_name=coll_name)
                 print(f"\n{coll_name}:")
                 print(f"  Points: {verification.get('points_count', 'N/A')}")
-                print(f"  HNSW: m={verification.get('hnsw_config', {}).get('m', 'N/A')}, "
-                      f"ef={verification.get('hnsw_config', {}).get('ef_construct', 'N/A')}")
+                print(
+                    f"  HNSW: m={verification.get('hnsw_config', {}).get('m', 'N/A')}, "
+                    f"ef={verification.get('hnsw_config', {}).get('ef_construct', 'N/A')}"
+                )
 
             print("\n" + "-" * 70)
             print("SEARCH TEST")
@@ -1091,7 +1075,6 @@ if __name__ == "__main__":
                 )
                 for i, r in enumerate(results, 1):
                     print(f"  {i}. Score: {r['score']:.4f} | {r['payload'].get('text', '')[:100]}...")
-
 
         except FileNotFoundError as e:
             logger.error(f"File error: {e}")
