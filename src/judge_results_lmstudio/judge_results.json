@@ -1,0 +1,861 @@
+[
+  {
+    "question": "What specific GitHub Personal Access Token scope is required to access nightly builds?",
+    "expected_file": "FAQS.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "Для доступа к nightly builds требуется GitHub Personal Access Token с областью видимости `read:packages`. Также необходимо авторизовать организацию `Microsoft` через SSO (Single Sign-On).",
+    "judge": "Судья 1 (qwen3.5-35b)",
+    "evaluation": {
+      "verdict": "неточно",
+      "confidence": 0.85,
+      "reasoning": "Ответ содержит верную информацию о необходимом scope (`read:packages`), но добавляет требование об авторизации через SSO для организации Microsoft, которого нет в эталонном ответе и которое может быть неверным или избыточным контекстом.",
+      "key_issues": [
+        "Добавлено условие про SSO-авторизацию, отсутствующее в эталоне"
+      ]
+    }
+  },
+  {
+    "question": "What specific GitHub Personal Access Token scope is required to access nightly builds?",
+    "expected_file": "FAQS.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "Для доступа к nightly builds требуется GitHub Personal Access Token с областью видимости `read:packages`. Также необходимо авторизовать организацию `Microsoft` через SSO (Single Sign-On).",
+    "judge": "Судья 2 (gemma-3-12b)",
+    "evaluation": {
+      "verdict": "неточно",
+      "confidence": 0.8,
+      "reasoning": "Ответ правильно указывает на `read:packages` scope, но добавляет информацию об авторизации организации Microsoft через SSO, что не является обязательным требованием для доступа к nightly builds и отсутствует в эталонном ответе.",
+      "key_issues": [
+        "Дополнительная информация об авторизации через SSO"
+      ]
+    }
+  },
+  {
+    "question": "How should developers configure NuGet for Microsoft organization accounts that require Single Sign-On (SSO)?",
+    "expected_file": "FAQS.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "Для настройки NuGet для учетных записей организации Microsoft, требующих единого входа (SSO), разработчики должны выполнить следующие действия:\n\n1.  **Авторизовать организацию:** Если учетная запись является частью организации Microsoft, необходимо авторизовать организацию `Microsoft` как организацию с единым входом (Single Sign-On).\n2.  **Создать токен:** Создать личный токен доступа GitHub (Personal Access Token) со.scope `read:packages`.\n3.  **Настроить SSO для токена:** Нажать кнопку \"Config",
+    "judge": "Судья 1 (qwen3.5-35b)",
+    "evaluation": {
+      "verdict": "неточно",
+      "confidence": 0.85,
+      "reasoning": "Ответ содержит фактическую ошибку в шаге 2: он требует создания токена с scope `read:packages` для GitHub, тогда как вопрос касается NuGet и учетных записей Microsoft Organization (что обычно подразумевает использование PAT для NuGet или Azure DevOps, а не специфических scopes GitHub). Кроме того, ответ добавляет детали о командах PowerShell и файле конфигурации, которых нет в эталоне, что делает его неполным относительно строгого соответствия эталону.",
+      "key_issues": [
+        "Неверный контекст: упоминание scope `read:packages` GitHub вместо настройки NuGet для Microsoft Organization",
+        "Добавление избыточной информации (команды PowerShell, XML конфигурации), отсутствующей в эталоне"
+      ]
+    }
+  },
+  {
+    "question": "How should developers configure NuGet for Microsoft organization accounts that require Single Sign-On (SSO)?",
+    "expected_file": "FAQS.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "Для настройки NuGet для учетных записей организации Microsoft, требующих единого входа (SSO), разработчики должны выполнить следующие действия:\n\n1.  **Авторизовать организацию:** Если учетная запись является частью организации Microsoft, необходимо авторизовать организацию `Microsoft` как организацию с единым входом (Single Sign-On).\n2.  **Создать токен:** Создать личный токен доступа GitHub (Personal Access Token) со.scope `read:packages`.\n3.  **Настроить SSO для токена:** Нажать кнопку \"Config",
+    "judge": "Судья 2 (gemma-3-12b)",
+    "evaluation": {
+      "verdict": "неточно",
+      "confidence": 0.8,
+      "reasoning": "Ответ содержит дополнительные шаги (создание токена и добавление источника NuGet), которые не указаны в эталонном ответе. Основная идея авторизации организации через SSO с использованием Microsoft присутствует, но есть излишняя детализация.",
+      "key_issues": [
+        "дополнительные шаги",
+        "избыточная детализация"
+      ]
+    }
+  },
+  {
+    "question": "What command adds the Microsoft GitHub Packages source to NuGet configuration via PowerShell?",
+    "expected_file": "FAQS.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "Для добавления источника Microsoft GitHub Packages в конфигурацию NuGet с помощью PowerShell используйте следующую команду:\n\n```powershell\ndotnet nuget add source --username GITHUBUSERNAME --password GITHUBPERSONALACCESSTOKEN --store-password-in-clear-text --name GitHubMicrosoft \"https://nuget.pkg.github.com/microsoft/index.json\"\n```",
+    "judge": "Судья 1 (qwen3.5-35b)",
+    "evaluation": {
+      "verdict": "точно",
+      "confidence": 1.0,
+      "reasoning": "Ответ содержит точную команду из эталона и корректно отвечает на вопрос о добавлении источника Microsoft GitHub Packages в NuGet через PowerShell.",
+      "key_issues": []
+    }
+  },
+  {
+    "question": "What command adds the Microsoft GitHub Packages source to NuGet configuration via PowerShell?",
+    "expected_file": "FAQS.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "Для добавления источника Microsoft GitHub Packages в конфигурацию NuGet с помощью PowerShell используйте следующую команду:\n\n```powershell\ndotnet nuget add source --username GITHUBUSERNAME --password GITHUBPERSONALACCESSTOKEN --store-password-in-clear-text --name GitHubMicrosoft \"https://nuget.pkg.github.com/microsoft/index.json\"\n```",
+    "judge": "Судья 2 (gemma-3-12b)",
+    "evaluation": {
+      "verdict": "точно",
+      "confidence": 1.0,
+      "reasoning": "Ответ полностью соответствует эталонному, включая команду и все необходимые параметры для добавления источника Microsoft GitHub Packages в NuGet.",
+      "key_issues": []
+    }
+  },
+  {
+    "question": "How can I configure a NuGet.Config file to automatically use nightly builds for specific packages?",
+    "expected_file": "FAQS.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "В предоставленных документах нет информации о том, как настроить файл `NuGet.Config` для автоматического использования ночных сборок (nightly builds) для конкретных пакетов.\n\nДокументы содержат следующие сведения, но не отвечают на ваш вопрос напрямую:\n*   Ночные сборки доступны по ссылке в репозитории GitHub.\n*   Можно добавить пакет из ночной сборки вручную, указав конкретную версию в команде `dotnet add package` (например, `--version 0.0.1-nightly-250731.6-alpha`).\n*   Приведен пример конфигу",
+    "judge": "Судья 1 (qwen3.5-35b)",
+    "evaluation": {
+      "verdict": "неправильно",
+      "confidence": 1.0,
+      "reasoning": "Ответ утверждает, что информации нет и не может ответить на вопрос, в то время как эталонный ответ содержит прямое и точное решение (использование секции <packageSourceMapping> с паттерном *nightly).",
+      "key_issues": [
+        "Отрицание наличия решения там, где оно есть в эталоне",
+        "Непредоставление запрошенной инструкции по конфигурации"
+      ]
+    }
+  },
+  {
+    "question": "How can I configure a NuGet.Config file to automatically use nightly builds for specific packages?",
+    "expected_file": "FAQS.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "В предоставленных документах нет информации о том, как настроить файл `NuGet.Config` для автоматического использования ночных сборок (nightly builds) для конкретных пакетов.\n\nДокументы содержат следующие сведения, но не отвечают на ваш вопрос напрямую:\n*   Ночные сборки доступны по ссылке в репозитории GitHub.\n*   Можно добавить пакет из ночной сборки вручную, указав конкретную версию в команде `dotnet add package` (например, `--version 0.0.1-nightly-250731.6-alpha`).\n*   Приведен пример конфигу",
+    "judge": "Судья 2 (gemma-3-12b)",
+    "evaluation": {
+      "verdict": "неточно",
+      "confidence": 0.7,
+      "reasoning": "Ответ правильно указывает на отсутствие информации в предоставленных документах, но не предоставляет решение, которое могло бы быть получено из других источников.  Он описывает, что *нет* ответа, а не предлагает альтернативные подходы.",
+      "key_issues": []
+    }
+  },
+  {
+    "question": "How do I reference the latest available nightly version of a package in my project file?",
+    "expected_file": "FAQS.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "Для использования последней доступной версии nightly-сборки пакета в файле проекта используйте команду `dotnet add package` с указанием версии, содержащей суффикс `-nightly`.\n\nПример команды:\n`dotnet add package Microsoft.Agents.AI --version 0.0.1-nightly-250731.6-alpha`",
+    "judge": "Судья 1 (qwen3.5-35b)",
+    "evaluation": {
+      "verdict": "неправильно",
+      "confidence": 1.0,
+      "reasoning": "Ответ предлагает использовать конкретную версию с суффиксом `-nightly`, что не позволяет автоматически получать самую свежую nightly-версию при каждом обновлении. Эталонный ответ указывает на использование дикого символа `*-*` в теге PackageReference для динамической привязки к последней версии.",
+      "key_issues": [
+        "Предложен метод с фиксированной версией вместо использования wildcards (`*-*`) для автоматического обновления",
+        "Не отвечает на вопрос о том, как ссылаться именно на 'latest available' (последнюю доступную) версию динамически"
+      ]
+    }
+  },
+  {
+    "question": "How do I reference the latest available nightly version of a package in my project file?",
+    "expected_file": "FAQS.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "Для использования последней доступной версии nightly-сборки пакета в файле проекта используйте команду `dotnet add package` с указанием версии, содержащей суффикс `-nightly`.\n\nПример команды:\n`dotnet add package Microsoft.Agents.AI --version 0.0.1-nightly-250731.6-alpha`",
+    "judge": "Судья 2 (gemma-3-12b)",
+    "evaluation": {
+      "verdict": "неточно",
+      "confidence": 0.8,
+      "reasoning": "Ответ предлагает использовать конкретную команду `dotnet add package` с указанием версии, что не является универсальным решением для всех project files и отличается от эталонного подхода с использованием wildcard-версии в `<PackageReference>`. Хотя ответ и дает пример, он не полностью соответствует описанию из эталона.",
+      "key_issues": [
+        "Неправильный подход к добавлению пакета",
+        "Отсутствие упоминания о wildcard версии"
+      ]
+    }
+  },
+  {
+    "question": "How does this design distinguish between information meant for the user versus internal operational details?",
+    "expected_file": "decisions\\0001-agent-run-response.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "Дизайн различает информацию для пользователя и внутренние операционные детали следующим образом:\n\n*   **Для пользователей (публичные интерфейсы):** Используются явные именованные параметры в соответствии со стандартами кодирования AF. Запрещено использование `**kwargs` как «лазейки» в публичных API.\n*   **Внутренние детали:** Внутренняя реализация (например, паттерны множественного наследования / MRO) может использовать `**kwargs`, если это необходимо, при условии, что они не экспонируются в пуб",
+    "judge": "Судья 1 (qwen3.5-35b)",
+    "evaluation": {
+      "verdict": "неправильно",
+      "confidence": 1.0,
+      "reasoning": "Ответ полностью игнорирует ключевые факты из эталона (разделение на Primary/Secondary output) и вместо этого описывает технические детали реализации Python (kwargs, lazy loading), которые не упоминаются в эталоне и не отвечают на вопрос о логике разделения информации.",
+      "key_issues": [
+        "Полное отсутствие ключевых концепций из эталона (Primary/Secondary)",
+        "Ответ касается технической реализации кода вместо логики разделения данных",
+        "Галлюцинация контекста: ответ описывает стандарты кодирования и паттерны Python, не связанные с вопросом"
+      ]
+    }
+  },
+  {
+    "question": "How does this design distinguish between information meant for the user versus internal operational details?",
+    "expected_file": "decisions\\0001-agent-run-response.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "Дизайн различает информацию для пользователя и внутренние операционные детали следующим образом:\n\n*   **Для пользователей (публичные интерфейсы):** Используются явные именованные параметры в соответствии со стандартами кодирования AF. Запрещено использование `**kwargs` как «лазейки» в публичных API.\n*   **Внутренние детали:** Внутренняя реализация (например, паттерны множественного наследования / MRO) может использовать `**kwargs`, если это необходимо, при условии, что они не экспонируются в пуб",
+    "judge": "Судья 2 (gemma-3-12b)",
+    "evaluation": {
+      "verdict": "неточно",
+      "confidence": 0.7,
+      "reasoning": "Ответ затрагивает тему разделения информации, но фокусируется на аспектах кодирования и API, а не на классификации вывода как 'Primary' и 'Secondary', что указано в эталонном ответе. Он упускает важную деталь о том, как информация классифицируется для пользователя (результаты, запросы) против внутренних деталей (инструменты, рассуждения).",
+      "key_issues": [
+        "упущение ключевых деталей из эталона",
+        "фокус на кодировании вместо классификации вывода"
+      ]
+    }
+  },
+  {
+    "question": "In what scenarios would a developer choose to filter out 'Secondary' output when an agent is running?",
+    "expected_file": "decisions\\0001-agent-run-response.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "В предоставленных документах нет информации о сценариях, в которых разработчик выбрал бы фильтрацию вывода 'Secondary' (вторичного) контента. В контексте упоминается возможность выбора включения или исключения вторичного контента через параметр времени выполнения (runtime parameter), но конкретные причины или сценарии для этого не указаны.",
+    "judge": "Судья 1 (qwen3.5-35b)",
+    "evaluation": {
+      "verdict": "неправильно",
+      "confidence": 1.0,
+      "reasoning": "Ответ утверждает отсутствие информации о сценариях фильтрации, тогда как эталонный ответ явно перечисляет конкретные сценарии (множественные люди без обновлений, вложенные агенты для экономии контекста). Это фактическая ошибка, так как ответ не содержит требуемой информации, которая должна быть известна.",
+      "key_issues": [
+        "Отрицание наличия информации о сценариях при её наличии",
+        "Неполный ответ (отсутствие ключевых примеров из эталона)"
+      ]
+    }
+  },
+  {
+    "question": "In what scenarios would a developer choose to filter out 'Secondary' output when an agent is running?",
+    "expected_file": "decisions\\0001-agent-run-response.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "В предоставленных документах нет информации о сценариях, в которых разработчик выбрал бы фильтрацию вывода 'Secondary' (вторичного) контента. В контексте упоминается возможность выбора включения или исключения вторичного контента через параметр времени выполнения (runtime parameter), но конкретные причины или сценарии для этого не указаны.",
+    "judge": "Судья 2 (gemma-3-12b)",
+    "evaluation": {
+      "verdict": "неточно",
+      "confidence": 0.7,
+      "reasoning": "Ответ правильно указывает на отсутствие информации в предоставленных документах, но не предоставляет альтернативное объяснение или перефразировку из эталонного ответа. Он уклоняется от прямого ответа на вопрос.",
+      "key_issues": [
+        "уклонение от вопроса",
+        "отсутствие перефразировки"
+      ]
+    }
+  },
+  {
+    "question": "What defines 'Long Running' responses in this agent design model?",
+    "expected_file": "decisions\\0001-agent-run-response.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "В предоставленных документах не содержится информации о том, что именно определяет ответы как «Long Running» (длительные) в данной модели проектирования агентов. В контексте описаны только значения (`ResponseId`, `ConversationId`), которые должны возвращаться для поддержки таких операций, но не критерии их определения.",
+    "judge": "Судья 1 (qwen3.5-35b)",
+    "evaluation": {
+      "verdict": "неправильно",
+      "confidence": 1.0,
+      "reasoning": "Ответ утверждает отсутствие информации о критериях определения 'Long Running' ответов, тогда как эталонный ответ явно определяет их как ответы без Primary результата или Secondary обновлений, содержащие ссылку на асинхронную задачу.",
+      "key_issues": [
+        "Отрицание наличия информации в источнике (галлюцинация контекста)",
+        "Неответ на вопрос: вместо определения дано сообщение об отсутствии данных"
+      ]
+    }
+  },
+  {
+    "question": "What defines 'Long Running' responses in this agent design model?",
+    "expected_file": "decisions\\0001-agent-run-response.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "В предоставленных документах не содержится информации о том, что именно определяет ответы как «Long Running» (длительные) в данной модели проектирования агентов. В контексте описаны только значения (`ResponseId`, `ConversationId`), которые должны возвращаться для поддержки таких операций, но не критерии их определения.",
+    "judge": "Судья 2 (gemma-3-12b)",
+    "evaluation": {
+      "verdict": "неточно",
+      "confidence": 0.7,
+      "reasoning": "Ответ правильно указывает на отсутствие информации в предоставленных документах, но неверно интерпретирует это как полное отсутствие определения 'Long Running'.  Эталонный ответ предоставляет определение, которого нет в предоставленном тексте, а ответ лишь констатирует этот факт.",
+      "key_issues": [
+        "неправильная интерпретация отсутствия информации"
+      ]
+    }
+  },
+  {
+    "question": "How does this design handle LLM reasoning output?",
+    "expected_file": "decisions\\0001-agent-run-response.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "Дизайн обрабатывает вывод рассуждений (reasoning output) следующим образом:\n\n1.  **Классификация:**\n    *   **Первичный случай:** Если LLM возвращает вывод рассуждений вместе с ответом для вызывающей стороны (потому что запрос содержал требование такой детализации), это считается специализацией основного ответа.\n    *   **Вторичный случай:** Если модели рассуждений опционально производят вывод отдельно от ответа на вопрос пользователя, этот контент считается второстепенным.\n\n2.  **Требования к ц",
+    "judge": "Судья 1 (qwen3.5-35b)",
+    "evaluation": {
+      "verdict": "неправильно",
+      "confidence": 0.9,
+      "reasoning": "Ответ содержит существенные фактические ошибки и галлюцинации: он выдумывает разделы о 'Compaction Strategy' и требованиях к целостности вызовов инструментов, которые отсутствуют в эталоне и не являются частью базовой классификации вывода рассуждений. Также ответ добавляет нерелевантную информацию о поведении агентов и недостающих аргументах.",
+      "key_issues": [
+        "Включение вымышленных требований к целостности (Compaction Strategy) и правил для вызовов инструментов",
+        "Добавление нерелевантного контекста об агентах LLM и недостающих входных данных",
+        "Отклонение от строгой классификации, описанной в эталоне"
+      ]
+    }
+  },
+  {
+    "question": "How does this design handle LLM reasoning output?",
+    "expected_file": "decisions\\0001-agent-run-response.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "Дизайн обрабатывает вывод рассуждений (reasoning output) следующим образом:\n\n1.  **Классификация:**\n    *   **Первичный случай:** Если LLM возвращает вывод рассуждений вместе с ответом для вызывающей стороны (потому что запрос содержал требование такой детализации), это считается специализацией основного ответа.\n    *   **Вторичный случай:** Если модели рассуждений опционально производят вывод отдельно от ответа на вопрос пользователя, этот контент считается второстепенным.\n\n2.  **Требования к ц",
+    "judge": "Судья 2 (gemma-3-12b)",
+    "evaluation": {
+      "verdict": "точно",
+      "confidence": 0.95,
+      "reasoning": "Ответ точно отражает информацию из эталонного ответа, описывая обработку рассуждений как первичный и вторичный вывод, а также добавляя важную деталь о целостности вызовов инструментов.",
+      "key_issues": []
+    }
+  },
+  {
+    "question": "What are the key differences between 'Result' and 'Progress' categories in this framework?",
+    "expected_file": "decisions\\0001-agent-run-response.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "В предоставленных документах нет информации о категории 'Result'. Описана только категория **Progress** (или Secondary output), которая представляет собой информационные обновления во время работы агента, не позволяющие вызывающей стороне вносить изменения в поведение агента до завершения выполнения.",
+    "judge": "Судья 1 (qwen3.5-35b)",
+    "evaluation": {
+      "verdict": "неправильно",
+      "confidence": 1.0,
+      "reasoning": "Ответ содержит фактическую ошибку, утверждая, что в документах нет информации о категории 'Result', тогда как эталонный ответ явно определяет её как Primary категорию для коммуникации результата работы агента.",
+      "key_issues": [
+        "Отрицание существования категории 'Result' вопреки эталону",
+        "Неполный ответ на вопрос о различиях двух категорий"
+      ]
+    }
+  },
+  {
+    "question": "What are the key differences between 'Result' and 'Progress' categories in this framework?",
+    "expected_file": "decisions\\0001-agent-run-response.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "В предоставленных документах нет информации о категории 'Result'. Описана только категория **Progress** (или Secondary output), которая представляет собой информационные обновления во время работы агента, не позволяющие вызывающей стороне вносить изменения в поведение агента до завершения выполнения.",
+    "judge": "Судья 2 (gemma-3-12b)",
+    "evaluation": {
+      "verdict": "неточно",
+      "confidence": 0.7,
+      "reasoning": "Ответ верно описывает категорию 'Progress', но утверждает об отсутствии информации о категории 'Result', что противоречит эталонному ответу.",
+      "key_issues": [
+        "Утверждение об отсутствии информации о 'Result' не соответствует эталону"
+      ]
+    }
+  },
+  {
+    "question": "Why might Option 1 (using ChatOptions.RawRepresentationFactory) be considered disadvantageous despite requiring minimal code changes?",
+    "expected_file": "decisions\\0002-agent-tools.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "В предоставленных документах нет информации о том, почему использование `ChatOptions.RawRepresentationFactory` (Option 1) может считаться недостатком, несмотря на минимальные изменения в коде. В тексте упоминается только его описание и то, что он используется для редких или неподдерживаемых инструментов в гибридном подходе, но конкретные недостатки самого Option 1 не перечислены.",
+    "judge": "Судья 1 (qwen3.5-35b)",
+    "evaluation": {
+      "verdict": "неправильно",
+      "confidence": 0.95,
+      "reasoning": "Ответ содержит фактическую ошибку (галлюцинацию), утверждая, что в предоставленных документах нет информации о недостатках Option 1, тогда как эталонный ответ явно перечисляет эти недостатки (сложность регистрации инструментов, привязка к провайдеру, фрагментация).",
+      "key_issues": [
+        "Отрицание наличия информации в источнике вопреки фактам из эталона",
+        "Неверное утверждение о том, что недостатки не перечислены"
+      ]
+    }
+  },
+  {
+    "question": "Why might Option 1 (using ChatOptions.RawRepresentationFactory) be considered disadvantageous despite requiring minimal code changes?",
+    "expected_file": "decisions\\0002-agent-tools.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "В предоставленных документах нет информации о том, почему использование `ChatOptions.RawRepresentationFactory` (Option 1) может считаться недостатком, несмотря на минимальные изменения в коде. В тексте упоминается только его описание и то, что он используется для редких или неподдерживаемых инструментов в гибридном подходе, но конкретные недостатки самого Option 1 не перечислены.",
+    "judge": "Судья 2 (gemma-3-12b)",
+    "evaluation": {
+      "verdict": "неточно",
+      "confidence": 0.7,
+      "reasoning": "Ответ верно указывает на отсутствие информации в предоставленных документах, но не предоставляет альтернативное объяснение или анализ, как это можно было бы сделать, основываясь на контексте вопроса.",
+      "key_issues": [
+        "отсутствие анализа",
+        "недостаточное понимание вопроса"
+      ]
+    }
+  },
+  {
+    "question": "What is the primary benefit of Option 2 regarding tool registration and type safety?",
+    "expected_file": "decisions\\0002-agent-tools.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "Основным преимуществом Option 2 является полная типизация (full type safety), отличная поддержка IDE с автодополнением, а также возможность расширения специфичных для провайдера параметров под конкретные задачи использования.",
+    "judge": "Судья 1 (qwen3.5-35b)",
+    "evaluation": {
+      "verdict": "неточно",
+      "confidence": 0.85,
+      "reasoning": "Ответ верно указывает на типизацию и IDE-поддержку как преимущества, но полностью игнорирует ключевой механизм из эталона — отказ от специального механизма регистрации (RawRepresentationFactory) через наследование от AITool, что является основной причиной улучшения безопасности типов.",
+      "key_issues": [
+        "Отсутствует упоминание отказа от механизма регистрации RawRepresentationFactory",
+        "Упущена связь с Microsoft.Extensions.AI и контекст наследования"
+      ]
+    }
+  },
+  {
+    "question": "What is the primary benefit of Option 2 regarding tool registration and type safety?",
+    "expected_file": "decisions\\0002-agent-tools.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "Основным преимуществом Option 2 является полная типизация (full type safety), отличная поддержка IDE с автодополнением, а также возможность расширения специфичных для провайдера параметров под конкретные задачи использования.",
+    "judge": "Судья 2 (gemma-3-12b)",
+    "evaluation": {
+      "verdict": "неточно",
+      "confidence": 0.7,
+      "reasoning": "Ответ затрагивает важные аспекты (типизацию и поддержку IDE), но не упоминает ключевую деталь эталонного ответа о наследии от AITool и отсутствии необходимости в RawRepresentationFactory.  Это приводит к неполноте информации.",
+      "key_issues": [
+        "Упущение механизма наследования от AITool",
+        "Отсутствие упоминания об избавлении от RawRepresentationFactory"
+      ]
+    }
+  },
+  {
+    "question": "How does Option 3 aim to solve the problem of fragmentation across different AI providers?",
+    "expected_file": "decisions\\0002-agent-tools.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "В предоставленных документах нет информации о том, как именно **Option 3** решает проблему фрагментации.\n\nХотя в разделе «Decision Outcome» указано, что выбрано **Option 3**, описание его преимуществ («best of both worlds») не раскрывает механизм решения проблемы фрагментации. Напротив, в разделах с перечислением недостатков (Cons) упоминается, что проблема фрагментации возникает из-за того, что каждый провайдер требует собственного набора типов `AITool`-derived (что описано как недостаток, а не",
+    "judge": "Судья 1 (qwen3.5-35b)",
+    "evaluation": {
+      "verdict": "неправильно",
+      "confidence": 1.0,
+      "reasoning": "Ответ содержит фактическую ошибку, утверждая, что в документах нет информации о решении проблемы фрагментации через Option 3, тогда как эталонный ответ прямо указывает на создание абстракций (generic tool abstractions) как ключевой механизм. Ответ также неверно интерпретирует связь между Option 3 и Option 4, отрицая наличие решения в Option 3.",
+      "key_issues": [
+        "Отрицание наличия информации о решении проблемы фрагментации в Option 3",
+        "Фактическая ошибка: утверждение, что механизм решения не раскрыт",
+        "Неверная интерпретация роли Option 3 в контексте абстракций"
+      ]
+    }
+  },
+  {
+    "question": "How does Option 3 aim to solve the problem of fragmentation across different AI providers?",
+    "expected_file": "decisions\\0002-agent-tools.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "В предоставленных документах нет информации о том, как именно **Option 3** решает проблему фрагментации.\n\nХотя в разделе «Decision Outcome» указано, что выбрано **Option 3**, описание его преимуществ («best of both worlds») не раскрывает механизм решения проблемы фрагментации. Напротив, в разделах с перечислением недостатков (Cons) упоминается, что проблема фрагментации возникает из-за того, что каждый провайдер требует собственного набора типов `AITool`-derived (что описано как недостаток, а не",
+    "judge": "Судья 2 (gemma-3-12b)",
+    "evaluation": {
+      "verdict": "неточно",
+      "confidence": 0.8,
+      "reasoning": "Ответ правильно указывает на отсутствие информации об Option 3 в предоставленных документах и корректно анализирует связанные разделы. Однако, он не предоставляет альтернативное объяснение или предположение о том, как Option 3 могла бы решать проблему фрагментации, что снижает его полезность.",
+      "key_issues": [
+        "отсутствие прямого ответа на вопрос",
+        "недостаточное предложение альтернативных решений"
+      ]
+    }
+  },
+  {
+    "question": "What is a significant maintenance concern associated with implementing Option 2?",
+    "expected_file": "decisions\\0002-agent-tools.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "Значимой проблемой обслуживания при реализации Опции 2 является то, что каждый провайдер должен быть дисциплинирован в использовании `ProviderSessionState` и не хранить данные сессии в полях экземпляра; это представляет собой проблему корректности для разработчиков кастомных провайдеров.",
+    "judge": "Судья 1 (qwen3.5-35b)",
+    "evaluation": {
+      "verdict": "неправильно",
+      "confidence": 1.0,
+      "reasoning": "Ответ описывает проблему корректности использования `ProviderSessionState`, в то время как эталонный ответ указывает на увеличение накладных расходов на обслуживание (maintenance overhead) и дублирование кода при поддержке типов AITool-derived для каждого провайдера.",
+      "key_issues": [
+        "Неверная тематика ответа: обсуждается проблема корректности сессий вместо проблемы обслуживания типов",
+        "Отсутствует ключевая информация о дублировании и накладных расходах на обновление пакетов"
+      ]
+    }
+  },
+  {
+    "question": "What is a significant maintenance concern associated with implementing Option 2?",
+    "expected_file": "decisions\\0002-agent-tools.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "Значимой проблемой обслуживания при реализации Опции 2 является то, что каждый провайдер должен быть дисциплинирован в использовании `ProviderSessionState` и не хранить данные сессии в полях экземпляра; это представляет собой проблему корректности для разработчиков кастомных провайдеров.",
+    "judge": "Судья 2 (gemma-3-12b)",
+    "evaluation": {
+      "verdict": "неправильно",
+      "confidence": 0.2,
+      "reasoning": "Ответ не соответствует эталонному и затрагивает совершенно другую тему (использование `ProviderSessionState` вместо поддержки и обновления пакетов AI-провайдеров).  В ответе отсутствует ключевая информация об увеличении накладных расходов на обслуживание и потенциальной дублировании.",
+      "key_issues": [
+        "несоответствие теме",
+        "отсутствие ключевой информации",
+        "фактическая ошибка"
+      ]
+    }
+  },
+  {
+    "question": "What key decision drivers guided the evaluation of these options?",
+    "expected_file": "decisions\\0002-agent-tools.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "В предоставленных документах нет информации.",
+    "judge": "Судья 1 (qwen3.5-35b)",
+    "evaluation": {
+      "verdict": "неправильно",
+      "confidence": 1.0,
+      "reasoning": "Ответ содержит фактическую ошибку, утверждая об отсутствии информации в то время как эталонный ответ явно предоставляет ключевые драйверы решений (API, интеграция, обработка ошибок и т.д.). Это классифицируется как галлюцинация или уклонение от ответа.",
+      "key_issues": [
+        "Отрицание наличия информации при её наличии",
+        "Неполный ответ",
+        "Фактическая ошибка"
+      ]
+    }
+  },
+  {
+    "question": "What key decision drivers guided the evaluation of these options?",
+    "expected_file": "decisions\\0002-agent-tools.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "В предоставленных документах нет информации.",
+    "judge": "Судья 2 (gemma-3-12b)",
+    "evaluation": {
+      "verdict": "неточно",
+      "confidence": 0.8,
+      "reasoning": "Ответ корректно указывает на отсутствие информации в предоставленных документах, но не отвечает напрямую на вопрос. Это можно считать неполным ответом.",
+      "key_issues": [
+        "Не отвечает на вопрос"
+      ]
+    }
+  },
+  {
+    "question": "Which package contains the extension methods for creating or retrieving an AIAgent using the PersistentAgentsClient?",
+    "expected_file": "decisions\\0004-foundry-sdk-extensions.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "The extension methods for creating or retrieving an AIAgent using the PersistentAgentsClient are contained in the **Azure.AI.Agents.Persistent** package.",
+    "judge": "Судья 1 (qwen3.5-35b)",
+    "evaluation": {
+      "verdict": "неправильно",
+      "confidence": 1.0,
+      "reasoning": "Ответ прямо противоречит эталону: он утверждает, что методы находятся в пакете `Azure.AI.Agents.Persistent`, тогда как эталон указывает на `Microsoft.Extensions.AI.Azure`.",
+      "key_issues": [
+        "Фактическая ошибка: указан неверный пакет",
+        "Прямое противоречие эталонному ответу"
+      ]
+    }
+  },
+  {
+    "question": "Which package contains the extension methods for creating or retrieving an AIAgent using the PersistentAgentsClient?",
+    "expected_file": "decisions\\0004-foundry-sdk-extensions.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "The extension methods for creating or retrieving an AIAgent using the PersistentAgentsClient are contained in the **Azure.AI.Agents.Persistent** package.",
+    "judge": "Судья 2 (gemma-3-12b)",
+    "evaluation": {
+      "verdict": "неточно",
+      "confidence": 0.8,
+      "reasoning": "Ответ указывает на неправильный пакет (`Azure.AI.Agents.Persistent`), в то время как эталонный ответ правильно определяет `Microsoft.Extensions.AI.Azure`.  Это является значительной неточностью.",
+      "key_issues": [
+        "Неправильное указание пакета"
+      ]
+    }
+  },
+  {
+    "question": "What was the primary reason for choosing to place these extension methods in a separate Azure-specific package instead of modifying the existing `Azure.AI.Agents.Persistent` package?",
+    "expected_file": "decisions\\0004-foundry-sdk-extensions.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "В предоставленных документах нет информации о том, что расширение методов было размещено в отдельном Azure-специфичном пакете. Напротив, в разделе «Considered Options» рассматривается вариант добавления этих методов в пакет `Microsoft.Extensions.AI.Azure` как один из альтернативных сценариев (наряду с добавлением их в существующий `Azure.AI.Agents.Persistent`), но не указывается, какой именно вариант был выбран в качестве основного решения.",
+    "judge": "Судья 1 (qwen3.5-35b)",
+    "evaluation": {
+      "verdict": "неправильно",
+      "confidence": 0.95,
+      "reasoning": "Ответ содержит фактическую ошибку и противоречит эталону: он утверждает, что в документах нет информации о выборе отдельного пакета, тогда как эталон прямо указывает на это решение как на основной факт.",
+      "key_issues": [
+        "Отрицание наличия информации, которая есть в эталоне",
+        "Утверждение об отсутствии выбора решения вместо указания самого решения",
+        "Фактическая ошибка относительно содержания документов"
+      ]
+    }
+  },
+  {
+    "question": "What was the primary reason for choosing to place these extension methods in a separate Azure-specific package instead of modifying the existing `Azure.AI.Agents.Persistent` package?",
+    "expected_file": "decisions\\0004-foundry-sdk-extensions.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "В предоставленных документах нет информации о том, что расширение методов было размещено в отдельном Azure-специфичном пакете. Напротив, в разделе «Considered Options» рассматривается вариант добавления этих методов в пакет `Microsoft.Extensions.AI.Azure` как один из альтернативных сценариев (наряду с добавлением их в существующий `Azure.AI.Agents.Persistent`), но не указывается, какой именно вариант был выбран в качестве основного решения.",
+    "judge": "Судья 2 (gemma-3-12b)",
+    "evaluation": {
+      "verdict": "неточно",
+      "confidence": 0.7,
+      "reasoning": "Ответ признает отсутствие информации о конкретном выборе, но при этом демонстрирует понимание вопроса и альтернативных вариантов, которые рассматривались.  Он не полностью соответствует эталону, так как предполагает, что решение не было принято.",
+      "key_issues": [
+        "отсутствие прямого ответа на вопрос",
+        "указание на отсутствие информации"
+      ]
+    }
+  },
+  {
+    "question": "What is a potential downside of placing these extension methods in a separate `Microsoft.Extensions.AI.Azure` package?",
+    "expected_file": "decisions\\0004-foundry-sdk-extensions.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "Потенциальным недостатком размещения методов расширения в отдельном пакете `Microsoft.Extensions.AI.Azure` является то, что это добавляет дополнительные зависимости к `Microsoft.Extensions.AI.Abstractions`, и эти зависимости накапливаются как транзитивные для пакета `Azure.AI.Agents.Persistent`.",
+    "judge": "Судья 1 (qwen3.5-35b)",
+    "evaluation": {
+      "verdict": "неправильно",
+      "confidence": 0.95,
+      "reasoning": "Ответ содержит фактическую ошибку: он утверждает, что размещение в отдельном пакете добавляет зависимости к `Microsoft.Extensions.AI.Abstractions`, тогда как эталон указывает на проблему с отсутствием транзитивной доступности функционала через `Azure.AI.Agents.Persistent`. Логика ответа противоречит сути проблемы (необходимость явного добавления vs накопление зависимостей).",
+      "key_issues": [
+        "Фактическая ошибка: утверждается, что возникают дополнительные зависимости и они накапливаются транзитивно, тогда как проблема заключается в отсутствии автоматической доступности функционала.",
+        "Ответ не отражает ключевую мысль эталона о необходимости явного добавления зависимости разработчиком."
+      ]
+    }
+  },
+  {
+    "question": "What is a potential downside of placing these extension methods in a separate `Microsoft.Extensions.AI.Azure` package?",
+    "expected_file": "decisions\\0004-foundry-sdk-extensions.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "Потенциальным недостатком размещения методов расширения в отдельном пакете `Microsoft.Extensions.AI.Azure` является то, что это добавляет дополнительные зависимости к `Microsoft.Extensions.AI.Abstractions`, и эти зависимости накапливаются как транзитивные для пакета `Azure.AI.Agents.Persistent`.",
+    "judge": "Судья 2 (gemma-3-12b)",
+    "evaluation": {
+      "verdict": "неточно",
+      "confidence": 0.7,
+      "reasoning": "Ответ затрагивает зависимость, но не точно передает суть эталонного ответа о необходимости явного добавления зависимости разработчиком.  Он описывает проблему с точки зрения увеличения транзитивных зависимостей, а не с точки зрения изменения процесса разработки.",
+      "key_issues": [
+        "Неточное описание проблемы: ответ фокусируется на транзитивных зависимостях, а эталон - на явном добавлении зависимости."
+      ]
+    }
+  },
+  {
+    "question": "Does the decision to move extension methods affect the dependencies of the `Microsoft.Extensions.AI.Abstractions` package?",
+    "expected_file": "decisions\\0004-foundry-sdk-extensions.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "Да, решение о переносе методов расширения влияет на зависимости пакета `Microsoft.Extensions.AI.Abstractions`. Согласно контексту, один из рассмотренных вариантов (добавление методов в пакет `Azure.AI.Agents.Persistent`) приводит к тому, что добавляются дополнительные зависимости именно для `Microsoft.Extensions.AI.Abstractions`, которые затем передаются транзитивно в пакет `Azure.AI.Agents.Persistent`.\n\nОднако финальное решение было принято в пользу другого варианта: «Добавить методы расширения",
+    "judge": "Судья 1 (qwen3.5-35b)",
+    "evaluation": {
+      "verdict": "неточно",
+      "confidence": 0.85,
+      "reasoning": "Ответ содержит фактические искажения: он выдумывает несуществующие пакеты (`Azure.AI.Agents.Persistent`, `Microsoft.Extensions.AI.Azure`) и неверно описывает логику зависимости (утверждает, что перенос методов в Abstractions добавляет зависимости в Azure-пакет, тогда как эталон указывает на обратное — риск транзитивных зависимостей для самого Abstractions).",
+      "key_issues": [
+        "Выдуманные названия пакетов (Azure.AI.Agents.Persistent, Microsoft.Extensions.AI.Azure)",
+        "Неверная логика зависимости: утверждается, что перенос в Abstractions добавляет зависимости в Azure-пакет, тогда как эталон говорит о риске для самого Abstractions",
+        "Искажение сути финального решения"
+      ]
+    }
+  },
+  {
+    "question": "Does the decision to move extension methods affect the dependencies of the `Microsoft.Extensions.AI.Abstractions` package?",
+    "expected_file": "decisions\\0004-foundry-sdk-extensions.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "Да, решение о переносе методов расширения влияет на зависимости пакета `Microsoft.Extensions.AI.Abstractions`. Согласно контексту, один из рассмотренных вариантов (добавление методов в пакет `Azure.AI.Agents.Persistent`) приводит к тому, что добавляются дополнительные зависимости именно для `Microsoft.Extensions.AI.Abstractions`, которые затем передаются транзитивно в пакет `Azure.AI.Agents.Persistent`.\n\nОднако финальное решение было принято в пользу другого варианта: «Добавить методы расширения",
+    "judge": "Судья 2 (gemma-3-12b)",
+    "evaluation": {
+      "verdict": "точно",
+      "confidence": 0.95,
+      "reasoning": "Ответ точно отражает информацию из эталонного ответа, объясняя как первоначальный вариант повлиял бы на зависимости и почему финальное решение позволило избежать этого.",
+      "key_issues": []
+    }
+  },
+  {
+    "question": "How does the chosen architecture impact the ease of keeping extension methods up-to-date compared to keeping them inside `Azure.AI.Agents.Persistent`?",
+    "expected_file": "decisions\\0004-foundry-sdk-extensions.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "В выбранной архитектуре (размещение методов расширения в пакете `Microsoft.Extensions.AI.Azure`) методы **не находятся** внутри пакета `Azure.AI.Agents.Persistent`, что означает, что их сложнее поддерживать актуальными по сравнению с вариантом, когда они размещены внутри этого пакета.\n\nСогласно контексту:\n*   Если методы находятся в `Azure.AI.Agents.Persistent` — это «хорошо», так как их **легко поддерживать актуальными**.\n*   В выбранном варианте (методы не в `Azure.AI.Agents.Persistent`) указа",
+    "judge": "Судья 1 (qwen3.5-35b)",
+    "evaluation": {
+      "verdict": "точно",
+      "confidence": 1.0,
+      "reasoning": "Ответ точно передает ключевую мысль эталона: размещение методов расширения вне `Azure.AI.Agents.Persistent` усложняет их синхронизацию с ядром пакета по сравнению с размещением внутри него.",
+      "key_issues": []
+    }
+  },
+  {
+    "question": "How does the chosen architecture impact the ease of keeping extension methods up-to-date compared to keeping them inside `Azure.AI.Agents.Persistent`?",
+    "expected_file": "decisions\\0004-foundry-sdk-extensions.md",
+    "context_files": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "generated_answer": "В выбранной архитектуре (размещение методов расширения в пакете `Microsoft.Extensions.AI.Azure`) методы **не находятся** внутри пакета `Azure.AI.Agents.Persistent`, что означает, что их сложнее поддерживать актуальными по сравнению с вариантом, когда они размещены внутри этого пакета.\n\nСогласно контексту:\n*   Если методы находятся в `Azure.AI.Agents.Persistent` — это «хорошо», так как их **легко поддерживать актуальными**.\n*   В выбранном варианте (методы не в `Azure.AI.Agents.Persistent`) указа",
+    "judge": "Судья 2 (gemma-3-12b)",
+    "evaluation": {
+      "verdict": "точно",
+      "confidence": 0.95,
+      "reasoning": "Ответ точно отражает информацию из эталонного ответа, объясняя причину сложности обновления методов расширения при их размещении вне `Azure.AI.Agents.Persistent`. Ответ также правильно интерпретирует и перефразирует суть проблемы.",
+      "key_issues": []
+    }
+  }
+]

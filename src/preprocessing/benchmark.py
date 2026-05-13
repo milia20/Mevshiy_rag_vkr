@@ -882,4 +882,6 @@ if __name__ == "__main__":
 
     results = run_experiment(cfg=cfg, run_hnsw=True, run_bm25=True, run_hybrid=True)
 
-    logger.info("Benchmark completed. Results saved to: %s", cfg.results_out)
+    logger.info(
+        f"Benchmark completed. Results saved to: {cfg.results_out}",
+    )

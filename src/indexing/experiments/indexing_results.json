@@ -1,0 +1,138 @@
+[
+  {
+    "experiment": "baseline",
+    "collection": "docs_baseline",
+    "hnsw_config": {
+      "m": 16,
+      "ef_construct": 100,
+      "full_scan_threshold": 10000,
+      "max_indexing_threads": 0
+    },
+    "upload_stats": {
+      "uploaded": 3346,
+      "failed": 0
+    },
+    "vector_dim": 384,
+    "verification": {
+      "collection_name": "docs_baseline",
+      "points_count": 3346,
+      "indexed_vectors": 0,
+      "vector_size": 384,
+      "distance_metric": "Cosine",
+      "hnsw_config": {
+        "m": null,
+        "ef_construct": null
+      },
+      "payload_schema": {
+        "doc_title": "data_type=<PayloadSchemaType.KEYWORD: 'keyword'> params=None points=3346",
+        "chunk_id": "data_type=<PayloadSchemaType.KEYWORD: 'keyword'> params=None points=3346",
+        "source": "data_type=<PayloadSchemaType.KEYWORD: 'keyword'> params=None points=3346",
+        "headers": "data_type=<PayloadSchemaType.KEYWORD: 'keyword'> params=None points=3343"
+      },
+      "status": "verified"
+    },
+    "status": "success"
+  },
+  {
+    "experiment": "optimized_speed",
+    "collection": "docs_optimized_speed",
+    "hnsw_config": {
+      "m": 32,
+      "ef_construct": 256,
+      "full_scan_threshold": 10000,
+      "max_indexing_threads": 0
+    },
+    "upload_stats": {
+      "uploaded": 3346,
+      "failed": 0
+    },
+    "vector_dim": 384,
+    "verification": {
+      "collection_name": "docs_optimized_speed",
+      "points_count": 3346,
+      "indexed_vectors": 0,
+      "vector_size": 384,
+      "distance_metric": "Cosine",
+      "hnsw_config": {
+        "m": null,
+        "ef_construct": null
+      },
+      "payload_schema": {
+        "doc_title": "data_type=<PayloadSchemaType.KEYWORD: 'keyword'> params=None points=3346",
+        "chunk_id": "data_type=<PayloadSchemaType.KEYWORD: 'keyword'> params=None points=3346",
+        "source": "data_type=<PayloadSchemaType.KEYWORD: 'keyword'> params=None points=3346",
+        "headers": "data_type=<PayloadSchemaType.KEYWORD: 'keyword'> params=None points=3343"
+      },
+      "status": "verified"
+    },
+    "status": "success"
+  },
+  {
+    "experiment": "optimized_memory",
+    "collection": "docs_optimized_memory",
+    "hnsw_config": {
+      "m": 8,
+      "ef_construct": 50,
+      "full_scan_threshold": 10000,
+      "max_indexing_threads": 0
+    },
+    "upload_stats": {
+      "uploaded": 3346,
+      "failed": 0
+    },
+    "vector_dim": 384,
+    "verification": {
+      "collection_name": "docs_optimized_memory",
+      "points_count": 3346,
+      "indexed_vectors": 0,
+      "vector_size": 384,
+      "distance_metric": "Cosine",
+      "hnsw_config": {
+        "m": null,
+        "ef_construct": null
+      },
+      "payload_schema": {
+        "doc_title": "data_type=<PayloadSchemaType.KEYWORD: 'keyword'> params=None points=3346",
+        "headers": "data_type=<PayloadSchemaType.KEYWORD: 'keyword'> params=None points=3343",
+        "source": "data_type=<PayloadSchemaType.KEYWORD: 'keyword'> params=None points=3346",
+        "chunk_id": "data_type=<PayloadSchemaType.KEYWORD: 'keyword'> params=None points=3346"
+      },
+      "status": "verified"
+    },
+    "status": "success"
+  },
+  {
+    "experiment": "high_precision",
+    "collection": "docs_high_precision",
+    "hnsw_config": {
+      "m": 64,
+      "ef_construct": 512,
+      "full_scan_threshold": 10000,
+      "max_indexing_threads": 0
+    },
+    "upload_stats": {
+      "uploaded": 3346,
+      "failed": 0
+    },
+    "vector_dim": 384,
+    "verification": {
+      "collection_name": "docs_high_precision",
+      "points_count": 3346,
+      "indexed_vectors": 0,
+      "vector_size": 384,
+      "distance_metric": "Cosine",
+      "hnsw_config": {
+        "m": null,
+        "ef_construct": null
+      },
+      "payload_schema": {
+        "doc_title": "data_type=<PayloadSchemaType.KEYWORD: 'keyword'> params=None points=3346",
+        "chunk_id": "data_type=<PayloadSchemaType.KEYWORD: 'keyword'> params=None points=3346",
+        "source": "data_type=<PayloadSchemaType.KEYWORD: 'keyword'> params=None points=3346",
+        "headers": "data_type=<PayloadSchemaType.KEYWORD: 'keyword'> params=None points=3343"
+      },
+      "status": "verified"
+    },
+    "status": "success"
+  }
+]

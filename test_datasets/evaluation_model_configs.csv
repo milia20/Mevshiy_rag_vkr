@@ -1,0 +1,5 @@
+config_id,backend,model,thinking,temperature,max_tokens
+8cff5f58673f4ab7,lmstudio_sdk,qwen/qwen3.5-35b-a3b,False,0.2,256
+9f5b2d57ab0d01ca,lmstudio_sdk,qwen/qwen3.5-35b-a3b,True,0.2,256
+6928c15eb6d90377,lmstudio_sdk,qwen/qwen3.6-35b-a3b,False,0.2,256
+e15c0d9b1a75c5b9,lmstudio_sdk,qwen/qwen3.6-35b-a3b,True,0.2,256

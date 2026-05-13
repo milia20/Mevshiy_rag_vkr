@@ -10,8 +10,9 @@ import logging
 from dataclasses import dataclass
 from pathlib import Path
 
-from qdrant_uploader import HNSWConfig, QdrantIndexer
 from sentence_transformers import SentenceTransformer
+
+from qdrant_uploader import HNSWConfig, QdrantIndexer
 
 logger = logging.getLogger(__name__)
 

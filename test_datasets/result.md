@@ -1,6 +1,6 @@
 Loading Russian RAG dataset...<br>
 Evaluating on 923 samples from Russian RAG dataset...<br>
-Evaluating Russian RAG dataset: 100%|██████████| 923/923 [41:24<00:00,  2.69s/it]
+Evaluating Russian RAG dataset: 100%|██████████| 923/923 [41:24<00:00, 2.69s/it]
 
 Evaluation complete! Results saved to evaluation_results.csv
 
@@ -31,12 +31,13 @@ Out[7]: np.int64(26)
 
 ***
 
-Loading and sampling 100000 examples from datasets/v1.0-simplified_nq-dev-all.jsonl/v1.0-simplified_nq-dev-all.jsonl...<br>
+Loading and sampling 100000 examples from
+datasets/v1.0-simplified_nq-dev-all.jsonl/v1.0-simplified_nq-dev-all.jsonl...<br>
 Warning: JSON decode error on line 1312: Unterminated string starting at: line 1 column 1346 (char 1345)<br>
 Encountered 1 errors while loading the dataset<br>
 Successfully loaded 1311 valid examples<br>
 Evaluating on 1311 examples...<br>
-Evaluating NQ: 100%|██████████| 1311/1311 [33:43<00:00,  1.54s/it]<br>
+Evaluating NQ: 100%|██████████| 1311/1311 [33:43<00:00, 1.54s/it]<br>
 
 Evaluation complete. Accuracy: 33.01%<br>
 Results saved to evaluation_results_simplified.csv
@@ -51,3 +52,11 @@ Total evaluated: 1001 | Accuracy: 0.12
 
 a["generated_answer"].str.contains("I don't know").sum()<br>
 Out[4]: np.int64(274)
+
+``` 'nj
+repeatPenalty=1.1
+```
+
+это минимальное значение, которое спасает от зависания, но при этом имеет минимальное влияние на работу модели. По
+умолчанию занчение 1 что значит, что штрафов нет. В документации самого сервиса приводится пример с 1.2 но я решил что
+вот.

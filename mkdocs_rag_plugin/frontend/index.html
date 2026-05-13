@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MkDocs RAG - Поиск по документации</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>🔍 RAG Поиск по документации</h1>
+        <p class="subtitle">Задайте вопрос по технической документации</p>
+    </header>
+
+    <main>
+        <!-- Форма запроса -->
+        <section class="query-section">
+            <form id="query-form" class="query-form">
+                <div class="form-group">
+                    <label for="question">Ваш вопрос:</label>
+                    <textarea
+                        id="question"
+                        name="question"
+                        rows="4"
+                        placeholder="Например: Как настроить аутентификацию в приложении?"
+                        required
+                    ></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="retrieval-mode">Режим поиска:</label>
+                        <select id="retrieval-mode" name="retrieval_mode">
+                            <option value="hybrid">Гибридный (Dense + BM25)</option>
+                            <option value="dense">Только Dense (семантический)</option>
+                            <option value="sparse">Только Sparse (BM25)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="top-k">Количество источников:</label>
+                        <input
+                            type="number"
+                            id="top-k"
+                            name="top_k"
+                            min="1"
+                            max="20"
+                            value="5"
+                        >
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="stream-toggle" name="stream" checked>
+                            Потоковый ответ
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" id="ask-btn" class="btn-primary">
+                    <span class="btn-text">Задать вопрос</span>
+                    <span class="btn-loading" style="display: none;">⏳ Обработка...</span>
+                </button>
+            </form>
+        </section>
+
+        <!-- Ответ -->
+        <section id="response-section" class="response-section" style="display: none;">
+            <div class="response-header">
+                <h2>Ответ</h2>
+                <button id="copy-answer-btn" class="btn-secondary" title="Копировать ответ">
+                    📋 Копировать
+                </button>
+            </div>
+
+            <div id="answer-content" class="answer-content">
+                <div class="streaming-cursor"></div>
+            </div>
+
+            <!-- Метаданные -->
+            <div id="metadata-section" class="metadata-section">
+                <div class="metadata-item">
+                    <strong>Время поиска:</strong> <span id="retrieval-time">-</span> мс
+                </div>
+                <div class="metadata-item">
+                    <strong>Время генерации:</strong> <span id="generation-time">-</span> мс
+                </div>
+                <div class="metadata-item">
+                    <strong>Модель:</strong> <span id="model-name">-</span>
+                </div>
+            </div>
+
+            <!-- Источники -->
+            <details id="sources-section" class="sources-section">
+                <summary>
+                    📚 Источники (<span id="sources-count">0</span>)
+                </summary>
+                <div id="sources-list" class="sources-list">
+                    <!-- Источники будут добавлены здесь -->
+                </div>
+            </details>
+        </section>
+
+        <!-- Сообщение об ошибке -->
+        <div id="error-message" class="error-message" style="display: none;">
+            <strong>Ошибка:</strong> <span id="error-text"></span>
+        </div>
+    </main>
+
+    <footer>
+        <p>MkDocs RAG Plugin v0.1.0 | Powered by Qdrant & LLM</p>
+    </footer>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

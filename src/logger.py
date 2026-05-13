@@ -3,7 +3,6 @@ import os
 import sys
 import uuid
 from contextvars import ContextVar
-from pathlib import Path
 
 import loguru
 from loguru import logger
@@ -133,19 +132,20 @@ sys.stderr = InterceptHandler()  # Логируем ошибки других б
 logger.configure(extra={"request_id": "fast_api", "pid": os.getpid()}, patcher=request_id_filter)
 logger.remove()
 
-logger.add(
-    sink=Path(__file__).parent / "logs" / "app.log",
-    rotation="00:00",
-    retention="10 days",
-    compression="zip",
-    level=log_level,
-    colorize=False,
-    backtrace=True,
-    diagnose=True,
-    serialize=True,
-    enqueue=True,
-    format=logger_format,
-)
+# logger.add(
+# sink=sys.stdout,
+#     # sink=Path(__file__).parent / "logs" / "app.log",
+#     # rotation="00:00",
+#     # retention="10 days",
+#     # compression="zip",
+#     level=log_level,
+#     colorize=False,
+#     backtrace=True,
+#     diagnose=True,
+#     serialize=True,
+#     enqueue=True,
+#     format=logger_format,
+# )
 
 # Меняем уровень логирования в консоли.
 logger.add(sink=sys.stdout, level="TRACE", format=logger_format)

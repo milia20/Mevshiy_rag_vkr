@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "fastapi~=0.136.1",
+    "beautifulsoup4~=4.14.3",
     "langchain-text-splitters~=1.1.2",
     "pandas[parquet,performance]~=3.0.2",
     "qdrant-client~=1.17.1",
@@ -22,10 +23,19 @@ dependencies = [
     "openai~=2.36.0",
     "faiss-cpu>=1.13.2",
     "loguru~=0.7.3",
+    "lmstudio>=1.4.0",
+    "ollama>=0.5.0",
     "pydantic-settings~=2.14.1",
     "pydantic[email]~=2.13.4",
     "jsonlines>=4.0.0",
     "ipykernel>=7.2.0",
+    "mkdocs-material~=9.7.6",
+    "mkdocstrings",
+    "mkdocs-jupyter",
+    "griffe-typingdoc",
+    "lxml~=6.1.0",
+    "fastembed>=0.8.0",
+    "click>=8.3.3",
 ]
 
 [project.optional-dependencies]
@@ -59,14 +69,18 @@ remote_files_urls = [
     "https://raw.githubusercontent.com/vladislavneon/RuBQ/master/RuBQ_2.0/RuBQ_2.0_paragraphs.json",
     "https://api.github.com/repos/slivka83/ru_rag_test_dataset/contents/files",
     "https://raw.githubusercontent.com/slivka83/ru_rag_test_dataset/main/ru_rag_test_dataset.pkl",
-    "https://storage.cloud.google.com/natural_questions/v1.0-simplified/simplified-nq-train.jsonl.gz"
+    "https://storage.cloud.google.com/natural_questions/v1.0-simplified/simplified-nq-train.jsonl.gz",
+    "https://huggingface.co/datasets/gonglinyuan/CoSQA/resolve/d33a2582f94e1018df3d6a3d1b7a8cc39fdcb9d4/gonglinyuan--CoSQA/json-train.parquet",
+    "https://huggingface.co/datasets/gonglinyuan/CoSQA/resolve/d33a2582f94e1018df3d6a3d1b7a8cc39fdcb9d4/gonglinyuan--CoSQA/json-validation.parquet",
+    #    "https://github.com/microsoft/agent-framework/tree/dotnet-1.5.0/docs",
 ]
 llms = [
-    "qwen/qwen3.5-35b-a3b",
-    "qwen/qwen3.6-35b-a3b",
-    "openai/gpt-oss-120b",
-    "google/gemma-3-12b",
-    "google/gemma-4-26b-a4b",
+    #    "qwen/qwen3.5-35b-a3b",
+    "qwen/qwen3.5-9b",
+    #    "qwen/qwen3.6-35b-a3b",
+    #    "openai/gpt-oss-120b",
+    #    "google/gemma-3-12b",
+    #    "google/gemma-4-26b-a4b",
 ]
 
 [tool.pytest.ini_options]

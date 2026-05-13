@@ -1,0 +1,7 @@
+{
+  "generated_at": "2026-04-06T14:22:38Z",
+  "duration_seconds": 37.468308100000286,
+  "n_chunks": 2055,
+  "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+  "top_k": 10
+}

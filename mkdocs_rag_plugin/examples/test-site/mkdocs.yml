@@ -1,0 +1,50 @@
+site_name: MkDocs RAG Plugin - Тестовый сайт
+site_description: Пример документации для тестирования RAG плагина
+site_author: RAG Plugin Team
+
+# Конфигурация темы
+theme:
+  name: material
+  language: ru
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - search.suggest
+    - search.highlight
+
+# Плагины
+plugins:
+  - search:
+      enabled: false  # Отключаем стандартный поиск
+  - rag_plugin:
+      enabled: true
+      qdrant_url: http://localhost:6333
+      collection_name: docs_index
+      embedding_model: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+      llm_provider: lmstudio
+      llm_model: qwen/qwen3.5-9b
+      api_host: localhost
+      api_port: 8001
+      enable_chat_panel: true
+      chunk_size: 500
+      chunk_overlap: 50
+      chunk_strategy: structural
+
+# Навигация
+nav:
+  - Главная: index.md
+  - Установка: installation.md
+  - Конфигурация: configuration.md
+  - Использование: usage.md
+
+# Расширения Markdown
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - tables
+  - admonition
+  - toc:
+      permalink: true

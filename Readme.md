@@ -1,13 +1,19 @@
-Файлы [generate_and_eval.py](test_datasets/generate_and_eval.py)
-[generate_and_eval_codeqa.py](test_datasets/generate_and_eval_codeqa.py)
-[generate_and_eval_simplified.py](test_datasets/generate_and_eval_simplified.py)
+Весь код для ВКР.
 
-Можно просто запустить, для базовой проверки, что датасеты подходят. Проверяет что может сделать llm без знания
-контекста.
+main.py - основной файл, запускает все функции
 
+mkdocs_rag_plugin - плагин
+
+
+
+
+
+
+
+
+____
 [generate_qna.py](src/custom_dataset/generate_qna.py) в этом файле создаются 200 вопросов, для проверки на реальном
 датасете.
-
 ___
 
 ### Команды для запуска тестов из командной строки
