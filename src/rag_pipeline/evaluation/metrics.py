@@ -229,12 +229,12 @@ class RetrievalEvaluator:
         metrics = EvaluationMetrics(total_queries=n_queries)
 
         # Initialize accumulators
-        hit_sums = {k: 0.0 for k in self.k_values}
-        recall_sums = {k: 0.0 for k in self.k_values}
-        precision_sums = {k: 0.0 for k in self.k_values}
-        f1_sums = {k: 0.0 for k in self.k_values}
-        mrr_sums = {k: 0.0 for k in self.k_values}
-        ndcg_sums = {k: 0.0 for k in self.k_values}
+        hit_sums = dict.fromkeys(self.k_values, 0.0)
+        recall_sums = dict.fromkeys(self.k_values, 0.0)
+        precision_sums = dict.fromkeys(self.k_values, 0.0)
+        f1_sums = dict.fromkeys(self.k_values, 0.0)
+        mrr_sums = dict.fromkeys(self.k_values, 0.0)
+        ndcg_sums = dict.fromkeys(self.k_values, 0.0)
         latencies = []
 
         # Accumulate
@@ -380,7 +380,7 @@ class RetrievalEvaluator:
                 "strategy": f"{strategy_name}_combined",
                 "metrics": combined_aggregated.to_dict(),
             }
-            logger.info(f"Combined metrics across all datasets:")
+            logger.info("Combined metrics across all datasets:")
             for k in self.k_values:
                 logger.info(f"  Hit@{k}: {combined_aggregated.hit_at_k.get(k, 0):.4f}")
                 logger.info(f"  Recall@{k}: {combined_aggregated.recall_at_k.get(k, 0):.4f}")

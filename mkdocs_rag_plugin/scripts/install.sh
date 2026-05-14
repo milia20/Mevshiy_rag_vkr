@@ -41,24 +41,24 @@ fi
 # Проверка Docker
 if command -v docker &> /dev/null && command -v docker-compose &> /dev/null; then
     echo "✅ Docker и Docker Compose найдены"
-    
+
     read -p "🐳 Запустить Docker контейнеры? (y/n): " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         echo "🚀 Запуск Docker контейнеров..."
         cd docker
         docker-compose up -d
-        
+
         echo "⏳ Ожидание запуска сервисов..."
         sleep 10
-        
+
         # Проверка здоровья сервисов
         if curl -s http://localhost:6333 > /dev/null; then
             echo "✅ Qdrant запущен"
         else
             echo "⚠️  Qdrant не отвечает на localhost:6333"
         fi
-        
+
         cd ..
     fi
 else

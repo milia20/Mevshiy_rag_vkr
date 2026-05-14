@@ -153,7 +153,7 @@ Answer:"""
                 answer=answer,
                 citations=citations,
                 confidence=self._estimate_confidence(answer, contexts),
-                sources=list(set(ctx.get("metadata", {}).get("source_id", "") for ctx in contexts)),
+                sources=list({ctx.get("metadata", {}).get("source_id", "") for ctx in contexts}),
             )
 
         except Exception as e:

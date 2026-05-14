@@ -1,8 +1,8 @@
 import pickle
 import re
 
-import PyPDF2
 import pdfplumber
+import PyPDF2
 from pdfminer.high_level import extract_text
 from rank_bm25 import BM25Okapi
 

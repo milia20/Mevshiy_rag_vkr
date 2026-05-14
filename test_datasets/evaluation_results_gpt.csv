@@ -163,16 +163,16 @@ ru_rag,В какой стране действует террористичес�
 ru_rag,В какой стране изобрели блюдо ризотто?,Италия,<|channel|>analysis<|message|>Need concise answer. Risotto Italian dish invented in Italy.<|end|><|start|>assistant<|channel|>final<|message|>Italy.,False,False
 ru_rag,Какие виды спорта входят в десятиборье?,"Бег на 100 метров, прыжки в длину, толкание ядра, прыжки в высоту, бег на 400 метров, бег на 110 метров с барьерами, метание диска, прыжки с шестом, метание копья, бег на 1500 метров.","<|channel|>analysis<|message|>Need list of ten events in modern pentathlon (девич? Actually ""десятиборье"" = decathlon). So list: 100m, long jump, shot put, high jump, 400m, 110m hurdles, discus throw, pole vault, javelin throw, 1500m. Provide concise answer.<|end|><|start|>assistant<|channel|>final<|message|>В десятиборье входят следующие десять дисциплин:
 
-1. Бег на 100 м  
-2. Толкание ядра (шот‑пут)  
-3. Прыжок в длину  
-4. Бросок диска  
-5. Бег на 400 м  
-6. Бег с барьерами 110 м  
-7. Прыжок в высоту  
-8. Бросок копья  
-9. Тросовая ходьба (или бег) на 1500 м  
-10. Стойка с шестом (польский прыжок)  
+1. Бег на 100 м
+2. Толкание ядра (шот‑пут)
+3. Прыжок в длину
+4. Бросок диска
+5. Бег на 400 м
+6. Бег с барьерами 110 м
+7. Прыжок в высоту
+8. Бросок копья
+9. Тросовая ходьба (или бег) на 1500 м
+10. Стойка с шестом (польский прыжок)
 
 (Классический порядок: 100 м, толкание ядра, прыжок в длину, бросок диска, 400 м; затем 110 м барьеры, бросок копья, стойка с шестом, прыжок в высоту и 1500 м.)",False,False
 ru_rag,Каким видом единоборства виртуозно владеет Стивен Сигал?,Айкидо,<|channel|>analysis<|message|>Need answer in Russian: He masters Aikido? Actually Steven Seagal is known for Aikido. So answer that.<|end|><|start|>assistant<|channel|>final<|message|>Aikido.,False,False
@@ -657,14 +657,14 @@ ru_rag,Кто основал компанию Гугл?,"Ларри Пейдж, 
 ru_rag,Кто основал компанию Эппл?,"Стив Джобс, Стив Возняк, Рональд Уэйн","<|channel|>analysis<|message|>Need concise answer. Founder is Steve Jobs, Steve Wozniak, Ronald Wayne. Usually ""Apple"" founded by Steve Jobs, Steve Wozniak and Ronald Wayne. So answer that.<|end|><|start|>assistant<|channel|>final<|message|>Стив Джобс, Стив Возняк и Рональд Уэйн основали компанию Apple.",False,False
 ru_rag,Кто принимал участие в Семилетней войне?,"Российская империя, Пруссия, Швеция, Британская империя","<|channel|>analysis<|message|>Need concise answer in Russian. Participants: major powers: Britain, Prussia, Portugal vs France, Spain, Austria? Actually Seven Years' War 1756-1763: main belligerents: Britain, Prussia, Portugal, Hanover (British), Hesse-Kassel, etc on one side; France, Austria, Russia, Sweden, Saxony, Spain, Kingdom of Naples, Ottoman? Provide concise.<|end|><|start|>assistant<|channel|>final<|message|>Война 1756‑1763 года велась между двумя коалициями:
 
-**Антифранцузская (англо‑прусская) коалиция:**  
-- Великобритания (включая её колонии и союзные государства: Португалия, Ганновер, Гессен‑Кассель, некоторые германские княжества).  
-- Пруссия под предводительством Фридриха II.  
+**Антифранцузская (англо‑прусская) коалиция:**
+- Великобритания (включая её колонии и союзные государства: Португалия, Ганновер, Гессен‑Кассель, некоторые германские княжества).
+- Пруссия под предводительством Фридриха II.
 
-**Франко‑австрийская коалиция:**  
-- Франция (и её колонии).  
-- Австрийская империя.  
-- Российская империя (до 1762 года).  
+**Франко‑австрийская коалиция:**
+- Франция (и её колонии).
+- Австрийская империя.
+- Российская империя (до 1762 года).
 - Швеция, Саксония, Испания (присоединилась в 1762 году), Папский штат и некоторые другие мелкие государства.
 
 Эти государства составляли основные стороны конфликта.",False,False
@@ -727,8 +727,8 @@ ru_rag,Какая столица Вологодской области?,Воло
 ru_rag,Какая столица Вьетнама?,Ханой,<|channel|>analysis<|message|>The capital of Vietnam is Hanoi.<|end|><|start|>assistant<|channel|>final<|message|>Ханой.,True,False
 ru_rag,Каких наград был удостоен Солженицын?,Нобелевская премия по литературе,"<|channel|>analysis<|message|>Need list of awards. Known: Nobel Prize in Literature 1970; Prix mondial Cino Del Duca 1988; Italian Premio Napoli? Also State Prize of the Russian Federation? He got Order of Merit for the Fatherland? Actually he refused many. He received Medal ""For Strengthening Brotherhood"". Might be limited. Probably answer: Нобелевская премия по литературе (1970), Премия «Кино»? I'll answer main ones.<|end|><|start|>assistant<|channel|>final<|message|>Солженицын был удостоен, в частности, следующих наград:
 
-- **Нобелевская премия по литературе** (1970 г.)  
-- **Премия «Мир» (Prix mondial Cino Del Duca)** во Франции (1988 г.)  
+- **Нобелевская премия по литературе** (1970 г.)
+- **Премия «Мир» (Prix mondial Cino Del Duca)** во Франции (1988 г.)
 
 (Другие государственные и международные почётовые знаки он получал либо отказывался принимать; основные известные награды — перечисленные выше.)",True,False
 ru_rag,Какое воинское звание было у Гитлера?,ефрейтор,"<|channel|>analysis<|message|>Need concise answer in Russian. Hitler held rank ""Unteroffizier""? Actually he was a corporal (Gefreiter) in WWI? He served as a Gefreiter (private first class). So answer: рядовой/ефрейтер. Probably ""Рядовой"" or ""Gefreiter"".<|end|><|start|>assistant<|channel|>final<|message|>У него было звание **ряда́вого (нем. Gefreiter)** в германской армии во время Первой мировой войны.",False,False
@@ -809,8 +809,8 @@ ru_rag,Какие реки впадают в озеро Байкал?,"Селе�
 <|end|><|start|>assistant<|channel|>final<|message|>Среди основных рек, впадающих в озеро Байкал, – Селёнга, Верхняя Ангара, Баргузин, Турка и река Уда.",False,False
 ru_rag,Какое административное деление Венесуэлы?,Штаты Венесуэлы сгруппированы в 9 регионов,"<|channel|>analysis<|message|>Need to provide concise answer in Russian: administrative division of Venezuela – states etc. Provide list.<|end|><|start|>assistant<|channel|>final<|message|>Венесуэла состоит из 23 штатов (estados), одного столичного района — Столичный район (Distrito Capital, в котором находится город Каракас) и трёх федеральных территорий (dependencias federales): острова Арука, Ла Гуайра и Тортуга. Таким образом, административное деление включает:
 
-- 23 штата  
-- Столичный район (Каракас)  
+- 23 штата
+- Столичный район (Каракас)
 - Федеральные территории (зависимые от центрального правительства).",False,False
 ru_rag,Какое административное устройство Японии?,Япония официально делится на 47 административных единиц высшего уровня — префектуры,<|channel|>analysis<|message|>Need concise answer in Russian: administrative division of Japan is prefectures (47). So answer.<|end|><|start|>assistant<|channel|>final<|message|>Япония делится на 47 префектур (都道府県).,False,False
 ru_rag,Какой национальности был Иисус Христос?,"Семит, израильтянин, иудей",<|channel|>analysis<|message|>Need concise answer. Historically Jewish.<|end|><|start|>assistant<|channel|>final<|message|>Иисус Христос был еврейской (иудейской) национальности.,False,False

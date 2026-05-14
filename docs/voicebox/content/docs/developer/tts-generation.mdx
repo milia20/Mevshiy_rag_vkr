@@ -51,7 +51,7 @@ def load_model(self, model_size: Optional[str] = None):
         "1.7B": "Qwen/Qwen3-TTS-12Hz-1.7B-Base",
         "0.6B": "Qwen/Qwen3-TTS-12Hz-0.6B-Base",
     }
-    
+
     # Load with progress tracking
     with tracker.patch_download():
         self.model = Qwen3TTSModel.from_pretrained(
@@ -84,21 +84,21 @@ async def create_voice_prompt(
     use_cache: bool = True,
 ) -> Tuple[dict, bool]:
     await self.load_model_async()
-    
+
     # Check cache
     if use_cache:
         cache_key = get_cache_key(audio_path, reference_text)
         cached = get_cached_voice_prompt(cache_key)
         if cached:
             return cached, True
-    
+
     # Create prompt (blocking, run in thread pool)
     voice_prompt = await asyncio.to_thread(
         self.model.create_voice_clone_prompt,
         ref_audio=audio_path,
         ref_text=reference_text,
     )
-    
+
     # Cache the result
     cache_voice_prompt(cache_key, voice_prompt)
     return voice_prompt, False
@@ -115,19 +115,19 @@ async def combine_voice_prompts(
     reference_texts: List[str],
 ) -> Tuple[np.ndarray, str]:
     combined_audio = []
-    
+
     for audio_path in audio_paths:
         audio, sr = load_audio(audio_path)
         audio = normalize_audio(audio)
         combined_audio.append(audio)
-    
+
     # Concatenate and normalize
     mixed = np.concatenate(combined_audio)
     mixed = normalize_audio(mixed)
-    
+
     # Combine texts
     combined_text = " ".join(reference_texts)
-    
+
     return mixed, combined_text
 ```
 
@@ -145,12 +145,12 @@ async def generate(
     instruct: Optional[str] = None,
 ) -> Tuple[np.ndarray, int]:
     await self.load_model_async()
-    
+
     def _generate_sync():
         # Set seed for reproducibility
         if seed is not None:
             torch.manual_seed(seed)
-        
+
         # Generate audio
         wavs, sample_rate = self.model.generate_voice_clone(
             text=text,
@@ -158,7 +158,7 @@ async def generate(
             instruct=instruct,  # Natural language delivery control
         )
         return wavs[0], sample_rate
-    
+
     # Run in thread pool
     return await asyncio.to_thread(_generate_sync)
 ```
@@ -199,7 +199,7 @@ def unload_model(self):
     if self.model is not None:
         del self.model
         self.model = None
-        
+
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
 ```

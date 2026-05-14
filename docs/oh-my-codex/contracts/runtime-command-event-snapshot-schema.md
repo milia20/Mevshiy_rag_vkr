@@ -122,4 +122,3 @@ Snapshot fields are flat JSON at the top level, with nested objects for each sec
 - Dispatches must move `pending -> notified -> delivered|failed`.
 - Replay state must be durable and deduplicated.
 - Readiness is derived from Rust-owned truth, not from JS-side inference.
-

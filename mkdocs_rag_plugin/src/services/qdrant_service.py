@@ -11,7 +11,8 @@ import logging
 from typing import Any
 
 from qdrant_client import QdrantClient
-from qdrant_client.models import Distance, VectorParams, PointStruct
+from qdrant_client.models import Distance, PointStruct, VectorParams
+
 from src.core.config import settings
 from src.core.exceptions import QdrantError
 
@@ -48,9 +49,7 @@ class QdrantService:
         self.collection_name = collection_name or settings.qdrant_collection
         self.api_key = api_key or settings.qdrant_api_key
 
-        logger.info(
-            f"Инициализация QdrantService: url={self.url}, collection={self.collection_name}"
-        )
+        logger.info(f"Инициализация QdrantService: url={self.url}, collection={self.collection_name}")
 
         self.client: QdrantClient | None = None
 

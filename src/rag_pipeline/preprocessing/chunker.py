@@ -11,8 +11,9 @@ This module provides functionality to:
 
 import re
 import uuid
+from collections.abc import Callable, Iterator
 from dataclasses import dataclass, field
-from typing import Any, Callable, Iterator, Optional
+from typing import Any, Optional
 
 import pandas as pd
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -78,7 +79,7 @@ class Chunk:
             "metadata": self.metadata,
         }
 
-    def to_qdrant_point(self, vector: Optional[list[float]] = None) -> dict[str, Any]:
+    def to_qdrant_point(self, vector: list[float] | None = None) -> dict[str, Any]:
         """
         Convert chunk to Qdrant PointStruct format.
 

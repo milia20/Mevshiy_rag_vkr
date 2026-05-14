@@ -80,10 +80,10 @@ class EvaluationSample:
     answer: str
     model: str
     backend: str
-    context: Optional[str] = None
-    correct_answer: Optional[str] = None
-    reasoning: Optional[str] = None
-    confidence: Optional[float] = None
+    context: str | None = None
+    correct_answer: str | None = None
+    reasoning: str | None = None
+    confidence: float | None = None
 
 
 @dataclass
@@ -98,7 +98,7 @@ class JudgeResult:
     total_rating: float  # среднее по трём метрикам
     evaluation_text: str  # обоснование
     raw_response: str
-    parsing_error: Optional[str] = None
+    parsing_error: str | None = None
 
 
 @dataclass
@@ -106,11 +106,11 @@ class SampleEvaluation:
     """Полная оценка образца всеми судьями."""
 
     sample: EvaluationSample
-    judge_results: List[JudgeResult] = field(default_factory=list)
-    consensus_faithfulness: Optional[float] = None
-    consensus_accuracy: Optional[float] = None
-    consensus_relevance: Optional[float] = None
-    consensus_total: Optional[float] = None
+    judge_results: list[JudgeResult] = field(default_factory=list)
+    consensus_faithfulness: float | None = None
+    consensus_accuracy: float | None = None
+    consensus_relevance: float | None = None
+    consensus_total: float | None = None
 
 
 # ==================== ШАБЛОНЫ ПРОМПТОВ ====================
@@ -209,7 +209,7 @@ def calculate_optimal_context_length(eval_file: str, context_file: str) -> int:
         while context_length < estimated_tokens:
             context_length *= 2
 
-        print(f"✓ Анализ данных:")
+        print("✓ Анализ данных:")
         print(f"  - Максимальная длина входа: ~{max_chars} символов")
         print(f"  - Оценка токенов: ~{estimated_tokens}")
         print(f"  - Рекомендуемый num_ctx: {context_length}")
@@ -227,7 +227,7 @@ def call_ollama(
     temperature: float = 0.1,
     max_tokens: int = 256,
     timeout: int = 120,
-    context_length: Optional[int] = None,
+    context_length: int | None = None,
 ) -> str:
     """
     Вызов LLM через Ollama REST API со строгой схемой ответа.
@@ -293,7 +293,7 @@ def call_ollama(
         return json.dumps({"error": str(e)}, ensure_ascii=False)
 
 
-def parse_judge_response(response: str) -> Tuple[Optional[int], str]:
+def parse_judge_response(response: str) -> tuple[int | None, str]:
     """
     Парсит ответ судьи, извлекая оценку.
 
@@ -324,7 +324,7 @@ def parse_judge_response(response: str) -> Tuple[Optional[int], str]:
     return None, response
 
 
-def load_evaluation_results(filepath: str, max_samples: Optional[int] = None) -> List[EvaluationSample]:
+def load_evaluation_results(filepath: str, max_samples: int | None = None) -> list[EvaluationSample]:
     """Загружает результаты оценки из CSV."""
     samples = []
     path = Path(filepath)
@@ -332,7 +332,7 @@ def load_evaluation_results(filepath: str, max_samples: Optional[int] = None) ->
     if not path.exists():
         raise FileNotFoundError(f"Файл не найден: {filepath}")
 
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for i, row in enumerate(reader):
             if max_samples and i >= max_samples:
@@ -354,7 +354,7 @@ def load_evaluation_results(filepath: str, max_samples: Optional[int] = None) ->
     return samples
 
 
-def load_context_data(filepath: str) -> Dict[Tuple[str, int], Dict[str, str]]:
+def load_context_data(filepath: str) -> dict[tuple[str, int], dict[str, str]]:
     """
     Загружает контекстные данные из CSV.
 
@@ -367,7 +367,7 @@ def load_context_data(filepath: str) -> Dict[Tuple[str, int], Dict[str, str]]:
         print(f"⚠ Файл контекста не найден: {filepath}")
         return context_map
 
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
             key = (row.get("dataset", ""), int(row.get("question_id", 0)))
@@ -380,7 +380,7 @@ def load_context_data(filepath: str) -> Dict[Tuple[str, int], Dict[str, str]]:
     return context_map
 
 
-def enrich_sample_with_context(sample: EvaluationSample, context_map: Dict) -> EvaluationSample:
+def enrich_sample_with_context(sample: EvaluationSample, context_map: dict) -> EvaluationSample:
     """Добавляет контекст и правильный ответ к образцу, если доступно."""
     key = (sample.dataset, sample.question_id)
     if key in context_map:
@@ -492,7 +492,7 @@ def evaluate_relevance(sample: EvaluationSample, judge_model: str, judge_name: s
     )
 
 
-def evaluate_sample_full(sample: EvaluationSample, judge_config: Dict) -> JudgeResult:
+def evaluate_sample_full(sample: EvaluationSample, judge_config: dict) -> JudgeResult:
     """
     Полная оценка образца одной моделью-судьёй по всем трём метрикам.
 
@@ -504,17 +504,17 @@ def evaluate_sample_full(sample: EvaluationSample, judge_config: Dict) -> JudgeR
     results = []
 
     # 1. Faithfulness
-    print(f"      ⚖️  Faithfulness...")
+    print("      ⚖️  Faithfulness...")
     fr = evaluate_faithfulness(sample, judge_model, judge_name)
     results.append(("faithfulness", fr))
 
     # 2. Accuracy
-    print(f"      ⚖️  Accuracy...")
+    print("      ⚖️  Accuracy...")
     ar = evaluate_accuracy(sample, judge_model, judge_name)
     results.append(("accuracy", ar))
 
     # 3. Relevance
-    print(f"      ⚖️  Relevance...")
+    print("      ⚖️  Relevance...")
     rr = evaluate_relevance(sample, judge_model, judge_name)
     results.append(("relevance", rr))
 
@@ -550,7 +550,7 @@ def evaluate_sample_full(sample: EvaluationSample, judge_config: Dict) -> JudgeR
 # ==================== СТАТИСТИКА И ЭКСПОРТ ====================
 
 
-def calculate_consensus(evaluations: List[JudgeResult]) -> Dict[str, float]:
+def calculate_consensus(evaluations: list[JudgeResult]) -> dict[str, float]:
     """Вычисляет согласованность между судьями."""
     metrics = ["faithfulness", "accuracy", "relevance"]
     consensus = {}
@@ -579,7 +579,7 @@ def calculate_consensus(evaluations: List[JudgeResult]) -> Dict[str, float]:
     return consensus
 
 
-def save_results_csv(evaluations: List[SampleEvaluation], filepath: Path) -> None:
+def save_results_csv(evaluations: list[SampleEvaluation], filepath: Path) -> None:
     """Сохраняет результаты оценки в CSV формате."""
     filepath.parent.mkdir(parents=True, exist_ok=True)
 
@@ -623,7 +623,7 @@ def save_results_csv(evaluations: List[SampleEvaluation], filepath: Path) -> Non
     print(f"✓ Результаты сохранены в {filepath}")
 
 
-def save_results_json(evaluations: List[SampleEvaluation], filepath: Path) -> None:
+def save_results_json(evaluations: list[SampleEvaluation], filepath: Path) -> None:
     """Сохраняет детальные результаты в JSON формате."""
     filepath.parent.mkdir(parents=True, exist_ok=True)
 
@@ -674,7 +674,7 @@ def save_results_json(evaluations: List[SampleEvaluation], filepath: Path) -> No
     print(f"✓ Детальные результаты сохранены в {filepath}")
 
 
-def print_statistics(evaluations: List[SampleEvaluation]) -> None:
+def print_statistics(evaluations: list[SampleEvaluation]) -> None:
     """Выводит статистику оценки."""
     print("\n" + "=" * 60)
     print("📊 СТАТИСТИКА ОЦЕНКИ")
@@ -704,7 +704,7 @@ def print_statistics(evaluations: List[SampleEvaluation]) -> None:
             if jr.parsing_error:
                 parsing_errors += 1
 
-    def calc_stats(values: List[float]) -> Dict[str, float]:
+    def calc_stats(values: list[float]) -> dict[str, float]:
         if not values:
             return {"mean": 0, "std": 0, "min": 0, "max": 0}
         mean = sum(values) / len(values)
@@ -747,9 +747,9 @@ def run_judge_evaluation(
     evaluation_file: str = EVALUATION_RESULTS_FILE,
     context_file: str = CONTEXT_FILE,
     output_dir: Path = OUTPUT_DIR,
-    max_samples: Optional[int] = MAX_SAMPLES,
-    models_to_use: Optional[List[str]] = None,
-) -> List[SampleEvaluation]:
+    max_samples: int | None = MAX_SAMPLES,
+    models_to_use: list[str] | None = None,
+) -> list[SampleEvaluation]:
     """
     Запускает полную оценку образцов всеми моделями-судьями.
 
@@ -791,7 +791,7 @@ def run_judge_evaluation(
 
     # Оценка
     print("\n⚖️  Запуск оценки...")
-    evaluations: List[SampleEvaluation] = []
+    evaluations: list[SampleEvaluation] = []
 
     for i, sample in enumerate(samples):
         print(f"\n[{i + 1}/{len(samples)}] Вопрос #{sample.question_id} ({sample.dataset})")

@@ -22,7 +22,7 @@ Audio channels allow routing voice output to different audio devices. This is us
 ```python
 class AudioChannel(Base):
     __tablename__ = "audio_channels"
-    
+
     id = Column(String, primary_key=True)
     name = Column(String, nullable=False)
     is_default = Column(Boolean, default=False)
@@ -34,7 +34,7 @@ class AudioChannel(Base):
 ```python
 class ChannelDeviceMapping(Base):
     __tablename__ = "channel_device_mappings"
-    
+
     id = Column(String, primary_key=True)
     channel_id = Column(String, ForeignKey("audio_channels.id"))
     device_id = Column(String)  # OS device identifier
@@ -45,7 +45,7 @@ class ChannelDeviceMapping(Base):
 ```python
 class ProfileChannelMapping(Base):
     __tablename__ = "profile_channel_mappings"
-    
+
     profile_id = Column(String, ForeignKey("profiles.id"), primary_key=True)
     channel_id = Column(String, ForeignKey("audio_channels.id"), primary_key=True)
 ```
@@ -60,7 +60,7 @@ def init_db():
     default_channel = db.query(AudioChannel).filter(
         AudioChannel.is_default == True
     ).first()
-    
+
     if not default_channel:
         default_channel = AudioChannel(
             id=str(uuid.uuid4()),
@@ -68,7 +68,7 @@ def init_db():
             is_default=True
         )
         db.add(default_channel)
-        
+
         # Assign all existing profiles to default channel
         profiles = db.query(VoiceProfile).all()
         for profile in profiles:
@@ -92,7 +92,7 @@ async def create_channel(
     existing = db.query(DBAudioChannel).filter_by(name=data.name).first()
     if existing:
         raise ValueError(f"Channel with name '{data.name}' already exists")
-    
+
     # Create channel
     channel = DBAudioChannel(
         id=str(uuid.uuid4()),
@@ -100,7 +100,7 @@ async def create_channel(
         is_default=False,
     )
     db.add(channel)
-    
+
     # Add device mappings
     for device_id in data.device_ids:
         mapping = DBChannelDeviceMapping(
@@ -109,7 +109,7 @@ async def create_channel(
             device_id=device_id,
         )
         db.add(mapping)
-    
+
     db.commit()
 ```
 
@@ -122,20 +122,20 @@ async def update_channel(
     db: Session,
 ) -> AudioChannelResponse:
     channel = db.query(DBAudioChannel).filter_by(id=channel_id).first()
-    
+
     # Cannot modify default channel
     if channel.is_default:
         raise ValueError("Cannot modify the default channel")
-    
+
     # Update name
     if data.name is not None:
         channel.name = data.name
-    
+
     # Update device mappings
     if data.device_ids is not None:
         # Delete existing
         db.query(DBChannelDeviceMapping).filter_by(channel_id=channel_id).delete()
-        
+
         # Add new
         for device_id in data.device_ids:
             mapping = DBChannelDeviceMapping(
@@ -143,7 +143,7 @@ async def update_channel(
                 device_id=device_id,
             )
             db.add(mapping)
-    
+
     db.commit()
 ```
 
@@ -152,17 +152,17 @@ async def update_channel(
 ```python
 async def delete_channel(channel_id: str, db: Session) -> bool:
     channel = db.query(DBAudioChannel).filter_by(id=channel_id).first()
-    
+
     # Cannot delete default channel
     if channel.is_default:
         raise ValueError("Cannot delete the default channel")
-    
+
     # Delete device mappings
     db.query(DBChannelDeviceMapping).filter_by(channel_id=channel_id).delete()
-    
+
     # Delete profile-channel mappings
     db.query(DBProfileChannelMapping).filter_by(channel_id=channel_id).delete()
-    
+
     # Delete channel
     db.delete(channel)
     db.commit()
@@ -182,16 +182,16 @@ async def set_channel_voices(
     channel = db.query(DBAudioChannel).filter_by(id=channel_id).first()
     if not channel:
         raise ValueError(f"Channel {channel_id} not found")
-    
+
     # Verify all profiles exist
     for profile_id in data.profile_ids:
         profile = db.query(DBVoiceProfile).filter_by(id=profile_id).first()
         if not profile:
             raise ValueError(f"Profile {profile_id} not found")
-    
+
     # Delete existing mappings
     db.query(DBProfileChannelMapping).filter_by(channel_id=channel_id).delete()
-    
+
     # Add new mappings
     for profile_id in data.profile_ids:
         mapping = DBProfileChannelMapping(
@@ -199,7 +199,7 @@ async def set_channel_voices(
             channel_id=channel_id,
         )
         db.add(mapping)
-    
+
     db.commit()
 ```
 
@@ -215,10 +215,10 @@ async def set_profile_channels(
     profile = db.query(DBVoiceProfile).filter_by(id=profile_id).first()
     if not profile:
         raise ValueError(f"Profile {profile_id} not found")
-    
+
     # Delete existing mappings
     db.query(DBProfileChannelMapping).filter_by(profile_id=profile_id).delete()
-    
+
     # Add new mappings
     for channel_id in data.channel_ids:
         mapping = DBProfileChannelMapping(
@@ -226,7 +226,7 @@ async def set_profile_channels(
             channel_id=channel_id,
         )
         db.add(mapping)
-    
+
     db.commit()
 ```
 

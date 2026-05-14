@@ -63,4 +63,3 @@ SKIP_HOOKS=1 git push
 ## Related Issues
 
 - #85 (Agent-First Knowledge Architecture)
-

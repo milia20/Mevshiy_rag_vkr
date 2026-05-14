@@ -1,9 +1,10 @@
 import argparse
 import json
 import math
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, Optional
+from typing import Optional
 
 import pandas as pd
 
@@ -159,7 +160,7 @@ def pareto_frontier(df: pd.DataFrame, x: str, y: str, maximize_x: bool = True, m
     tmp = tmp.sort_values(x, ascending=not maximize_x).reset_index(drop=True)
 
     frontier_idx: list[int] = []
-    best_y: Optional[float] = None
+    best_y: float | None = None
 
     for i, row in tmp.iterrows():
         yi = float(row[y])
@@ -270,7 +271,7 @@ def export_outputs(
     }
 
 
-def _method_best(best: pd.DataFrame, method: str) -> Optional[pd.Series]:
+def _method_best(best: pd.DataFrame, method: str) -> pd.Series | None:
     if best.empty:
         return None
     m = best[best["method"] == method]
@@ -336,7 +337,7 @@ def generate_markdown_report(df_all: pd.DataFrame, best: pd.DataFrame, primary_m
             n_h = int(hybrid.get("n_queries", 0) or 0)
             p_h = float(hybrid.get(primary_metric, math.nan))
 
-            def _cmp(label: str, other: Optional[pd.Series]) -> str:
+            def _cmp(label: str, other: pd.Series | None) -> str:
                 if other is None:
                     return f"  - {label}: missing"
                 n_o = int(other.get("n_queries", 0) or 0)

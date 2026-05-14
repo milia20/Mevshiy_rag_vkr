@@ -7,7 +7,6 @@
 
 from __future__ import annotations
 
-import asyncio
 import logging
 import time
 from typing import Any
@@ -145,8 +144,9 @@ async def _run_indexing(docs_path: str, force: bool) -> None:
         logger.info(f"Запуск индексации: docs_path={docs_path}, force={force}")
 
         # Реальная логика индексации
-        from src.services.indexer import get_indexer, ProcessedDocument
         import os
+
+        from src.services.indexer import ProcessedDocument, get_indexer
 
         indexer = get_indexer()
 
@@ -163,7 +163,7 @@ async def _run_indexing(docs_path: str, force: bool) -> None:
                 if file.endswith((".md", ".txt", ".rst")):
                     file_path = os.path.join(root, file)
                     try:
-                        with open(file_path, "r", encoding="utf-8") as f:
+                        with open(file_path, encoding="utf-8") as f:
                             content = f.read()
 
                         # Разбиваем на чанки

@@ -8,8 +8,8 @@
 from __future__ import annotations
 
 import re
+from collections.abc import Iterator
 from html import unescape
-from typing import Iterator
 
 
 def extract_text_from_html(html: str) -> str:

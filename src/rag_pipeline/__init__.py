@@ -10,26 +10,26 @@ Complete RAG pipeline with:
 - IR metrics evaluation (Hit@k, MRR@k, latency)
 """
 
-from .preprocessing.chunker import DocumentChunker
-from .indexing.qdrant_indexer import QdrantIndexer
-from .retrieval.searchers import (
-    DenseSearcher,
-    SparseSearcher,
-    HybridSearcher,
-    ColBERTSearcher,
-)
-from .reranking.reranker import Reranker
-from .generation.generator import AnswerGenerator
 from .evaluation.metrics import RetrievalEvaluator
+from .generation.generator import AnswerGenerator
+from .indexing.qdrant_indexer import QdrantIndexer
+from .preprocessing.chunker import DocumentChunker
+from .reranking.reranker import Reranker
+from .retrieval.searchers import (
+    ColBERTSearcher,
+    DenseSearcher,
+    HybridSearcher,
+    SparseSearcher,
+)
 
 __all__ = [
-    "DocumentChunker",
-    "QdrantIndexer",
-    "DenseSearcher",
-    "SparseSearcher",
-    "HybridSearcher",
-    "ColBERTSearcher",
-    "Reranker",
     "AnswerGenerator",
+    "ColBERTSearcher",
+    "DenseSearcher",
+    "DocumentChunker",
+    "HybridSearcher",
+    "QdrantIndexer",
+    "Reranker",
     "RetrievalEvaluator",
+    "SparseSearcher",
 ]

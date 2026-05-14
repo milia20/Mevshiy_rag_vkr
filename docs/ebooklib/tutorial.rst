@@ -304,7 +304,7 @@ At the end, we need to add NCX and Navigation files. They will not be added auto
 
 At the end, write your book. You need to specify the full path to the book or provide a file-like object.
 At the moment, an exception will not be raised if something goes wrong. In a future
-version, this will be changed. Right now, you need to check the return value of the function or control 
+version, this will be changed. Right now, you need to check the return value of the function or control
 it with the option *raise_exceptions*.
 
 ::

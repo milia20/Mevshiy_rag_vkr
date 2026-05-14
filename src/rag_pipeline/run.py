@@ -27,15 +27,15 @@ logging.getLogger("qdrant_client").setLevel(logging.WARNING)
 logging.getLogger("httpx").setLevel(logging.WARNING)
 
 from rag_pipeline import (
-    Reranker,
     AnswerGenerator,
-    DenseSearcher,
-    SparseSearcher,
-    HybridSearcher,
     ColBERTSearcher,
+    DenseSearcher,
+    HybridSearcher,
+    Reranker,
     RetrievalEvaluator,
+    SparseSearcher,
 )
-from rag_pipeline.experiments import ParameterTuner, ExperimentConfig
+from rag_pipeline.experiments import ExperimentConfig, ParameterTuner
 from rag_pipeline.generation.generator import GenerationConfig
 from rag_pipeline.indexing.qdrant_indexer import IndexingConfig, QdrantIndexer
 from rag_pipeline.preprocessing.chunker import ChunkingConfig, DocumentChunker
@@ -1015,7 +1015,7 @@ def main(
                     sample_size=sample_size,
                     max_failures=5,
                 )
-                logger.info(f"Experiments completed successfully")
+                logger.info("Experiments completed successfully")
                 logger.info(f"Results saved to: {experiment_results['results_file']}")
             except Exception as e:
                 logger.error(f"Experiments failed: {e}")

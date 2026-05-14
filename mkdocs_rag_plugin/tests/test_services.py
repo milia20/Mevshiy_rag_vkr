@@ -7,8 +7,8 @@ Tests for document processor and chunker services.
 from __future__ import annotations
 
 import pytest
+from mkdocs_plugin.services.chunker import Chunk, Chunker
 from mkdocs_plugin.services.doc_processor import DocumentProcessor
-from mkdocs_plugin.services.chunker import Chunker, Chunk
 
 
 class TestDocumentProcessor:
@@ -197,11 +197,7 @@ class TestChunkerFixedSize:
 
         # Проверяем что чанки заканчиваются на предложениях (кроме последнего)
         for i, chunk in enumerate(chunks[:-1]):
-            assert (
-                chunk.content.endswith(".")
-                or chunk.content.endswith("!")
-                or chunk.content.endswith("?")
-            )
+            assert chunk.content.endswith(".") or chunk.content.endswith("!") or chunk.content.endswith("?")
 
     def test_fixed_size_chunk_cyrillic(self) -> None:
         """Тест кириллического текста."""

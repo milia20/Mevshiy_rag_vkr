@@ -39,4 +39,3 @@ resolution: "Migration completed. Most common icons (Check, Copy, RefreshCw, Bot
 - `tools/codemods/lucide-icon-map.ts`
 - `package.json`
 - `package-lock.json`
-

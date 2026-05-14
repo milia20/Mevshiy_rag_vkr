@@ -9,9 +9,10 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from typing import AsyncGenerator
+from collections.abc import AsyncGenerator
 
 import httpx
+
 from src.core.config import settings
 from src.core.exceptions import LLMError
 
@@ -176,9 +177,7 @@ class LLMClient:
                         new_endpoint = await self._detect_endpoint()
                         base_url = new_endpoint["base_url"]
                         url = f"{new_endpoint['base_url']}/chat/completions"
-                        logger.info(
-                            f"Переключение на fallback endpoint: {new_endpoint['provider']}"
-                        )
+                        logger.info(f"Переключение на fallback endpoint: {new_endpoint['provider']}")
                     except LLMError:
                         pass
 
@@ -267,7 +266,7 @@ class LLMClient:
         contexts: list[dict[str, str]],
         temperature: float = 0.1,
         max_tokens: int = 1024,
-    ) -> AsyncGenerator[str, None]:
+    ) -> AsyncGenerator[str]:
         """
         Сгенерировать ответ с потоковой передачей.
 

@@ -7,8 +7,9 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Generator
 from pathlib import Path
-from typing import Any, Generator
+from typing import Any
 
 import pytest
 from fastapi.testclient import TestClient
@@ -86,7 +87,7 @@ def hello():
 
 
 @pytest.fixture
-def temp_dir(tmp_path: Path) -> Generator[Path, None, None]:
+def temp_dir(tmp_path: Path) -> Generator[Path]:
     """
     Временная директория для тестов.
 
@@ -143,7 +144,7 @@ def mock_embedding_vector() -> list[float]:
 
 
 @pytest.fixture
-def app_client() -> Generator[TestClient, None, None]:
+def app_client() -> Generator[TestClient]:
     """
     Тестовый клиент FastAPI приложения.
 

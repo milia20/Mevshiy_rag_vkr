@@ -226,7 +226,7 @@ class CodeSearcher:
             ).tolist()
 
             # Create points
-            for j, (structure, text_vec, code_vec) in enumerate(zip(batch, text_vectors, code_vectors)):
+            for j, (structure, text_vec, code_vec) in enumerate(zip(batch, text_vectors, code_vectors, strict=False)):
                 import uuid
 
                 points.append(

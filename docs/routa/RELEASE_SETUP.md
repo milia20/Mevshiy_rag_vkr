@@ -166,4 +166,3 @@ After first release:
 ---
 
 For detailed instructions, see [docs/release-guide.md](docs/release-guide.md).
-

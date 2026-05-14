@@ -172,4 +172,3 @@ For some service-stored scenarios (e.g., the Conversations API with the Response
 one thread with one ID, so every service call returns the same ConversationId and this per-call update
 makes no practical difference. Enabling `RequirePerServiceCallChatHistoryPersistence` ensures consistent
 per-service-call behavior across all service types regardless of how they manage ConversationIds.
-

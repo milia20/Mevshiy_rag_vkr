@@ -11,19 +11,19 @@
 
 from __future__ import annotations
 
-import asyncio
-import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 
-from src.services.retriever import Retriever, ScoredChunk, get_retriever
+import pytest
+
 from src.services.evaluation import (
-    calculate_ndcg,
-    calculate_mrr,
-    calculate_hit_at_k,
-    calculate_faithfulness,
-    EvaluationResult,
     EvaluationLogger,
+    EvaluationResult,
+    calculate_faithfulness,
+    calculate_hit_at_k,
+    calculate_mrr,
+    calculate_ndcg,
 )
+from src.services.retriever import ScoredChunk, get_retriever
 
 
 class TestDenseSearch:

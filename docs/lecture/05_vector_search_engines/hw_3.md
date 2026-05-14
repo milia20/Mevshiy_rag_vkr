@@ -185,8 +185,3 @@ With that, the collection is in just the right condition for you to sigh deeply 
 investigation is required.
 After coming back restore the collection from a snapshot, check that everything has been fixed and that was a minor
 issue with some experiments modifying the dev collection.
-
-
-
-
-

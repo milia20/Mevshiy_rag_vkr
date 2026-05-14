@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # EbookLib documentation build configuration file, created by
 # sphinx-quickstart on Fri Apr 25 11:49:49 2014.

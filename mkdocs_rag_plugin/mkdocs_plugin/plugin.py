@@ -8,14 +8,14 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any, Dict, List
+from typing import TYPE_CHECKING, Any
 
 from mkdocs.config import Config
 from mkdocs.plugins import BasePlugin, event_priority
 from mkdocs_plugin.config import get_config_schema
-from mkdocs_plugin.models import Chunk, ProcessedDocument, IndexingResult
-from mkdocs_plugin.services.doc_processor import DocumentProcessor
+from mkdocs_plugin.models import Chunk, IndexingResult, ProcessedDocument
 from mkdocs_plugin.services.chunker import Chunker
+from mkdocs_plugin.services.doc_processor import DocumentProcessor
 
 if TYPE_CHECKING:
     from mkdocs.structure.files import Files
@@ -45,7 +45,7 @@ class RAGPlugin(BasePlugin):
         self._config_validated: bool = False
         self._doc_processor: DocumentProcessor | None = None
         self._chunker: Chunker | None = None
-        self._processed_docs: List[ProcessedDocument] = []
+        self._processed_docs: list[ProcessedDocument] = []
         self._indexing_result: IndexingResult | None = None
 
     def on_config(self, config: Config, **kwargs: Any) -> Config | None:
@@ -81,17 +81,14 @@ class RAGPlugin(BasePlugin):
 
         logger.info(f"RAG Plugin: API URL установлен в {self.api_base_url}")
         logger.info(
-            f"RAG Plugin: Qdrant URL: {self.config['qdrant_url']}, "
-            f"коллекция: {self.config['collection_name']}"
+            f"RAG Plugin: Qdrant URL: {self.config['qdrant_url']}, " f"коллекция: {self.config['collection_name']}"
         )
         logger.info(
             f"RAG Plugin: стратегия чанкования: {self.config['chunk_strategy']}, "
             f"размер чанка: {self.config['chunk_size']}, "
             f"перекрытие: {self.config['chunk_overlap']}"
         )
-        logger.info(
-            f"RAG Plugin: Chatbot URL: {self.config.get('chatbot_url', 'http://localhost:8000')}"
-        )
+        logger.info(f"RAG Plugin: Chatbot URL: {self.config.get('chatbot_url', 'http://localhost:8000')}")
 
         from pathlib import Path
 
@@ -152,7 +149,7 @@ class RAGPlugin(BasePlugin):
                 )
 
                 # Преобразуем в модели Chunk
-                chunk_models: List[Chunk] = []
+                chunk_models: list[Chunk] = []
                 for chunk_data in chunks_data:
                     chunk_metadata = {
                         "url": file.url,
@@ -184,10 +181,7 @@ class RAGPlugin(BasePlugin):
                 logger.error(f"Ошибка обработки файла {file.src_uri}: {e}")
 
         total_chunks = sum(doc.total_chunks for doc in self._processed_docs)
-        logger.info(
-            f"RAG Plugin: обработано {len(self._processed_docs)} документов, "
-            f"создано {total_chunks} чанков"
-        )
+        logger.info(f"RAG Plugin: обработано {len(self._processed_docs)} документов, " f"создано {total_chunks} чанков")
 
         return files
 
@@ -243,9 +237,7 @@ class RAGPlugin(BasePlugin):
 
         # Здесь будет логика индексации в Qdrant
         # Пока просто логируем
-        logger.info(
-            f"RAG Plugin: готово к индексации {total_docs} документов, " f"{total_chunks} чанков"
-        )
+        logger.info(f"RAG Plugin: готово к индексации {total_docs} документов, " f"{total_chunks} чанков")
         logger.info(f"RAG Plugin: Qdrant URL: {self.config['qdrant_url']}")
         logger.info(f"RAG Plugin: коллекция: {self.config['collection_name']}")
 
@@ -322,7 +314,7 @@ class RAGPlugin(BasePlugin):
             "enabled": self.config.get("enabled", True),
         }
 
-    def get_processed_documents(self) -> List[ProcessedDocument]:
+    def get_processed_documents(self) -> list[ProcessedDocument]:
         """
         Получить список обработанных документов.
 

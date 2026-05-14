@@ -18,16 +18,16 @@ import csv
 import json
 import re
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 try:
     import lmstudio as lms
-    from lmstudio import BaseModel
-    from lmstudio import LlmLoadModelConfigDict, LlmPredictionConfigDict
     import pandas as pd
+    from lmstudio import BaseModel, LlmLoadModelConfigDict, LlmPredictionConfigDict
 except ImportError as e:
     lms = None
     BaseModel = object
@@ -42,7 +42,7 @@ class Config:
     """Централизованная конфигурация пайплайна."""
 
     # Модели-судьи
-    JUDGE_MODELS: List[Dict[str, str]] = [
+    JUDGE_MODELS: list[dict[str, str]] = [
         {"name": "gpt-oss-120b", "model_id": "openai/gpt-oss-120b"},
         {"name": "gemma-4-26b", "model_id": "google/gemma-4-26b-a4b"},
         {"name": "qwen3.6-35b", "model_id": "qwen/qwen3.6-35b-a3b"},
@@ -67,7 +67,7 @@ class Config:
     CONTEXT_HARD_LIMIT: int = 32768
 
     # Обработка данных
-    MAX_SAMPLES: Optional[int] = None
+    MAX_SAMPLES: int | None = None
     SAMPLE_STEP: int = 100  # Для токенизации (какой шаг выборки)
     SAVE_INTERVAL: int = 10  # Сохранять промежуточные результаты каждые N образцов
 
@@ -95,10 +95,10 @@ class EvaluationSample:
     answer: str
     model: str
     backend: str
-    context: Optional[str] = None
-    correct_answer: Optional[str] = None
-    reasoning: Optional[str] = None
-    confidence: Optional[float] = None
+    context: str | None = None
+    correct_answer: str | None = None
+    reasoning: str | None = None
+    confidence: float | None = None
 
 
 @dataclass
@@ -113,8 +113,8 @@ class JudgeResult:
     total_rating: float
     evaluation_text: str
     raw_response: str
-    parsing_error: Optional[str] = None
-    stats: Optional[Dict[str, Any]] = None
+    parsing_error: str | None = None
+    stats: dict[str, Any] | None = None
 
 
 @dataclass
@@ -122,11 +122,11 @@ class SampleEvaluation:
     """Полная оценка образца всеми судьями."""
 
     sample: EvaluationSample
-    judge_results: List[JudgeResult] = field(default_factory=list)
-    consensus_faithfulness: Optional[float] = None
-    consensus_accuracy: Optional[float] = None
-    consensus_relevance: Optional[float] = None
-    consensus_total: Optional[float] = None
+    judge_results: list[JudgeResult] = field(default_factory=list)
+    consensus_faithfulness: float | None = None
+    consensus_accuracy: float | None = None
+    consensus_relevance: float | None = None
+    consensus_total: float | None = None
 
 
 # ==================== ШАБЛОНЫ ПРОМПТОВ ====================
@@ -213,9 +213,7 @@ class ContextManager:
             return text[:head] + " [...] " + text[-tail:] if tail > 20 else text[:max_chars]
 
     @staticmethod
-    def _trim_by_tokens(
-        tokens: List[Any], max_tokens: int, strategy: str = "head_tail", llm: Optional[Any] = None
-    ) -> str:
+    def _trim_by_tokens(tokens: list[Any], max_tokens: int, strategy: str = "head_tail", llm: Any | None = None) -> str:
         """Обрезка по токенам с попыткой детокенизации."""
         if len(tokens) <= max_tokens:
             return tokens if isinstance(tokens, str) else "".join(tokens)
@@ -245,8 +243,8 @@ class ContextManager:
         eval_file: str,
         context_file: str,
         judge_model_id: str,
-        llm_instance: Optional[Any] = None,
-    ) -> Tuple[int, Callable[[str, str], str]]:
+        llm_instance: Any | None = None,
+    ) -> tuple[int, Callable[[str, str], str]]:
         """
         Вычисляет оптимальную длину контекста.
 
@@ -326,7 +324,7 @@ class ContextManager:
 
     @staticmethod
     def _trim_context_smart(
-        context: str, question: str, max_tokens: int, llm: Optional[Any], strategy: str = "head_tail"
+        context: str, question: str, max_tokens: int, llm: Any | None, strategy: str = "head_tail"
     ) -> str:
         """Умная обрезка контекста с учётом токенов."""
         if not context or len(context) < 100:
@@ -413,7 +411,7 @@ class ModelManager:
 # ==================== ПАРСИНГ И ВАЛИДАЦИЯ ====================
 
 
-def parse_judge_response(response: str) -> Tuple[Optional[int], str]:
+def parse_judge_response(response: str) -> tuple[int | None, str]:
     """
     Парсит ответ судьи, извлекая оценку и обоснование.
 
@@ -438,7 +436,7 @@ def parse_judge_response(response: str) -> Tuple[Optional[int], str]:
     return None, response
 
 
-def validate_rating(rating: Optional[int]) -> bool:
+def validate_rating(rating: int | None) -> bool:
     """Проверяет валидность оценки."""
     return rating is not None and 1 <= rating <= 4
 
@@ -454,7 +452,7 @@ def call_lmstudio(
     temperature: float = Config.TEMPERATURE,
     max_tokens: int = Config.MAX_TOKENS,
     timeout: int = Config.TIMEOUT_SECONDS,
-) -> Tuple[str, Optional[Dict[str, Any]]]:
+) -> tuple[str, dict[str, Any] | None]:
     """
     Вызов LLM через LM Studio SDK со строгой схемой ответа.
     """
@@ -493,13 +491,13 @@ def call_lmstudio(
         return response_text, stats
 
     except Exception as e:
-        return f"ERROR: {str(e)}", None
+        return f"ERROR: {e!s}", None
 
 
 # ==================== ЗАГРУЗКА ДАННЫХ ====================
 
 
-def load_evaluation_samples(filepath: str, max_samples: Optional[int] = None) -> List[EvaluationSample]:
+def load_evaluation_samples(filepath: str, max_samples: int | None = None) -> list[EvaluationSample]:
     """Загружает образцы для оценки из CSV."""
     samples = []
     path = Path(filepath)
@@ -507,7 +505,7 @@ def load_evaluation_samples(filepath: str, max_samples: Optional[int] = None) ->
     if not path.exists():
         raise FileNotFoundError(f"Файл не найден: {filepath}")
 
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for i, row in enumerate(reader):
             if max_samples and i >= max_samples:
@@ -532,7 +530,7 @@ def load_evaluation_samples(filepath: str, max_samples: Optional[int] = None) ->
     return samples
 
 
-def load_context_map(filepath: str) -> Dict[Tuple[str, int], Dict[str, str]]:
+def load_context_map(filepath: str) -> dict[tuple[str, int], dict[str, str]]:
     """Загружает контекст и эталонные ответы в словарь для быстрого доступа."""
     path = Path(filepath)
 
@@ -560,7 +558,7 @@ def load_context_map(filepath: str) -> Dict[Tuple[str, int], Dict[str, str]]:
         return {}
 
 
-def enrich_sample(sample: EvaluationSample, context_map: Dict) -> EvaluationSample:
+def enrich_sample(sample: EvaluationSample, context_map: dict) -> EvaluationSample:
     """Добавляет контекст и эталонный ответ к образцу если доступно."""
     key = (sample.dataset, sample.question_id)
     if key in context_map:
@@ -578,7 +576,7 @@ class MetricEvaluator:
     METRIC_NAME: str = ""
     PROMPT_KEY: str = ""
 
-    def __init__(self, sample: EvaluationSample, trim_func: Optional[Callable[[str, str], str]] = None):
+    def __init__(self, sample: EvaluationSample, trim_func: Callable[[str, str], str] | None = None):
         self.sample = sample
         self.trim_func = trim_func
 
@@ -672,7 +670,7 @@ class RelevanceEvaluator(MetricEvaluator):
 # ==================== АГРЕГАЦИЯ И СТАТИСТИКА ====================
 
 
-def aggregate_judge_results(results: List[Tuple[str, JudgeResult]]) -> JudgeResult:
+def aggregate_judge_results(results: list[tuple[str, JudgeResult]]) -> JudgeResult:
     """Агрегирует результаты трёх метрик в один итоговый объект."""
     all_ratings = [r.total_rating for _, r in results if r.total_rating > 0]
     all_evals = [f"{name.capitalize()}: {r.evaluation_text}" for name, r in results]
@@ -701,7 +699,7 @@ def aggregate_judge_results(results: List[Tuple[str, JudgeResult]]) -> JudgeResu
     )
 
 
-def calculate_consensus(judge_results: List[JudgeResult]) -> Dict[str, float]:
+def calculate_consensus(judge_results: list[JudgeResult]) -> dict[str, float]:
     """Вычисляет согласованность между судьями по всем метрикам."""
     metrics = ["faithfulness", "accuracy", "relevance"]
     consensus = {}
@@ -732,7 +730,7 @@ def calculate_consensus(judge_results: List[JudgeResult]) -> Dict[str, float]:
 # ==================== 🔥 ОБНОВЛЁННЫЕ УТИЛИТЫ ДЛЯ ПРОВЕРКИ ПАРОЙ ВОПРОС-СУДЬЯ ====================
 
 
-def _load_processed_pairs(output_dir: Path, judge_names: List[str]) -> set[Tuple[str, int, str]]:
+def _load_processed_pairs(output_dir: Path, judge_names: list[str]) -> set[tuple[str, int, str]]:
     """
     Загружает множество уже обработанных троек (dataset, question_id, judge_name).
 
@@ -756,7 +754,7 @@ def _load_processed_pairs(output_dir: Path, judge_names: List[str]) -> set[Tuple
         if not filepath.exists():
             continue
         try:
-            with open(filepath, "r", encoding="utf-8") as f:
+            with open(filepath, encoding="utf-8") as f:
                 data = json.load(f)
             for item in data:
                 dataset = item.get("dataset", "")
@@ -783,7 +781,7 @@ def _load_processed_pairs(output_dir: Path, judge_names: List[str]) -> set[Tuple
             if not filepath.exists():
                 continue
             try:
-                with open(filepath, "r", encoding="utf-8") as f:
+                with open(filepath, encoding="utf-8") as f:
                     next(f, None)  # пропускаем заголовок
                     for line in f:
                         parts = line.strip().split(";")
@@ -806,8 +804,8 @@ def _load_processed_pairs(output_dir: Path, judge_names: List[str]) -> set[Tuple
 
 
 def _filter_unprocessed_pairs(
-    samples: List[EvaluationSample], judges: List[Dict[str, str]], processed_pairs: set[Tuple[str, int, str]]
-) -> Tuple[List[Tuple[EvaluationSample, str]], int]:
+    samples: list[EvaluationSample], judges: list[dict[str, str]], processed_pairs: set[tuple[str, int, str]]
+) -> tuple[list[tuple[EvaluationSample, str]], int]:
     """
     Фильтрует пары (образец, судья), оставляя только необработанные.
 
@@ -834,7 +832,7 @@ def _filter_unprocessed_pairs(
 
 
 # ==================== ЭКСПОРТ РЕЗУЛЬТАТОВ ====================
-def _atomic_write(filepath: Path, content: Union[str, bytes], mode: str = "w") -> None:
+def _atomic_write(filepath: Path, content: str | bytes, mode: str = "w") -> None:
     tmp_path = filepath.with_suffix(filepath.suffix + ".tmp")
     with open(tmp_path, mode, encoding="utf-8" if "w" in mode else None) as f:
         f.write(content)
@@ -844,12 +842,12 @@ def _atomic_write(filepath: Path, content: Union[str, bytes], mode: str = "w") -
 
 
 def save_results_csv(
-    evaluations: List[SampleEvaluation],
+    evaluations: list[SampleEvaluation],
     filepath: Path,
-    total_samples: Optional[int] = None,
+    total_samples: int | None = None,
     is_incremental: bool = False,
     append_mode: bool = False,
-    existing_pairs: Optional[set[Tuple[str, int, str]]] = None,
+    existing_pairs: set[tuple[str, int, str]] | None = None,
 ) -> None:
     filepath.parent.mkdir(parents=True, exist_ok=True)
     skip_pairs = existing_pairs if append_mode and existing_pairs else set()
@@ -901,7 +899,7 @@ def save_results_csv(
     # При дозаписи — читаем существующий файл и добавляем новые строки
     if append_mode and filepath.exists():
         try:
-            with open(filepath, "r", encoding="utf-8") as f:
+            with open(filepath, encoding="utf-8") as f:
                 existing_content = f.read()
             # Добавляем новые строки после заголовка (первая строка)
             lines = existing_content.strip().split("\n")
@@ -921,7 +919,7 @@ def save_results_csv(
     remaining = (total_samples - processed) if total_samples and not append_mode else None
     mode_note = " [дополнение]" if is_incremental else ""
     skip_note = (
-        f" | Пропущено дубликатов: {len(evaluations) - len(set((e.sample.dataset, e.sample.question_id) for e in evaluations if (e.sample.dataset, e.sample.question_id) not in skip_keys))}"
+        f" | Пропущено дубликатов: {len(evaluations) - len({(e.sample.dataset, e.sample.question_id) for e in evaluations if (e.sample.dataset, e.sample.question_id) not in skip_keys})}"
         if append_mode and skip_keys
         else ""
     )
@@ -932,12 +930,12 @@ def save_results_csv(
 
 
 def save_results_json(
-    evaluations: List[SampleEvaluation],
+    evaluations: list[SampleEvaluation],
     filepath: Path,
-    total_samples: Optional[int] = None,
+    total_samples: int | None = None,
     is_incremental: bool = False,
     append_mode: bool = False,
-    existing_ids: Optional[set[Tuple[str, int]]] = None,
+    existing_ids: set[tuple[str, int]] | None = None,
 ) -> None:
     """
     Сохраняет детальные результаты в JSON.
@@ -957,7 +955,7 @@ def save_results_json(
 
     if append_mode and filepath.exists():
         try:
-            with open(filepath, "r", encoding="utf-8") as f:
+            with open(filepath, encoding="utf-8") as f:
                 existing_data = json.load(f)
             # Создаем set ключей из существующих данных для быстрого поиска
             existing_keys = {(item["dataset"], item["question_id"]) for item in existing_data}
@@ -1045,7 +1043,7 @@ def save_results_json(
     )
 
 
-def print_statistics(evaluations: List[SampleEvaluation]) -> None:
+def print_statistics(evaluations: list[SampleEvaluation]) -> None:
     print("\n" + "=" * 60)
     print("📊 СТАТИСТИКА ОЦЕНКИ")
     print("=" * 60)
@@ -1066,7 +1064,7 @@ def print_statistics(evaluations: List[SampleEvaluation]) -> None:
             if jr.parsing_error:
                 errors_count += 1
 
-    def calc(values: List[float]) -> Dict[str, float]:
+    def calc(values: list[float]) -> dict[str, float]:
         if not values:
             return {"mean": 0, "std": 0, "min": 0, "max": 0}
         mean = sum(values) / len(values)
@@ -1091,10 +1089,10 @@ def run_judge_evaluation(
     evaluation_file: str = Config.EVALUATION_RESULTS_FILE,
     context_file: str = Config.CONTEXT_FILE,
     output_dir: Path = Config.OUTPUT_DIR,
-    max_samples: Optional[int] = Config.MAX_SAMPLES,
-    models_to_use: Optional[List[str]] = None,
+    max_samples: int | None = Config.MAX_SAMPLES,
+    models_to_use: list[str] | None = None,
     resume: bool = True,
-) -> List[SampleEvaluation]:
+) -> list[SampleEvaluation]:
     """
     Запускает полную оценку образцов через LLM-as-a-Judge.
 
@@ -1154,7 +1152,7 @@ def run_judge_evaluation(
         if results_file and results_file.exists():
             print(f"\n📋 ПРЯМОЙ ВЫВОД РЕЗУЛЬТАТОВ из {results_file.name}:")
             print("-" * 80)
-            with open(results_file, "r", encoding="utf-8") as f:
+            with open(results_file, encoding="utf-8") as f:
                 data = json.load(f)
             for item in data[:10]:  # первые 10 для примера
                 qid = item["question_id"]
@@ -1179,7 +1177,7 @@ def run_judge_evaluation(
     from collections import defaultdict
 
     # Группируем по хешируемому ключу (dataset, question_id)
-    samples_with_judges: Dict[Tuple[str, int], Tuple[EvaluationSample, List[str]]] = defaultdict(lambda: (None, []))
+    samples_with_judges: dict[tuple[str, int], tuple[EvaluationSample, list[str]]] = defaultdict(lambda: (None, []))
 
     for sample, judge_name in pending_pairs:
         key = (sample.dataset, sample.question_id)
@@ -1202,7 +1200,7 @@ def run_judge_evaluation(
 
     # Основной цикл оценки
     print("\n⚖️  Запуск оценки...")
-    evaluations: List[SampleEvaluation] = []
+    evaluations: list[SampleEvaluation] = []
     processed_pairs_count = 0
     for sample, judges_for_sample in pending_samples:  # judges_for_sample — это список имён судей
         print(

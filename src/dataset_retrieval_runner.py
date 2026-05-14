@@ -152,7 +152,7 @@ class DatasetRetrievalRunner:
 
     def search_hybrid_rrf(self, query: str, top_k: int) -> list[dict]:
         """Hybrid search with RRF fusion."""
-        from qdrant_client.models import Document, Prefetch, RrfQuery, Rrf
+        from qdrant_client.models import Document, Prefetch, Rrf, RrfQuery
 
         collection_name = self.get_collection_name("hybrid_rrf")
         hits = self.client.query_points(

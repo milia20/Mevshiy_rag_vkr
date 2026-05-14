@@ -1,7 +1,7 @@
 # config.py
 from __future__ import annotations
 
-from pydantic import BaseModel, Field, field_validator, HttpUrl
+from pydantic import BaseModel, Field, HttpUrl, field_validator
 
 
 class SetupSettings(BaseModel):
@@ -36,14 +36,10 @@ class SetupSettings(BaseModel):
         return models
 
     @classmethod
-    def from_pyproject(cls, path: str = "pyproject.toml") -> "SetupSettings":
+    def from_pyproject(cls, path: str = "pyproject.toml") -> SetupSettings:
         """Читает pyproject.toml и извлекает [tool.setup_settings]."""
         import sys
-
-        if sys.version_info >= (3, 11):
-            import tomllib
-        else:
-            import tomli as tomllib
+        import tomllib
 
         with open(path, "rb") as f:
             data = tomllib.load(f)

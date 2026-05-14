@@ -7,7 +7,6 @@
 
 from __future__ import annotations
 
-import asyncio
 import logging
 from dataclasses import dataclass, field
 from typing import Any
@@ -100,9 +99,7 @@ class Indexer:
         self._qdrant_service = get_qdrant_service()
         self._embedding_service = get_embedding_service()
 
-        logger.info(
-            f"Инициализация Indexer: collection={self.collection_name}, batch_size={self.batch_size}"
-        )
+        logger.info(f"Инициализация Indexer: collection={self.collection_name}, batch_size={self.batch_size}")
 
     async def index_documents(
         self,
@@ -187,10 +184,7 @@ class Indexer:
                 elapsed_time_ms=elapsed_time,
             )
 
-            logger.info(
-                f"Индексация завершена: {indexed_count} успешно, {failed_count} ошибок, "
-                f"{elapsed_time}мс"
-            )
+            logger.info(f"Индексация завершена: {indexed_count} успешно, {failed_count} ошибок, " f"{elapsed_time}мс")
 
             return result
 

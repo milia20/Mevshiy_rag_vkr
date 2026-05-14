@@ -302,4 +302,3 @@ same way as bash, causing version parsing errors.
 - [Cargo Release workflow](../../.github/workflows/cargo-release.yml)
 - [Desktop Release workflow](../../.github/workflows/tauri-release.yml)
 - [Release Checklist](./RELEASE_CHECKLIST.md)
-

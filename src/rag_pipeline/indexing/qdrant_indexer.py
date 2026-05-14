@@ -277,7 +277,7 @@ class QdrantIndexer:
             vectors = self.encode_dense(texts)
 
             # Create points
-            for chunk, vector in zip(batch, vectors):
+            for chunk, vector in zip(batch, vectors, strict=False):
                 points.append(
                     models.PointStruct(
                         id=chunk.chunk_id,
@@ -358,7 +358,7 @@ class QdrantIndexer:
             dense_vectors = self.encode_dense(texts)
 
             # Create points with both dense and sparse vectors
-            for chunk, dense_vec in zip(batch, dense_vectors):
+            for chunk, dense_vec in zip(batch, dense_vectors, strict=False):
                 indices, values = self._text_to_sparse_indices(chunk.text)
 
                 if not indices:
@@ -419,7 +419,7 @@ class QdrantIndexer:
             dense_vectors = self.encode_dense(texts)
 
             # Create points with dense, ColBERT, and sparse vectors
-            for chunk, dense_vec in zip(batch, dense_vectors):
+            for chunk, dense_vec in zip(batch, dense_vectors, strict=False):
                 indices, values = self._text_to_sparse_indices(chunk.text)
 
                 # Placeholder for ColBERT vectors (in production, use actual ColBERT)

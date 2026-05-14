@@ -10,11 +10,13 @@ from __future__ import annotations
 import json
 import logging
 import time
-from typing import Any, AsyncGenerator
+from collections.abc import AsyncGenerator
+from typing import Any
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
+
 from src.core.exceptions import LLMError, QdrantError, SearchError
 from src.services.embedding_service import get_embedding_service
 from src.services.llm_client import get_llm_client
@@ -132,7 +134,7 @@ async def _generate_sse_response(
     question: str,
     top_k: int,
     country: str | None,
-) -> AsyncGenerator[str, None]:
+) -> AsyncGenerator[str]:
     """
     Генерировать SSE-ответ для потоковой передачи.
 
@@ -258,9 +260,7 @@ async def query_rag(request: QueryRequest) -> QueryResponse | StreamingResponse:
         )
 
         retrieval_time = int((time.time() - retrieval_start) * 1000)
-        logger.info(
-            f"Поиск завершен за {retrieval_time}мс, найдено {len(search_results)} результатов"
-        )
+        logger.info(f"Поиск завершен за {retrieval_time}мс, найдено {len(search_results)} результатов")
 
         if not search_results:
             raise SearchError("Не найдено релевантных документов")

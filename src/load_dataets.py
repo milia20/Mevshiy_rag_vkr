@@ -168,7 +168,7 @@ def extract_annotation_info(annotations_list):
 
         # Короткие ответы (могут быть в виде токенов или готового текста)
         for sa in ann.get("short_answers", []):
-            if "text" in sa and sa["text"]:
+            if sa.get("text"):
                 short_answers.append(sa["text"])
             elif "start_token" in sa and "end_token" in sa:
                 # Если только токены — отметим для последующей экстракции
@@ -253,6 +253,7 @@ def load_all_questions(project_root: Path, context_used: bool = False) -> DataFr
 # Параллельные вычисления
 
 import re
+
 from lxml import html as lxml_html
 
 # Компилируем регулянку один раз
@@ -285,9 +286,10 @@ def clean_html_fast(html_string):
         return ""
 
 
-import pandas as pd
-from concurrent.futures import ProcessPoolExecutor
 import multiprocessing as mp
+from concurrent.futures import ProcessPoolExecutor
+
+import pandas as pd
 
 
 # Функция должна быть определена на верхнем уровне (для pickle)
@@ -318,7 +320,7 @@ def parallel_clean(df, column_name, max_workers=None):
 
     with ProcessPoolExecutor(max_workers=max_workers) as executor:
         for idx_chunk, res_chunk in executor.map(process_chunk, chunks):
-            for i, res in zip(idx_chunk, res_chunk):
+            for i, res in zip(idx_chunk, res_chunk, strict=False):
                 results[i] = res
 
     return results

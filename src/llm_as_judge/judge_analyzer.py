@@ -45,19 +45,19 @@ def load_csv_results(filepath: Path) -> pd.DataFrame:
     return df
 
 
-def load_json_results(filepath: Path) -> List[Dict[str, Any]]:
+def load_json_results(filepath: Path) -> list[dict[str, Any]]:
     """Загружает детальные результаты из JSON файла."""
     if not filepath.exists():
         return []
 
-    with open(filepath, "r", encoding="utf-8") as f:
+    with open(filepath, encoding="utf-8") as f:
         data = json.load(f)
 
     print(f"✓ Загружено {len(data)} образцов из {filepath}")
     return data
 
 
-def find_results_files(output_dirs: List[Path]) -> Dict[str, List[Path]]:
+def find_results_files(output_dirs: list[Path]) -> dict[str, list[Path]]:
     """Находит все файлы с результатами в указанных директориях."""
     found_files = {"csv": [], "json": []}
 
@@ -79,7 +79,7 @@ def find_results_files(output_dirs: List[Path]) -> Dict[str, List[Path]]:
 # ==================== АНАЛИТИКА ====================
 
 
-def calculate_basic_stats(df: pd.DataFrame) -> Dict[str, Any]:
+def calculate_basic_stats(df: pd.DataFrame) -> dict[str, Any]:
     """Вычисляет базовую статистику по оценкам."""
     metrics = ["faithfulness", "accuracy", "relevance", "total_rating"]
     stats = {}
@@ -125,7 +125,7 @@ def calculate_judge_stats(df: pd.DataFrame) -> pd.DataFrame:
     return judge_stats
 
 
-def calculate_consensus_stats(df: pd.DataFrame) -> Dict[str, Any]:
+def calculate_consensus_stats(df: pd.DataFrame) -> dict[str, Any]:
     """Статистика согласованности между судьями."""
     if "question_id" not in df.columns or "judge_name" not in df.columns:
         return {}
@@ -242,7 +242,7 @@ def plot_judge_comparison(df: pd.DataFrame, save_path: Path) -> None:
     judges = df["judge_name"].unique()
     colors = plt.cm.Set3(range(len(judges)))
 
-    for i, (judge, color) in enumerate(zip(judges, colors)):
+    for i, (judge, color) in enumerate(zip(judges, colors, strict=False)):
         judge_data = df[df["judge_name"] == judge]
         means = [judge_data[m].mean() for m in available_metrics]
 
@@ -321,7 +321,7 @@ def plot_score_by_model(df: pd.DataFrame, save_path: Path) -> None:
     metrics = ["faithfulness", "accuracy", "relevance", "total_rating"]
     colors = ["#FF6B6B", "#4ECDC4", "#45B7D1", "#FFA07A"]
 
-    for i, (metric, color) in enumerate(zip(metrics, colors)):
+    for i, (metric, color) in enumerate(zip(metrics, colors, strict=False)):
         if metric not in model_stats.columns:
             continue
         offset = (i - len(metrics) / 2 + 0.5) * width
@@ -380,7 +380,7 @@ def plot_boxplot_by_judge(df: pd.DataFrame, save_path: Path) -> None:
 
     # Раскрашиваем боксы
     colors = plt.cm.Pastel1(range(len(data_to_plot)))
-    for patch, color in zip(bp["boxes"], colors):
+    for patch, color in zip(bp["boxes"], colors, strict=False):
         patch.set_facecolor(color)
 
     ax.set_xlabel("Судья")
@@ -452,10 +452,10 @@ def create_model_ranking_table(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def analyze_judge_results(
-    output_dirs: List[Path] = DEFAULT_OUTPUT_DIRS,
+    output_dirs: list[Path] = DEFAULT_OUTPUT_DIRS,
     analysis_output_dir: Path = OUTPUT_ANALYSIS_DIR,
     generate_plots: bool = True,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Полный анализ результатов LLM-as-a-Judge оценки.
 

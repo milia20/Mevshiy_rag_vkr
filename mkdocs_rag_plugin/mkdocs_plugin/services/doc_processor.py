@@ -11,7 +11,7 @@ import logging
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from mkdocs.structure.pages import Page
 
@@ -125,7 +125,7 @@ class DocumentProcessor:
 
         return text.strip()
 
-    def extract_metadata(self, page: Page) -> Dict[str, Any]:
+    def extract_metadata(self, page: Page) -> dict[str, Any]:
         """
         Извлечь метаданные из страницы MkDocs.
 
@@ -142,7 +142,7 @@ class DocumentProcessor:
         Returns:
             Словарь с метаданными.
         """
-        metadata: Dict[str, Any] = {}
+        metadata: dict[str, Any] = {}
 
         try:
             # URL страницы
@@ -171,7 +171,7 @@ class DocumentProcessor:
 
         return metadata
 
-    def _extract_hierarchical_path(self, page: Page) -> List[str]:
+    def _extract_hierarchical_path(self, page: Page) -> list[str]:
         """
         Извлечь иерархический путь страницы.
 
@@ -181,7 +181,7 @@ class DocumentProcessor:
         Returns:
             Список заголовков пути.
         """
-        path: List[str] = []
+        path: list[str] = []
 
         try:
             # Пытаемся получить путь из parent
@@ -221,7 +221,7 @@ class DocumentProcessor:
 
         return ""
 
-    def _extract_last_modified(self, page: Page) -> Optional[datetime]:
+    def _extract_last_modified(self, page: Page) -> datetime | None:
         """
         Извлечь дату последнего изменения.
 
@@ -244,7 +244,7 @@ class DocumentProcessor:
 
         return None
 
-    def process_page(self, page: Page) -> tuple[str, Dict[str, Any]]:
+    def process_page(self, page: Page) -> tuple[str, dict[str, Any]]:
         """
         Полная обработка страницы: извлечение + очистка + метаданные.
 
@@ -260,7 +260,7 @@ class DocumentProcessor:
 
         return cleaned_content, metadata
 
-    def extract_code_blocks(self, content: str) -> List[Dict[str, str]]:
+    def extract_code_blocks(self, content: str) -> list[dict[str, str]]:
         """
         Извлечь блоки кода из контента.
 
@@ -279,7 +279,7 @@ class DocumentProcessor:
 
         return code_blocks
 
-    def extract_tables(self, content: str) -> List[str]:
+    def extract_tables(self, content: str) -> list[str]:
         """
         Извлечь таблицы из Markdown контента.
 
@@ -291,7 +291,7 @@ class DocumentProcessor:
         """
         tables = []
         lines = content.split("\n")
-        current_table: List[str] = []
+        current_table: list[str] = []
         in_table = False
 
         for line in lines:

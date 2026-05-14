@@ -24,7 +24,6 @@ import pandas as pd
 from sentence_transformers import SentenceTransformer
 from tqdm.auto import tqdm
 
-
 # ============================================================================
 # CONFIGURATION — редактируйте здесь, а не в аргументах командной строки
 # ============================================================================
@@ -630,7 +629,7 @@ def main() -> None:
             gt_df = load_ground_truth(gt_path)
         else:
             # Конвертируем на лету
-            parquet_path = Path(CFG.output_dir) / f"temp_gt.parquet"
+            parquet_path = Path(CFG.output_dir) / "temp_gt.parquet"
             convert_gt_to_parquet(gt_path, str(parquet_path))
             gt_df = load_ground_truth(parquet_path)
 

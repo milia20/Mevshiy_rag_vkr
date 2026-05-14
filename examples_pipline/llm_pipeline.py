@@ -1,7 +1,7 @@
 import difflib
 
 import nltk
-from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
+from nltk.translate.bleu_score import SmoothingFunction, sentence_bleu
 from rouge_score import rouge_scorer
 from transformers import pipeline as hf_pipeline
 

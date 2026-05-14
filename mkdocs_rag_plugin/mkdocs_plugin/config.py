@@ -8,7 +8,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, List
+from typing import Any
 
 from mkdocs.config import Config, config_options
 from pydantic import BaseModel, ConfigDict, Field

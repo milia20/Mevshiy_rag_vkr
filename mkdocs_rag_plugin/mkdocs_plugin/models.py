@@ -10,8 +10,8 @@ Data models for MkDocs RAG Plugin.
 from __future__ import annotations
 
 import uuid
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from datetime import UTC, datetime
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -29,11 +29,11 @@ class Chunk(BaseModel):
 
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     content: str = Field(..., description="Текст чанка")
-    metadata: Dict[str, Any] = Field(
+    metadata: dict[str, Any] = Field(
         default_factory=dict,
         description="Метаданные чанка",
     )
-    embeddings: Optional[List[float]] = Field(
+    embeddings: list[float] | None = Field(
         default=None,
         description="Векторные эмбеддинги",
     )
@@ -56,7 +56,7 @@ class Chunk(BaseModel):
         return self.metadata.get("title", "")
 
     @property
-    def header_path(self) -> List[str]:
+    def header_path(self) -> list[str]:
         """Получить путь заголовков из метаданных."""
         return self.metadata.get("header_path", [])
 
@@ -81,11 +81,11 @@ class ProcessedDocument(BaseModel):
     url: str = Field(..., description="URL документа")
     title: str = Field(..., description="Заголовок документа")
     content: str = Field(..., description="Полное содержимое документа")
-    chunks: List[Chunk] = Field(
+    chunks: list[Chunk] = Field(
         default_factory=list,
         description="Список чанков документа",
     )
-    metadata: Dict[str, Any] = Field(
+    metadata: dict[str, Any] = Field(
         default_factory=dict,
         description="Дополнительные метаданные",
     )
@@ -129,12 +129,12 @@ class IndexingResult(BaseModel):
         ...,
         description="Количество успешно проиндексированных чанков",
     )
-    errors: List[str] = Field(
+    errors: list[str] = Field(
         default_factory=list,
         description="Список ошибок при индексации",
     )
     timestamp: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc),
+        default_factory=lambda: datetime.now(UTC),
         description="Время завершения индексации",
     )
 
@@ -176,12 +176,12 @@ class DocumentMetadata(BaseModel):
 
     url: str = Field(..., description="URL документа")
     title: str = Field(..., description="Заголовок документа")
-    hierarchical_path: List[str] = Field(
+    hierarchical_path: list[str] = Field(
         default_factory=list,
         description="Иерархический путь документа",
     )
     source_file: str = Field(..., description="Исходный файл")
-    last_modified: Optional[datetime] = Field(
+    last_modified: datetime | None = Field(
         default=None,
         description="Дата последнего изменения",
     )
@@ -211,7 +211,7 @@ class ChunkingStrategy(BaseModel):
     )
     chunk_size: int = Field(..., description="Размер чанка")
     chunk_overlap: int = Field(default=0, description="Перекрытие между чанками")
-    separators: List[str] = Field(
+    separators: list[str] = Field(
         default_factory=lambda: ["\n\n", "\n", ". ", " "],
         description="Разделители для recursive стратегии",
     )

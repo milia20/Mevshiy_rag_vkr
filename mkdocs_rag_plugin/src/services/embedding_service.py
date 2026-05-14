@@ -10,6 +10,7 @@ from __future__ import annotations
 import logging
 
 from sentence_transformers import SentenceTransformer
+
 from src.core.config import settings
 from src.core.exceptions import EmbeddingError
 

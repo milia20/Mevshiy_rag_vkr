@@ -17,10 +17,11 @@ Features:
 import ast
 import csv
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 import pandas as pd
 from loguru import logger

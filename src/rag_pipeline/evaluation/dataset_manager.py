@@ -87,7 +87,7 @@ class DatasetManager:
         if test_path.exists():
             import json
 
-            with open(test_path, "r", encoding="utf-8") as f:
+            with open(test_path, encoding="utf-8") as f:
                 data = json.load(f)
                 for item in data:
                     queries.append(
@@ -115,7 +115,7 @@ class DatasetManager:
         if dev_path.exists():
             import json
 
-            with open(dev_path, "r", encoding="utf-8") as f:
+            with open(dev_path, encoding="utf-8") as f:
                 for line in f:
                     item = json.loads(line)
                     queries.append(
@@ -140,7 +140,7 @@ class DatasetManager:
         # Load all .txt files as chunks
         if path.exists():
             for txt_file in path.glob("*.txt"):
-                with open(txt_file, "r", encoding="utf-8") as f:
+                with open(txt_file, encoding="utf-8") as f:
                     content = f.read()
                     # Assume each file is a chunk with its ID
                     chunk_id = txt_file.stem

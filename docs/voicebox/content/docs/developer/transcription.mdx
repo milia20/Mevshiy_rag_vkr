@@ -47,21 +47,21 @@ Models are downloaded from HuggingFace Hub:
 ```python
 def load_model(self, model_size: Optional[str] = None):
     from transformers import WhisperProcessor, WhisperForConditionalGeneration
-    
+
     model_name = f"openai/whisper-{model_size}"
-    
+
     # Track download progress
     progress_manager = get_progress_manager()
     task_manager = get_task_manager()
     task_manager.start_download(f"whisper-{model_size}")
-    
+
     # Load processor and model
     with tracker.patch_download():
         self.processor = WhisperProcessor.from_pretrained(model_name)
         self.model = WhisperForConditionalGeneration.from_pretrained(model_name)
-    
+
     self.model.to(self.device)
-    
+
     # Mark complete
     progress_manager.mark_complete(f"whisper-{model_size}")
     task_manager.complete_download(f"whisper-{model_size}")
@@ -89,11 +89,11 @@ async def transcribe(
     language: Optional[str] = None,
 ) -> str:
     await self.load_model_async()
-    
+
     def _transcribe_sync():
         # Load and resample to 16kHz (Whisper requirement)
         audio, sr = load_audio(audio_path, sample_rate=16000)
-        
+
         # Process audio
         inputs = self.processor(
             audio,
@@ -101,7 +101,7 @@ async def transcribe(
             return_tensors="pt",
         )
         inputs = inputs.to(self.device)
-        
+
         # Set language hint if provided
         forced_decoder_ids = None
         if language:
@@ -109,22 +109,22 @@ async def transcribe(
                 language=language,
                 task="transcribe",
             )
-        
+
         # Generate
         with torch.no_grad():
             predicted_ids = self.model.generate(
                 inputs["input_features"],
                 forced_decoder_ids=forced_decoder_ids,
             )
-        
+
         # Decode
         transcription = self.processor.batch_decode(
             predicted_ids,
             skip_special_tokens=True,
         )[0]
-        
+
         return transcription.strip()
-    
+
     return await asyncio.to_thread(_transcribe_sync)
 ```
 
@@ -168,17 +168,17 @@ async def transcribe_with_timestamps(
     language: Optional[str] = None,
 ) -> List[Dict[str, any]]:
     await self.load_model_async()
-    
+
     def _transcribe_timestamps_sync():
         audio, sr = load_audio(audio_path, sample_rate=16000)
         inputs = self.processor(audio, sampling_rate=16000, return_tensors="pt")
-        
+
         with torch.no_grad():
             predicted_ids = self.model.generate(
                 inputs["input_features"],
                 return_timestamps=True,
             )
-        
+
         # Parse timestamps
         return [
             {
@@ -187,7 +187,7 @@ async def transcribe_with_timestamps(
                 "end": len(audio) / sr,
             }
         ]
-    
+
     return await asyncio.to_thread(_transcribe_timestamps_sync)
 ```
 
@@ -204,7 +204,7 @@ def unload_model(self):
         del self.processor
         self.model = None
         self.processor = None
-        
+
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
 ```

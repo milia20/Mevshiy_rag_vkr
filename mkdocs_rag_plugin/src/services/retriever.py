@@ -16,7 +16,7 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from src.core.config import settings
-from src.core.exceptions import QdrantError, SearchError
+from src.core.exceptions import QdrantError
 from src.services.qdrant_client import get_qdrant_service
 
 logger = logging.getLogger(__name__)

@@ -9,7 +9,7 @@ from dataclasses import dataclass
 
 from sentence_transformers import CrossEncoder
 
-from ..retrieval.searchers import SearchResult, SearchResponse
+from ..retrieval.searchers import SearchResponse, SearchResult
 
 logger = logging.getLogger(__name__)
 
@@ -78,7 +78,7 @@ class Reranker:
         scores = self.model.predict(pairs)
 
         # Sort by score descending
-        scored_results = list(zip(results, scores))
+        scored_results = list(zip(results, scores, strict=False))
         scored_results.sort(key=lambda x: x[1], reverse=True)
 
         # Take top-k and update scores

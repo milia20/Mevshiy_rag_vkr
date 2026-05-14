@@ -66,10 +66,10 @@ async def create_generation(
         instruct=instruct,
         created_at=datetime.utcnow(),
     )
-    
+
     db.add(db_generation)
     db.commit()
-    
+
     return GenerationResponse.model_validate(db_generation)
 ```
 
@@ -90,19 +90,19 @@ async def list_generations(
         DBVoiceProfile,
         DBGeneration.profile_id == DBVoiceProfile.id
     )
-    
+
     # Apply filters
     if query.profile_id:
         q = q.filter(DBGeneration.profile_id == query.profile_id)
-    
+
     if query.search:
         q = q.filter(DBGeneration.text.like(f"%{query.search}%"))
-    
+
     # Order and paginate
     total = q.count()
     q = q.order_by(DBGeneration.created_at.desc())
     q = q.offset(query.offset).limit(query.limit)
-    
+
     return HistoryListResponse(items=results, total=total)
 ```
 
@@ -114,12 +114,12 @@ Aggregate statistics for the dashboard:
 async def get_generation_stats(db: Session) -> dict:
     total = db.query(func.count(DBGeneration.id)).scalar()
     total_duration = db.query(func.sum(DBGeneration.duration)).scalar()
-    
+
     by_profile = db.query(
         DBGeneration.profile_id,
         func.count(DBGeneration.id).label('count')
     ).group_by(DBGeneration.profile_id).all()
-    
+
     return {
         "total_generations": total,
         "total_duration_seconds": total_duration,
@@ -138,16 +138,16 @@ async def delete_generation(generation_id: str, db: Session) -> bool:
     generation = db.query(DBGeneration).filter_by(id=generation_id).first()
     if not generation:
         return False
-    
+
     # Delete audio file
     audio_path = Path(generation.audio_path)
     if audio_path.exists():
         audio_path.unlink()
-    
+
     # Delete database record
     db.delete(generation)
     db.commit()
-    
+
     return True
 ```
 
@@ -158,11 +158,11 @@ When deleting a profile, all its generations are also deleted:
 ```python
 async def delete_generations_by_profile(profile_id: str, db: Session) -> int:
     generations = db.query(DBGeneration).filter_by(profile_id=profile_id).all()
-    
+
     for generation in generations:
         Path(generation.audio_path).unlink(missing_ok=True)
         db.delete(generation)
-    
+
     db.commit()
     return len(generations)
 ```

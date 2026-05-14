@@ -13,7 +13,7 @@ import logging
 import re
 import uuid
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 logger = logging.getLogger("mkdocs.plugins.rag_plugin")
 
@@ -31,7 +31,7 @@ class Chunk:
 
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
     content: str = field(default="")
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class Chunker:
@@ -50,7 +50,7 @@ class Chunker:
         self,
         chunk_size: int = 500,
         chunk_overlap: int = 50,
-        separators: Optional[List[str]] = None,
+        separators: list[str] | None = None,
     ) -> None:
         """
         Инициализация чанкера.
@@ -66,7 +66,7 @@ class Chunker:
         self._header_pattern = re.compile(r"^(#{1,6})\s+(.*)", re.MULTILINE)
         self._code_block_pattern = re.compile(r"```[\w]*\n.*?```", re.DOTALL)
 
-    def structural_chunk(self, text: str, max_tokens: Optional[int] = None) -> List[Chunk]:
+    def structural_chunk(self, text: str, max_tokens: int | None = None) -> list[Chunk]:
         """
         Разбить текст по заголовкам Markdown.
 
@@ -85,9 +85,9 @@ class Chunker:
         if not text.strip():
             return []
 
-        chunks: List[Chunk] = []
-        current_headers: List[str] = []
-        current_content: List[str] = []
+        chunks: list[Chunk] = []
+        current_headers: list[str] = []
+        current_content: list[str] = []
 
         lines = text.split("\n")
         i = 0
@@ -166,7 +166,7 @@ class Chunker:
         logger.debug(f"Structural chunking: создано {len(chunks)} чанков")
         return chunks
 
-    def _apply_max_tokens(self, chunks: List[Chunk], max_tokens: int) -> List[Chunk]:
+    def _apply_max_tokens(self, chunks: list[Chunk], max_tokens: int) -> list[Chunk]:
         """
         Применить ограничение максимального размера к чанкам.
 
@@ -177,7 +177,7 @@ class Chunker:
         Returns:
             Список чанков с ограниченным размером.
         """
-        result: List[Chunk] = []
+        result: list[Chunk] = []
 
         for chunk in chunks:
             content = chunk.content
@@ -196,7 +196,7 @@ class Chunker:
 
         return result
 
-    def fixed_size_chunk(self, text: str, chunk_size: int, overlap: int) -> List[Chunk]:
+    def fixed_size_chunk(self, text: str, chunk_size: int, overlap: int) -> list[Chunk]:
         """
         Разбить текст на чанки фиксированного размера с перекрытием.
 
@@ -222,7 +222,7 @@ class Chunker:
         if overlap >= chunk_size:
             raise ValueError("overlap должен быть меньше chunk_size")
 
-        chunks: List[Chunk] = []
+        chunks: list[Chunk] = []
         start = 0
         text_length = len(text)
 
@@ -272,7 +272,7 @@ class Chunker:
         logger.debug(f"Fixed-size chunking: создано {len(chunks)} чанков")
         return chunks
 
-    def recursive_chunk(self, text: str, separators: Optional[List[str]] = None) -> List[Chunk]:
+    def recursive_chunk(self, text: str, separators: list[str] | None = None) -> list[Chunk]:
         """
         Рекурсивно разбить текст по иерархии разделителей.
 
@@ -289,9 +289,9 @@ class Chunker:
             return []
 
         seps = separators or self.separators
-        chunks: List[Chunk] = []
+        chunks: list[Chunk] = []
 
-        def split_recursive(text_to_split: str, sep_index: int) -> List[str]:
+        def split_recursive(text_to_split: str, sep_index: int) -> list[str]:
             """Рекурсивно разбивает текст по разделителям."""
             if sep_index >= len(seps):
                 # Достигли последнего разделителя, возвращаем как есть
@@ -300,7 +300,7 @@ class Chunker:
             separator = seps[sep_index]
             parts = text_to_split.split(separator)
 
-            result: List[str] = []
+            result: list[str] = []
             for part in parts:
                 part = part.strip()
                 if not part:
@@ -335,8 +335,8 @@ class Chunker:
         self,
         text: str,
         strategy: str = "structural",
-        max_tokens: Optional[int] = None,
-    ) -> List[Chunk]:
+        max_tokens: int | None = None,
+    ) -> list[Chunk]:
         """
         Разбить текст используя указанную стратегию.
 
@@ -359,8 +359,7 @@ class Chunker:
             return self.recursive_chunk(text)
         else:
             raise ValueError(
-                f"Неизвестная стратегия чанкования: {strategy}. "
-                f"Доступные: structural, fixed, recursive"
+                f"Неизвестная стратегия чанкования: {strategy}. " f"Доступные: structural, fixed, recursive"
             )
 
     def count_tokens(self, text: str) -> int:
@@ -379,7 +378,7 @@ class Chunker:
         # Для английского ~4-5 символов на токен
         return max(1, len(text) // 4)
 
-    def add_metadata_to_chunks(self, chunks: List[Chunk], metadata: Dict[str, Any]) -> None:
+    def add_metadata_to_chunks(self, chunks: list[Chunk], metadata: dict[str, Any]) -> None:
         """
         Добавить общие метаданные ко всем чанкам.
 

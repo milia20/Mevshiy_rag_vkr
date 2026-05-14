@@ -896,7 +896,7 @@ Here's a thinking process:
    - Check constraint: Concise? Yes. Language matches? Yes.
    - Alternative: Саския ван Эйленбюрх (Saskia van Uylenburgh). But keeping it in Russian is fine.
 
-4.  **Final Output Generation:** 
+4.  **Final Output Generation:**
    - ""Саския ван Эйленбюрх."" (or just ""Саския ван Эйленбюрх"")
    - Ensure it's concise as requested.
 
@@ -1608,19 +1608,19 @@ Here's a thinking process:
    Language: Russian.
 
    Output matches.✅
-   Proceed. 
+   Proceed.
    Output: Эрих Мария Ремарк. (or just Эрих Мария Ремарк)
    I'll output exactly that.✅
-   Final: Эрих Мария Ремарк. 
-   (Self-Correction/Refinement during thought: The prompt says ""Answer the following question concisely."" So just the name is fine. I'll provide exactly that.) 
-   All good. 
-   Output Generation. 
-   [Done] 
-   *Self-Correction/Verification during process*: 
+   Final: Эрих Мария Ремарк.
+   (Self-Correction/Refinement during thought: The prompt says ""Answer the following question concisely."" So just the name is fine. I'll provide exactly that.)
+   All good.
+   Output Generation.
+   [Done]
+   *Self-Correction/Verification during process*:
    - Question: Кто написал роман «Три товарища»?
    - Fact: Erich Maria Remarque wrote ""Drei Kameraden"" (1936), Russian title ""Три товарища"".
    - Concise answer in Russian: Эрих Мария Ремарк.
-   - Matches constraints. Ready. 
+   - Matches constraints. Ready.
    Output matches response.✅
    [Proceeds]
 </think>
@@ -2038,7 +2038,7 @@ Here's a thinking process:
 
 3.  **Formulate Answer (in Russian, concise):**
    - Need to state the location clearly and concisely.
-   - Options: 
+   - Options:
      - ""В Баварии, Германия (около Фюссена).""
      - ""В юго-западной Баварии, Германия, недалеко от города Фюссен.""
      - ""Германия, федеральная земля Бавария, рядом с селением Хоэншвангау.""
@@ -2531,13 +2531,13 @@ Here's a thinking process:
    - Self-Correction/Verification during thought: Could it be ""Неаполь"" or ""Неаполитанское королевство""? The question asks for the city. So ""Неаполь"" is correct. Some might say ""Палермо"" but that was for the Sicilian part before unification. The capital of the unified kingdom was definitely Naples. All reliable sources confirm this.
 
    Output: Неаполь.✅
-   Proceed. 
+   Proceed.
    Output matches response.✅
-   [Done.] 
-   Output: Неаполь. 
-   (Note: I'll just output ""Неаполь."" as requested.) 
+   [Done.]
+   Output: Неаполь.
+   (Note: I'll just output ""Неаполь."" as requested.)
    All steps verified.✅
-   Final Answer: Неаполь. 
+   Final Answer: Неаполь.
    [Proceeds]
 </think>
 
@@ -2633,7 +2633,7 @@ ru_rag,Кто впервые высказал идею существовани�
 
 </think>
 
-Идею существования абсолютного нуля температур впервые высказал **Роберт Бойль** (в XVII веке), а позже она была развита **Эдмом Гюйо** и **Робертом Гуком**. Однако точное количественное определение и термодинамическое обоснование этого понятия были даны позже, в частности, **Уильямом Томпсоном (лордом Кельвином)**. 
+Идею существования абсолютного нуля температур впервые высказал **Роберт Бойль** (в XVII веке), а позже она была развита **Эдмом Гюйо** и **Робертом Гуком**. Однако точное количественное определение и термодинамическое обоснование этого понятия были даны позже, в частности, **Уильямом Томпсоном (лордом Кельвином)**.
 
 Если говорить о первом предложении концепции, то это **Роберт Бойль**.",False,False
 ru_rag,"Кто является автором композиции ""I Just Called To Say I Love You""?",Стиви Уандер,"<think>
@@ -2860,19 +2860,19 @@ Here's a thinking process:
 
 6.  **Final Output Generation:**
    Джек Лондон.✅
-   (Self-Correction/Verification during thought: 
+   (Self-Correction/Verification during thought:
    - Is there any other author? No, it's definitively Jack London.
    - Russian name: Джек Лондон.
    - Concise format: Just the name is appropriate.)
-   Proceed. 
-   Output: Джек Лондон. 
+   Proceed.
+   Output: Джек Лондон.
    Matches expected response.✅
-   Output matches exactly. 
-   Done. 
-   [Output Generation] -> Джек Лондон. 
-   (Note: I'll keep it exactly as requested: concise, in Russian.) 
-   Final: Джек Лондон. 
-   All good. 
+   Output matches exactly.
+   Done.
+   [Output Generation] -> Джек Лондон.
+   (Note: I'll keep it exactly as requested: concise, in Russian.)
+   Final: Джек Лондон.
+   All good.
    [Proceeds]
 </think>
 
@@ -3146,24 +3146,24 @@ Here's a thinking process:
    - Keep it direct as requested.
 
    I'll output: ""Швейцарский франк"" (Swiss franc).✅
-   Double-check: Liechtenstein indeed uses the Swiss franc. No other currency. Concise. Matches constraint. Ready. 
+   Double-check: Liechtenstein indeed uses the Swiss franc. No other currency. Concise. Matches constraint. Ready.
    Output matches response.✅
-   Proceed. 
+   Proceed.
    [Output]: Швейцарский франк
-   [Self-Correction/Verification during thought]: 
+   [Self-Correction/Verification during thought]:
    - Is it exactly ""Швейцарский франк""? Yes.
    - Constraint check: ""concisely"" -> one word/phrase is fine.
    - Language: Russian.
    - All good.✅
-   Output matches. 
+   Output matches.
    [Final Answer Generation] -> Швейцарский франк
-   (Note: I'll just output the direct answer as requested.) 
-   Proceeds. 
+   (Note: I'll just output the direct answer as requested.)
+   Proceeds.
    [Output Generation] -> Швейцарский франк
-   [Done.] 
+   [Done.]
    *(Self-Correction/Refinement during thought)*: Should I add ""(CHF)""? Not necessary for conciseness. ""Швейцарский франк"" is perfect.
    Final: Швейцарский франк.✅
-   Output matches. 
+   Output matches.
    [Proceeds]
 </think>
 
@@ -4387,7 +4387,7 @@ ru_rag,Как называлась боевая песня польских и �
 
 </think>
 
-«Марсельеза» (польская версия — «Marszrobotników» или «Warszawianka», но чаще всего в контексте связи польских и русских революционеров конца XIX века имеют в виду **«Варшавянку»** или **«Интернационал»**, однако исторически наиболее известной общей боевой песней, имевшей польские корни и ставшей гимном революционного движения, является **«Варшавянка»** («Ляхи, Ляхи, марш до Варшавы...»). 
+«Марсельеза» (польская версия — «Marszrobotników» или «Warszawianka», но чаще всего в контексте связи польских и русских революционеров конца XIX века имеют в виду **«Варшавянку»** или **«Интернационал»**, однако исторически наиболее известной общей боевой песней, имевшей польские корни и ставшей гимном революционного движения, является **«Варшавянка»** («Ляхи, Ляхи, марш до Варшавы...»).
 
 Однако, если речь идет о песне, которая была гимном и для польских, и для русских революционеров (особенно после 1905 года), то это **«Интернационал»** (польск. *Międzynarodówka*).
 
@@ -5451,12 +5451,12 @@ Or ""Konami Corporation"".
 I'll go with ""Konami"".
 Check spelling: Konami.
 Russian: Konami.
-Done. 
-Output: Konami. 
+Done.
+Output: Konami.
 Self-Correction/Refinement: Sometimes it's better to give the full name in Russian if applicable, but Konami is universally known. I'll just say ""Konami"".
-Final: Konami. 
-Proceeds. 
-Output matches response. 
+Final: Konami.
+Proceeds.
+Output matches response.
 [Done]
 </think>
 
@@ -5919,7 +5919,7 @@ Here's a thinking process:
 
 2.  **Identify Key Entity:** ""Зенит"" refers to FC Zenit Saint Petersburg (a famous Russian football club).
 
-3.  **Determine Current League:** 
+3.  **Determine Current League:**
    - FC Zenit Saint Petersburg plays in the Russian Premier League (Российская Премьер-Лига / РПЛ).
    - As of my knowledge cutoff (2024), they are still in the RPL. They haven't been relegated or moved to another league.
 
@@ -7028,7 +7028,7 @@ Here's a thinking process:
    - **Language:** Russian
    - **Constraint:** Answer concisely. If unknown, say ""I don't know.""
 
-2.  **Identify Key Entity:** 
+2.  **Identify Key Entity:**
    - ""Орден Отечественной войны"" (Order of the Patriotic War) - a Soviet military decoration.
 
 3.  **Retrieve Knowledge:**

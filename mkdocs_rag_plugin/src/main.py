@@ -8,16 +8,17 @@ FastAPI приложение для RAG системы.
 from __future__ import annotations
 
 import logging
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-from typing import AsyncIterator
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from src.api import query, index, models, health, chat
+
+from src.api import chat, health, index, models, query
 from src.core.config import settings
-from src.services.qdrant_service import get_qdrant_service
 from src.services.embedding_service import get_embedding_service
 from src.services.llm_client import get_llm_client
+from src.services.qdrant_service import get_qdrant_service
 
 logging.basicConfig(
     level=logging.INFO,

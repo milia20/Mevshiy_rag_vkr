@@ -13,15 +13,16 @@ from typing import Any
 from qdrant_client import AsyncQdrantClient, QdrantClient
 from qdrant_client.models import (
     Distance,
-    VectorParams,
-    PointStruct,
-    SparseVectorParams,
-    SparseVector,
-    Filter,
     FieldCondition,
+    Filter,
     MatchValue,
     PayloadSchemaType,
+    PointStruct,
+    SparseVector,
+    SparseVectorParams,
+    VectorParams,
 )
+
 from src.core.config import settings
 from src.core.exceptions import QdrantError
 
@@ -62,9 +63,7 @@ class QdrantService:
         self.collection_name = collection_name or settings.qdrant_collection
         self.api_key = api_key or settings.qdrant_api_key
 
-        logger.info(
-            f"Инициализация QdrantService: url={self.url}, collection={self.collection_name}"
-        )
+        logger.info(f"Инициализация QdrantService: url={self.url}, collection={self.collection_name}")
 
         self._sync_client: QdrantClient | None = None
         self._async_client: AsyncQdrantClient | None = None
@@ -535,7 +534,6 @@ class QdrantService:
             "at",
             "to",
             "for",
-            "the",
             "и",
             "в",
             "на",
@@ -566,7 +564,7 @@ class QdrantService:
 
         try:
             # Используем фильтр по URL
-            from qdrant_client.models import Filter, FieldCondition, MatchValue
+            from qdrant_client.models import FieldCondition, Filter, MatchValue
 
             filter_condition = Filter(
                 must=[

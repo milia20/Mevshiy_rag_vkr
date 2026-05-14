@@ -22,7 +22,7 @@ Stories allow users to arrange multiple voice generations on a timeline to creat
 ```python
 class Story(Base):
     __tablename__ = "stories"
-    
+
     id = Column(String, primary_key=True)
     name = Column(String, nullable=False)
     description = Column(Text)
@@ -35,7 +35,7 @@ class Story(Base):
 ```python
 class StoryItem(Base):
     __tablename__ = "story_items"
-    
+
     id = Column(String, primary_key=True)
     story_id = Column(String, ForeignKey("stories.id"))
     generation_id = Column(String, ForeignKey("generations.id"))
@@ -100,7 +100,7 @@ async def add_item_to_story(
             for item, gen in existing_items
         )
         start_time_ms = max_end_time_ms + 200  # 200ms gap
-    
+
     # Create the item
     item = DBStoryItem(
         id=str(uuid.uuid4()),
@@ -125,10 +125,10 @@ async def move_story_item(
     db: Session,
 ) -> StoryItemDetail:
     item = get_item(story_id, item_id, db)
-    
+
     item.start_time_ms = data.start_time_ms
     item.track = data.track
-    
+
     db.commit()
 ```
 
@@ -145,15 +145,15 @@ async def trim_story_item(
 ) -> StoryItemDetail:
     item = get_item(story_id, item_id, db)
     generation = get_generation(item.generation_id, db)
-    
+
     # Validate trim doesn't exceed duration
     max_duration_ms = int(generation.duration * 1000)
     if data.trim_start_ms + data.trim_end_ms >= max_duration_ms:
         return None  # Invalid trim
-    
+
     item.trim_start_ms = data.trim_start_ms
     item.trim_end_ms = data.trim_end_ms
-    
+
     db.commit()
 ```
 
@@ -170,16 +170,16 @@ async def split_story_item(
 ) -> List[StoryItemDetail]:
     item = get_item(story_id, item_id, db)
     generation = get_generation(item.generation_id, db)
-    
+
     # Calculate split point
     current_trim_start = item.trim_start_ms
     current_trim_end = item.trim_end_ms
     original_duration_ms = int(generation.duration * 1000)
     absolute_split_ms = current_trim_start + data.split_time_ms
-    
+
     # Update original: trim from end
     item.trim_end_ms = original_duration_ms - absolute_split_ms
-    
+
     # Create new item: trim from start
     new_item = DBStoryItem(
         generation_id=item.generation_id,  # Same generation
@@ -188,10 +188,10 @@ async def split_story_item(
         trim_start_ms=absolute_split_ms,
         trim_end_ms=current_trim_end,
     )
-    
+
     db.add(new_item)
     db.commit()
-    
+
     return [item, new_item]
 ```
 
@@ -207,14 +207,14 @@ async def duplicate_story_item(
 ) -> StoryItemDetail:
     original = get_item(story_id, item_id, db)
     generation = get_generation(original.generation_id, db)
-    
+
     # Calculate effective duration for positioning
     effective_duration_ms = (
-        int(generation.duration * 1000) 
-        - original.trim_start_ms 
+        int(generation.duration * 1000)
+        - original.trim_start_ms
         - original.trim_end_ms
     )
-    
+
     # Place copy after original with 200ms gap
     new_item = DBStoryItem(
         generation_id=original.generation_id,
@@ -223,7 +223,7 @@ async def duplicate_story_item(
         trim_start_ms=original.trim_start_ms,
         trim_end_ms=original.trim_end_ms,
     )
-    
+
     db.add(new_item)
     db.commit()
 ```
@@ -237,33 +237,33 @@ The export function mixes all items into a single audio file:
 ```python
 async def export_story_audio(story_id: str, db: Session) -> bytes:
     items = get_all_items_with_generations(story_id, db)
-    
+
     # Calculate total duration
     max_end_time_ms = max(
         data['start_time_ms'] + data['duration_ms']
         for data in audio_data
     )
-    
+
     # Create output buffer
     total_samples = int((max_end_time_ms / 1000.0) * sample_rate)
     final_audio = np.zeros(total_samples, dtype=np.float32)
-    
+
     # Mix each item at its position
     for data in audio_data:
         audio = data['audio']
         start_sample = int((data['start_time_ms'] / 1000.0) * sample_rate)
-        
+
         # Apply trim
         trimmed_audio = audio[trim_start_sample:len(audio) - trim_end_sample]
-        
+
         # Add to buffer (overlapping items sum together)
         final_audio[start_sample:start_sample + len(trimmed_audio)] += trimmed_audio
-    
+
     # Normalize to prevent clipping
     max_val = np.abs(final_audio).max()
     if max_val > 1.0:
         final_audio = final_audio / max_val
-    
+
     return audio_to_bytes(final_audio, sample_rate)
 ```
 

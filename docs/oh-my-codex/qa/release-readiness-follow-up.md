@@ -13,7 +13,7 @@ npm test
 
 ## OMX_TEAM_* environment caveat and cleanup
 
-Team/path resolution now supports explicit `OMX_TEAM_STATE_ROOT` across worker worktrees.  
+Team/path resolution now supports explicit `OMX_TEAM_STATE_ROOT` across worker worktrees.
 When running local tests manually, clear worker-specific env after each run to avoid cross-test contamination:
 
 ```bash

@@ -70,4 +70,3 @@ const navSections: HarnessNavSection[] = useMemo(() => [
   <YourNewComponent />
 </div>
 ```
-

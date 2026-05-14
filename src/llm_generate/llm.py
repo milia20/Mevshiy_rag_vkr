@@ -3,15 +3,15 @@ from __future__ import annotations
 import json
 import os
 import re
+from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any
 
 import lmstudio as lms
 import pandas as pd
 import requests
-from lmstudio import BaseModel
-from lmstudio import LlmLoadModelConfigDict, LlmPredictionConfigDict, PredictionResult
+from lmstudio import BaseModel, LlmLoadModelConfigDict, LlmPredictionConfigDict, PredictionResult
 
 from src.config import SetupSettings
 from src.logger import logger
@@ -133,14 +133,14 @@ def _generate_structured_answer(
 
 def _detect_backend() -> str:
     try:
-        import lmstudio as _  # noqa: F401
+        import lmstudio as _
 
         return "lmstudio_sdk"
     except Exception:
         pass
 
     try:
-        import ollama as _  # noqa: F401
+        import ollama as _
 
         return "ollama_sdk"
     except Exception:

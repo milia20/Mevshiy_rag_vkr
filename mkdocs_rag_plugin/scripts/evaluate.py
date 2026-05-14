@@ -60,7 +60,7 @@ def load_dataset(dataset_path: str) -> list[dict[str, Any]]:
     if not path.exists():
         raise FileNotFoundError(f"Датасет не найден: {dataset_path}")
 
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         data = json.load(f)
 
     logger.info(f"Загружено {len(data)} тестовых кейсов из {dataset_path}")
@@ -125,10 +125,7 @@ async def run_evaluation(
             )
 
             # Извлечение URL retrieved документов
-            retrieved_urls = [
-                chunk.metadata.get("source_file", "").split("/")[-1]
-                for chunk in search_result.chunks
-            ]
+            retrieved_urls = [chunk.metadata.get("source_file", "").split("/")[-1] for chunk in search_result.chunks]
 
             # Вычисление метрик retrieval
             ndcg = calculate_ndcg(relevant_docs, retrieved_urls, k=top_k)

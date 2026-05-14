@@ -10,7 +10,7 @@ import json
 import logging
 from typing import Any
 
-from fastapi import APIRouter, UploadFile, File, Form
+from fastapi import APIRouter, File, Form, UploadFile
 from pydantic import BaseModel
 
 from src.services.llm_client import get_llm_client
@@ -69,9 +69,7 @@ async def chat_with_docs(
         # Получаем последнее сообщение пользователя
         last_message = ""
         if chat_history:
-            last_message = (
-                chat_history[-1].get("content", "") if isinstance(chat_history[-1], dict) else ""
-            )
+            last_message = chat_history[-1].get("content", "") if isinstance(chat_history[-1], dict) else ""
 
         # Обрабатываем файлы если есть
         file_contents = []
@@ -91,14 +89,8 @@ async def chat_with_docs(
 
         if last_message:
             search_result = await search_pipeline.search(query=last_message, top_k=5)
-            contexts = [
-                {"content": ctx.content, "url": ctx.url, "title": ctx.title}
-                for ctx in search_result.contexts
-            ]
-            sources = [
-                {"url": ctx.url, "title": ctx.title, "score": ctx.score}
-                for ctx in search_result.contexts
-            ]
+            contexts = [{"content": ctx.content, "url": ctx.url, "title": ctx.title} for ctx in search_result.contexts]
+            sources = [{"url": ctx.url, "title": ctx.title, "score": ctx.score} for ctx in search_result.contexts]
 
         # Генерация ответа через LLM
         llm_client = get_llm_client()
@@ -112,7 +104,7 @@ async def chat_with_docs(
     except Exception as e:
         logger.error(f"Ошибка в чате: {e}")
         return {
-            "response": f"Произошла ошибка: {str(e)}",
+            "response": f"Произошла ошибка: {e!s}",
             "sources": [],
         }
 
@@ -143,14 +135,8 @@ async def send_message(request: ChatRequest) -> dict[str, Any]:
 
         if last_message:
             search_result = await search_pipeline.search(query=last_message, top_k=5)
-            contexts = [
-                {"content": ctx.content, "url": ctx.url, "title": ctx.title}
-                for ctx in search_result.contexts
-            ]
-            sources = [
-                {"url": ctx.url, "title": ctx.title, "score": ctx.score}
-                for ctx in search_result.contexts
-            ]
+            contexts = [{"content": ctx.content, "url": ctx.url, "title": ctx.title} for ctx in search_result.contexts]
+            sources = [{"url": ctx.url, "title": ctx.title, "score": ctx.score} for ctx in search_result.contexts]
 
         # Генерация ответа через LLM
         llm_client = get_llm_client()
@@ -166,6 +152,6 @@ async def send_message(request: ChatRequest) -> dict[str, Any]:
         logger.error(f"Ошибка в отправке сообщения: {e}")
         return {
             "role": "assistant",
-            "content": f"Произошла ошибка: {str(e)}",
+            "content": f"Произошла ошибка: {e!s}",
             "sources": [],
         }

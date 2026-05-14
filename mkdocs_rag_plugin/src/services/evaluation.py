@@ -13,7 +13,6 @@ from __future__ import annotations
 import json
 import logging
 import math
-import os
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -304,7 +303,7 @@ class EvaluationLogger:
 
         for log_file in self.log_dir.glob("eval_*.json"):
             try:
-                with open(log_file, "r", encoding="utf-8") as f:
+                with open(log_file, encoding="utf-8") as f:
                     data = json.load(f)
 
                 total_queries += 1

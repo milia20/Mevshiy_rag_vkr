@@ -82,4 +82,3 @@ cargo yank routa-cli@0.2.5
 ## Full Documentation
 
 See [docs/release-guide.md](./release-guide.md) for detailed instructions.
-

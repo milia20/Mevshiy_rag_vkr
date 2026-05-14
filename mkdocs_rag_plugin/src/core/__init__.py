@@ -5,11 +5,11 @@
 """
 
 from src.core.config import settings
-from src.core.exceptions import RAGException, ConfigurationError, SearchError
+from src.core.exceptions import ConfigurationError, RAGException, SearchError
 
 __all__ = [
-    "settings",
-    "RAGException",
     "ConfigurationError",
+    "RAGException",
     "SearchError",
+    "settings",
 ]

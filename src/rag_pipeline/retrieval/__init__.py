@@ -27,15 +27,15 @@ from .searchers import (
 )
 
 __all__ = [
-    "DenseSearcher",
-    "SparseSearcher",
-    "HybridSearcher",
-    "ColBERTSearcher",
+    "AdvancedColBERTSearcher",
     "CodeSearcher",
+    "ColBERTSearcher",
+    "DenseSearcher",
     "DocumentDenseSearcher",
     "DocumentSparseSearcher",
-    "NativeRrfHybridSearcher",
-    "NativeDbsfHybridSearcher",
-    "AdvancedColBERTSearcher",
     "ExperimentalSearcherFactory",
+    "HybridSearcher",
+    "NativeDbsfHybridSearcher",
+    "NativeRrfHybridSearcher",
+    "SparseSearcher",
 ]
